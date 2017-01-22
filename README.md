@@ -3,9 +3,14 @@
  author Brave Han
 
  TODO pusher server
+ 
+# EVN
+
+ ubuntu or centos6 up
+ cmake gcc g++
 
 
-#Build
+# Build
 
 cd linkedon-push
 
@@ -21,7 +26,7 @@ make -j4
 
 build done
 
-#Run
+# Run
 
 workspace $ProjectDir
 
