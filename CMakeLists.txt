@@ -14,7 +14,7 @@ ${PROJECT_SOURCE_DIR}/src/main
 
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   objs/coroutine/include  
-    objs/jsoncpp/include
+    objs/jsoncpp/include  objs/st
     src/common   src/core  src/kernel    src/protocol  src/app)
 
 set(SOURCE_FILES src/main/main.cpp )
@@ -31,6 +31,7 @@ TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/coroutine/lib/coroutineli
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
 TARGET_LINK_LIBRARIES(lpush -ldl )
 

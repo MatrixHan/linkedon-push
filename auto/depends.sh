@@ -78,7 +78,23 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
 		)
 	fi
 	
-
+	#build st-1.9
+	if [[ ! -f ${OBJS_DIR}/_flag.st.cross.build.tmp && -f ${OBJS_DIR}/st/libst.a ]]; then
+            echo "st-1.9t is ok.";
+        else
+            # patch st for arm, @see: https://github.com/ossrs/srs/wiki/v1_CN_SrsLinuxArm#st-arm-bug-fix
+            echo "build st-1.9t";
+            (
+                rm -rf ${OBJS_DIR}/st-1.9 && cd ${OBJS_DIR} &&
+                unzip -q ../3rdparty/st-1.9.zip && cd st-1.9 && chmod +w * &&
+                patch -p0 < ../../3rdparty/patches/1.st.arm.patch &&
+                patch -p0 < ../../3rdparty/patches/3.st.osx.kqueue.patch &&
+                patch -p0 < ../../3rdparty/patches/4.st.disable.examples.patch &&
+                make linux-debug  EXTRA_CFLAGS="-DMD_HAVE_EPOLL" &&
+                cd .. && rm -rf st && ln -sf st-1.9/obj st &&
+                cd .. && rm -f ${OBJS_DIR}/_flag.st.cross.build.tmp
+            )
+        fi
 
 
 
