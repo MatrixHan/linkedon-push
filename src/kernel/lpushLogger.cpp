@@ -1,6 +1,8 @@
 #include <lpushLogger.h>
+#include <lpushUtils.h>
 #include <sys/time.h>
 #include <coroutine.h>
+
 
 namespace lpush 
 {

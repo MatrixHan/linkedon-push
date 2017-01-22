@@ -27,7 +27,7 @@ ADD_DEFINITIONS("-g -O0")
 
 ADD_EXECUTABLE(lpush   ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(lpush dl )
-TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/coroutine/lib/coroutinelib.a)
+#TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/coroutine/lib/coroutinelib.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
