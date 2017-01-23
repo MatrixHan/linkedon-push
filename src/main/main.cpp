@@ -1,4 +1,5 @@
 #include <lpushCommon.h>
+#include <lpushJson.h>
 #include <lpushLogger.h>
 
 using namespace lpush;
@@ -7,8 +8,13 @@ static void start_daemon(void);
 
 int main(void)
 {
-	printf(" Hello world lpush!\n");
+	initConfig();
+	InitLog(DEFAULT_LOG_FILE_NAME);
 	
+	LogBS(" Hello world lpush!\n");
+	start_daemon();
+	
+	CloseLog();
 	return 0;
 }
 
@@ -31,7 +37,6 @@ static void start_daemon(void)
     exit(0);
 
   umask(022);
-
-  if (chdir(DEFAULT_LOG_FILE_NAME) < 0)
-    err_sys_quit(errfd, "ERROR: can't change directory to %s: chdir", DEFAULT_LOG_FILE_NAME);
+  if (chdir("./") < 0)
+    err_sys_quit(errfd, "ERROR: can't change directory to %s: chdir", "./");
 }

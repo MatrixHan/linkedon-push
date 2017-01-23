@@ -23,8 +23,8 @@
 #include <sstream>
 #include <fstream>
 #include <stdarg.h>
-#define CONFIG_DEFAULT_FILE_NAME "lpush.conf"
-#define DEFAULT_LOG_FILE_NAME "lpush.log"
+#define CONFIG_DEFAULT_FILE_NAME "conf/lpush.conf"
+#define DEFAULT_LOG_FILE_NAME "logs/lpush.log"
   
 #define Abs(a) ((a) > 0 ? (a) : -(a))
 
