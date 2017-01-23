@@ -15,7 +15,7 @@ ${PROJECT_SOURCE_DIR}/src/main
 
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   objs/coroutine/include  
-    objs/jsoncpp/include  objs/st
+    objs/jsoncpp/include  objs/st  objs/hiredis  objs/mongo-c-driver-1.5.3/include 
     src/common src/kernel  src/core      src/protocol  src/app)
 
 set(SOURCE_FILES src/main/main.cpp )
@@ -29,9 +29,10 @@ ADD_DEFINITIONS("-g -O0")
 
 ADD_EXECUTABLE(lpush   ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(lpush dl )
-#TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/coroutine/lib/coroutinelib.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)

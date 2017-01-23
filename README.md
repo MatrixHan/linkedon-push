@@ -14,7 +14,9 @@
 
 cd linkedon-push
 
-sh auto/depends.sh
+chmod +x auto/*
+
+./auto/depends.sh
 
 mkdir -p build
 
