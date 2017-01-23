@@ -1,10 +1,11 @@
-#!/usr/bin/bash
+#! /bin/bash
 
 set -x
 
 OBJS_DIR=objs
 CONFIGURE_TOOL="./config"
 OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
+MONGO_BUILD="--enable-ssl=no"
 
 	if [ ! -d ${OBJS_DIR} ];then
 		`mkdir ${OBJS_DIR}`;
@@ -23,7 +24,7 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
 	fi
 
         # cross build not specified, if exists flag, need to rebuild for no-arm platform.
-        if [[ ! -f ${OBJS_DIR}/_flag.st.hp.tmp && -f ${OBJS_DIR}/hp/http_parser.h && -f ${OBJS_DIR}/hp/libhttp_parser.a ]]; then
+        if [[  -f ${OBJS_DIR}/_flag.st.hp.tmp && -f ${OBJS_DIR}/hp/http_parser.h && -f ${OBJS_DIR}/hp/libhttp_parser.a ]]; then
             echo "http-parser-2.1 is ok.";
         else
             echo "build http-parser-2.1";
@@ -33,11 +34,11 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
                 patch -p0 < ../../3rdparty/patches/2.http.parser.patch &&
                 make package &&
                 cd .. && rm -rf hp && ln -sf http-parser-2.1 hp &&
-                cd .. && rm -f ${OBJS_DIR}/_flag.st.hp.tmp
+                cd .. && touch ${OBJS_DIR}/_flag.st.hp.tmp
             )
         fi
 
-	if [[ ! -f ${OBJS_DIR}/_flag.ssl.cross.build.tmp && -f ${OBJS_DIR}/openssl/lib/libssl.a ]]; then
+	if [[  -f ${OBJS_DIR}/_flag.ssl.cross.build.tmp && -f ${OBJS_DIR}/openssl/lib/libssl.a ]]; then
                 echo "openssl-1.0.1f is ok.";
             else
                 echo "build openssl-1.0.1f";
@@ -47,11 +48,11 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
                     $CONFIGURE_TOOL --prefix=`pwd`/_release -no-shared $OPENSSL_HOTFIX &&
                     make && make install_sw &&
                     cd .. && rm -rf openssl && ln -sf openssl-1.0.1f/_release openssl &&
-                    cd .. && rm -f ${OBJS_DIR}/_flag.ssl.cross.build.tmp
+                    cd .. && touch ${OBJS_DIR}/_flag.ssl.cross.build.tmp
                 )
 	fi
 	# build  conroutine
-	if [[ ! -f ${OBJS_DIR}/_flag.coroutine.tmp && -f ${OBJS_DIR}/coroutine/coroutine.h && -f ${OBJS_DIR}/coroutinelib.a ]];then
+	if [[  -f ${OBJS_DIR}/_flag.coroutine.tmp && -f ${OBJS_DIR}/coroutine/coroutine.h && -f ${OBJS_DIR}/coroutine/coroutinelib.a ]];then
 		echo "coroutine is ok";
 	else
 		echo "build coroutine"
@@ -60,12 +61,12 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
 			unzip -q ../3rdparty/coroutine.zip && cd coroutine &&
 			mkdir -p include && cp *.h include &&
 			make && mkdir -p lib && cp *.a lib &&
-			cd ../.. && rm -f ${OBJS_DIR}/_flag.coroutine.tmp
+			cd ../.. && touch  ${OBJS_DIR}/_flag.coroutine.tmp
 		)
 	fi
 
 	#build jsoncpp
-	if [[ ! -f ${OBJS_DIR}/_flag.jsoncpp.tmp && -f ${OBJS_DIR}/jsoncpp/include/json/json.h && -f ${OBJS_DIR}/jsoncpp/build/src/lib_json/libjsoncpp.a ]];then
+	if [[  -f ${OBJS_DIR}/_flag.jsoncpp.tmp && -f ${OBJS_DIR}/jsoncpp/include/json/json.h && -f ${OBJS_DIR}/jsoncpp/build/src/lib_json/libjsoncpp.a ]];then
 		echo "jsoncpp is ok";
 	else
 		echo "build jsoncpp"
@@ -74,12 +75,12 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
 			unzip -q ../3rdparty/jsoncpp.zip && cd jsoncpp &&
 			mkdir -p  build && cd build && cmake ../ &&
 			make -j4  && cd ../  && mkdir -p lib && cp build/src/lib_json/libjsoncpp.a lib/ &&
-			cd ../.. && rm -f ${OBJS_DIR}/_flag.jsoncpp.tmp
+			cd ../.. && touch  ${OBJS_DIR}/_flag.jsoncpp.tmp
 		)
 	fi
 	
 	#build st-1.9
-	if [[ ! -f ${OBJS_DIR}/_flag.st.cross.build.tmp && -f ${OBJS_DIR}/st/libst.a ]]; then
+	if [[  -f ${OBJS_DIR}/_flag.st.cross.build.tmp && -f ${OBJS_DIR}/st/libst.a ]]; then
             echo "st-1.9t is ok.";
         else
             # patch st for arm, @see: https://github.com/ossrs/srs/wiki/v1_CN_SrsLinuxArm#st-arm-bug-fix
@@ -92,10 +93,35 @@ OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
                 patch -p0 < ../../3rdparty/patches/4.st.disable.examples.patch &&
                 make linux-debug  EXTRA_CFLAGS="-DMD_HAVE_EPOLL" &&
                 cd .. && rm -rf st && ln -sf st-1.9/obj st &&
-                cd .. && rm -f ${OBJS_DIR}/_flag.st.cross.build.tmp
+                cd .. && touch ${OBJS_DIR}/_flag.st.cross.build.tmp
             )
         fi
+	
+	#build mongo-client
+	if [[  -f ${OBJS_DIR}/_flag.mongo.cross.build.tmp && -f ${OBJS_DIR}/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a ]];then
+		echo "mongo-client is ok"
+	else
+		echo "build mongo-client"
+		(
+			rm -rf ${OBJS_DIR}/mongo-c-driver-1.5.3 && cd ${OBJS_DIR} &&
+			unzip -q ../3rdparty/mongo-c-driver-1.5.3.zip && cd mongo-c-driver-1.5.3 && chmod +w * &&
+			./configure ${MONGO_BUILD} && make -j4 &&
+			cd ../.. && touch ${OBJS_DIR}/_flag.mongo.cross.build.tmp	
+		)
+	fi
 
+	#buidl redis-client
+	if [[ -f ${OBJS_DIR}/_flag.redis.cross.build.tmp && -f ${OBJS_DIR}/hiredis/libhiredis.a ]];then
+		echo "redis-client is ok"
+	else
+		echo "build redis-client"
+		(
+			rm -rf ${OBJS_DIR}/hiredis  && cd ${OBJS_DIR} &&
+			unzip -q ../3rdparty/hiredis.zip && cd hiredis && chmod +w * &&
+			make -j4 && 
+			cd ../.. && touch ${OBJS_DIR}/_flag.redis.cross.build.tmp 
+		)
+	fi
 
 
 
