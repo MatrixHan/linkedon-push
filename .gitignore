@@ -1,3 +1,6 @@
 *.kdev4
 /objs/
 /build/
+/logs/
+/xcodeide/*
+/logs/*
