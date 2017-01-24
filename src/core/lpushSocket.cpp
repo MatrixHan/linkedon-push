@@ -3,6 +3,25 @@
 
 namespace lpush {
 
+ILPushBufferReader::ILPushBufferReader()
+{
+
+}
+
+ILPushBufferReader::~ILPushBufferReader()
+{
+
+}
+ILPushBufferWriter::ILPushBufferWriter()
+{
+
+}
+ILPushBufferWriter::~ILPushBufferWriter()
+{
+
+}
+
+  
   
 LPushSocket::LPushSocket(st_netfd_t client_stfd)
 {
