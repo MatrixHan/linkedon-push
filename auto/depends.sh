@@ -2,6 +2,18 @@
 
 set -x
 
+CDIR=`pwd`
+PRO="linkedon-push"
+
+if [[ ${CDIR} =~ ${PRO}$ ]];then
+	echo "current dir is ok"
+else
+	echo "plase cd project root direct!"
+	exit
+fi
+
+source auto/checkOS.sh
+
 OBJS_DIR=objs
 CONFIGURE_TOOL="./config"
 OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
@@ -80,6 +92,12 @@ MONGO_BUILD="--enable-ssl=no"
 	fi
 	
 	#build st-1.9
+	_ST_MAKE=linux-debug && _ST_EXTRA_CFLAGS="-DMD_HAVE_EPOLL"
+   	 # for osx, use darwin for st, donot use epoll.
+    	if [ $OS_IS_OSX = YES ]; then
+        	_ST_MAKE=darwin-debug && _ST_EXTRA_CFLAGS="-DMD_HAVE_KQUEUE"
+    	fi
+
 	if [[  -f ${OBJS_DIR}/_flag.st.cross.build.tmp && -f ${OBJS_DIR}/st/libst.a ]]; then
             echo "st-1.9t is ok.";
         else
@@ -91,7 +109,7 @@ MONGO_BUILD="--enable-ssl=no"
                 patch -p0 < ../../3rdparty/patches/1.st.arm.patch &&
                 patch -p0 < ../../3rdparty/patches/3.st.osx.kqueue.patch &&
                 patch -p0 < ../../3rdparty/patches/4.st.disable.examples.patch &&
-                make linux-debug  EXTRA_CFLAGS="-DMD_HAVE_EPOLL" &&
+                make ${_ST_MAKE}  EXTRA_CFLAGS="${_ST_EXTRA_CFLAGS}" &&
                 cd .. && rm -rf st && ln -sf st-1.9/obj st &&
                 cd .. && touch ${OBJS_DIR}/_flag.st.cross.build.tmp
             )
