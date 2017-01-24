@@ -1,0 +1,3 @@
+/home/git_c++/linkedon-push/xcodeide/CMakeFiles/lpush.dir
+/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD.dir
+/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK.dir

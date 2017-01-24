@@ -1,0 +1,708 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		355EE9E555FE40B69BE38EBE /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 7B69B7D248324E9FBED44026 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				8591F23FFC8A4260A87B8E0A /* CMake Rules */,
+			);
+			dependencies = (
+				FD2A97ACB3E24963832AB871 /* PBXTargetDependency */,
+				C9EB45E1639D4998AA4BC8A7 /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
+		E90104F802264873BDF0E8FC /* ZERO_CHECK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 31B2E48F1B9A4FBEB1DB0092 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildPhases = (
+				A4A67EC03C4A43219842282A /* CMake Rules */,
+			);
+			dependencies = (
+			);
+			name = ZERO_CHECK;
+			productName = ZERO_CHECK;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		239D98A3C6D446828F8868AF /* /home/git_c++/linkedon-push/CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = 941D84E395CA4967AC8836EB /* /home/git_c++/linkedon-push/CMakeLists.txt */; };
+		2EB02A149CAD414895C689F0 /* /home/git_c++/linkedon-push/src/main/main.cpp */ = {isa = PBXBuildFile; fileRef = 42D1FD5786CD4169852E4B39 /* /home/git_c++/linkedon-push/src/main/main.cpp */; };
+		360D5BD2DF6D4731B8F9E4EE /* /home/git_c++/linkedon-push/src/core/lpushSocket.cpp */ = {isa = PBXBuildFile; fileRef = 2F4CA7884E654C24A6DDE6AB /* /home/git_c++/linkedon-push/src/core/lpushSocket.cpp */; };
+		616069E17EA64D8CA97DA58C /* /home/git_c++/linkedon-push/src/kernel/lpushUtils.cpp */ = {isa = PBXBuildFile; fileRef = CC8FC581CC264402A8463457 /* /home/git_c++/linkedon-push/src/kernel/lpushUtils.cpp */; };
+		748C3284C16441159C2F8275 /* /home/git_c++/linkedon-push/src/common/lpushCommon.cpp */ = {isa = PBXBuildFile; fileRef = 4490ECE10F8543F799512594 /* /home/git_c++/linkedon-push/src/common/lpushCommon.cpp */; };
+		9D41FBBBD3804FE5A5699F65 /* /home/git_c++/linkedon-push/src/kernel/lpushLogger.cpp */ = {isa = PBXBuildFile; fileRef = B34D6BE209404E34967940FA /* /home/git_c++/linkedon-push/src/kernel/lpushLogger.cpp */; };
+		CEEC381B06CA483A95ACA571 /* /home/git_c++/linkedon-push/src/kernel/lpushJson.cpp */ = {isa = PBXBuildFile; fileRef = 51B7C831915C43FEA7529F1C /* /home/git_c++/linkedon-push/src/kernel/lpushJson.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		1C4204D266BD49A9979AF208 /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Release;
+		};
+		287A8A827C794FD781B87B1C /* MinSizeRel */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = MinSizeRel;
+		};
+		3FB17138811740D8926417CB = {
+			isa = PBXBuildStyle;
+		};
+		7D50B41C44EF43C198C89C5A /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		F0F027A600474A2C84C0D3BE /* RelWithDebInfo */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = RelWithDebInfo;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		685470869CA8491995BE26FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 759605FC9B534A27AD5FCBBD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E90104F802264873BDF0E8FC;
+			remoteInfo = ZERO_CHECK;
+		};
+		BAFA3FAE10BC417C9748C00B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 759605FC9B534A27AD5FCBBD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E90104F802264873BDF0E8FC;
+			remoteInfo = ZERO_CHECK;
+		};
+		D94573C500B64DFF8BA8EEBF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 759605FC9B534A27AD5FCBBD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C44E265FE0874A52854CEFF6;
+			remoteInfo = lpush;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2F4CA7884E654C24A6DDE6AB /* /home/git_c++/linkedon-push/src/core/lpushSocket.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lpushSocket.cpp; path = src/core/lpushSocket.cpp; sourceTree = SOURCE_ROOT; };
+		42D1FD5786CD4169852E4B39 /* /home/git_c++/linkedon-push/src/main/main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main/main.cpp; sourceTree = SOURCE_ROOT; };
+		4490ECE10F8543F799512594 /* /home/git_c++/linkedon-push/src/common/lpushCommon.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lpushCommon.cpp; path = src/common/lpushCommon.cpp; sourceTree = SOURCE_ROOT; };
+		51B7C831915C43FEA7529F1C /* /home/git_c++/linkedon-push/src/kernel/lpushJson.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lpushJson.cpp; path = src/kernel/lpushJson.cpp; sourceTree = SOURCE_ROOT; };
+		5E9692F92CF9434E9226321E /* /home/git_c++/linkedon-push/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		941D84E395CA4967AC8836EB /* /home/git_c++/linkedon-push/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		A725687534894D1DA7EBF091 /* /home/git_c++/linkedon-push/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		B34D6BE209404E34967940FA /* /home/git_c++/linkedon-push/src/kernel/lpushLogger.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lpushLogger.cpp; path = src/kernel/lpushLogger.cpp; sourceTree = SOURCE_ROOT; };
+		CC8FC581CC264402A8463457 /* /home/git_c++/linkedon-push/src/kernel/lpushUtils.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lpushUtils.cpp; path = src/kernel/lpushUtils.cpp; sourceTree = SOURCE_ROOT; };
+		E7E6BF7A3C624FAC997CAB6A /* lpush */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = lpush; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1B25B99DB6FC4B6E949F20BB = {
+			isa = PBXGroup;
+			children = (
+				3CA5523B3005432D8FC97A24 /* Sources */,
+				7A67E7872086483BBD2F1E78 /* Resources */,
+				87CEBB4DE38F466E8FEBAEA8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A2F0029DE4343BABABF6064 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				4490ECE10F8543F799512594 /* /home/git_c++/linkedon-push/src/common/lpushCommon.cpp */,
+				2F4CA7884E654C24A6DDE6AB /* /home/git_c++/linkedon-push/src/core/lpushSocket.cpp */,
+				51B7C831915C43FEA7529F1C /* /home/git_c++/linkedon-push/src/kernel/lpushJson.cpp */,
+				B34D6BE209404E34967940FA /* /home/git_c++/linkedon-push/src/kernel/lpushLogger.cpp */,
+				CC8FC581CC264402A8463457 /* /home/git_c++/linkedon-push/src/kernel/lpushUtils.cpp */,
+				42D1FD5786CD4169852E4B39 /* /home/git_c++/linkedon-push/src/main/main.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		388D5CC68E864CC293912234 /* lpush */ = {
+			isa = PBXGroup;
+			children = (
+				2A2F0029DE4343BABABF6064 /* Source Files */,
+				941D84E395CA4967AC8836EB /* /home/git_c++/linkedon-push/CMakeLists.txt */,
+			);
+			name = lpush;
+			sourceTree = "<group>";
+		};
+		3CA5523B3005432D8FC97A24 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				388D5CC68E864CC293912234 /* lpush */,
+				47E14F2267BA4C9E804AF9AE /* ALL_BUILD */,
+				7893D06AF86C424F99963FD8 /* ZERO_CHECK */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		47E14F2267BA4C9E804AF9AE /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				CBFA06A79C7E48DF8810E686 /* CMake Rules */,
+				A725687534894D1DA7EBF091 /* /home/git_c++/linkedon-push/CMakeLists.txt */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		7893D06AF86C424F99963FD8 /* ZERO_CHECK */ = {
+			isa = PBXGroup;
+			children = (
+				AA0B27C584484ECA8C63FABD /* CMake Rules */,
+				5E9692F92CF9434E9226321E /* /home/git_c++/linkedon-push/CMakeLists.txt */,
+			);
+			name = ZERO_CHECK;
+			sourceTree = "<group>";
+		};
+		7A67E7872086483BBD2F1E78 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		87CEBB4DE38F466E8FEBAEA8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E7E6BF7A3C624FAC997CAB6A /* lpush */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AA0B27C584484ECA8C63FABD /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+		CBFA06A79C7E48DF8810E686 /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C44E265FE0874A52854CEFF6 /* lpush */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 99622B4D42214A59BF78B9AE /* Build configuration list for PBXNativeTarget "lpush" */;
+			buildPhases = (
+				DFA7946E76CA48B9BE309396 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				54931CF0C17C494D94F6E39B /* PBXTargetDependency */,
+			);
+			name = lpush;
+			productName = lpush;
+			productReference = E7E6BF7A3C624FAC997CAB6A /* lpush */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		759605FC9B534A27AD5FCBBD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 0820;
+			};
+			buildConfigurationList = E1B06A6AA6B9496C8AF6B5DA /* Build configuration list for PBXProject "linkedon-push" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				7D50B41C44EF43C198C89C5A /* Debug */,
+				1C4204D266BD49A9979AF208 /* Release */,
+				287A8A827C794FD781B87B1C /* MinSizeRel */,
+				F0F027A600474A2C84C0D3BE /* RelWithDebInfo */,
+			);
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 0;
+			mainGroup = 1B25B99DB6FC4B6E949F20BB;
+			projectDirPath = ../;
+			projectRoot = "";
+			targets = (
+				355EE9E555FE40B69BE38EBE /* ALL_BUILD */,
+				E90104F802264873BDF0E8FC /* ZERO_CHECK */,
+				C44E265FE0874A52854CEFF6 /* lpush */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00C11DAE3DA149F6898E2341 = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here
+exit 0";
+			showEnvVarsInLog = 0;
+		};
+		8591F23FFC8A4260A87B8E0A /* CMake Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake Rules";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "make -C /home/git_c++/linkedon-push/xcodeide -f /home/git_c++/linkedon-push/xcodeide/CMakeScripts/ALL_BUILD_cmakeRulesBuildPhase.make$CONFIGURATION all";
+			showEnvVarsInLog = 0;
+		};
+		A4A67EC03C4A43219842282A /* CMake Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake Rules";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "make -C /home/git_c++/linkedon-push/xcodeide -f /home/git_c++/linkedon-push/xcodeide/CMakeScripts/ZERO_CHECK_cmakeRulesBuildPhase.make$CONFIGURATION all";
+			showEnvVarsInLog = 0;
+		};
+		D18E2E955E464D47BECEE84E = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here
+exit 0";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DFA7946E76CA48B9BE309396 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				748C3284C16441159C2F8275 /* /home/git_c++/linkedon-push/src/common/lpushCommon.cpp */,
+				360D5BD2DF6D4731B8F9E4EE /* /home/git_c++/linkedon-push/src/core/lpushSocket.cpp */,
+				CEEC381B06CA483A95ACA571 /* /home/git_c++/linkedon-push/src/kernel/lpushJson.cpp */,
+				9D41FBBBD3804FE5A5699F65 /* /home/git_c++/linkedon-push/src/kernel/lpushLogger.cpp */,
+				616069E17EA64D8CA97DA58C /* /home/git_c++/linkedon-push/src/kernel/lpushUtils.cpp */,
+				2EB02A149CAD414895C689F0 /* /home/git_c++/linkedon-push/src/main/main.cpp */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		54931CF0C17C494D94F6E39B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E90104F802264873BDF0E8FC /* ZERO_CHECK */;
+			targetProxy = BAFA3FAE10BC417C9748C00B /* PBXContainerItemProxy */;
+		};
+		C9EB45E1639D4998AA4BC8A7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C44E265FE0874A52854CEFF6 /* lpush */;
+			targetProxy = D94573C500B64DFF8BA8EEBF /* PBXContainerItemProxy */;
+		};
+		FD2A97ACB3E24963832AB871 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E90104F802264873BDF0E8FC /* ZERO_CHECK */;
+			targetProxy = 685470869CA8491995BE26FE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		14F379E4E6504B0C8B7B46E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = Release;
+		};
+		20C415EB10AA43C7989B2926 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		28045951723D445E9389E400 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main";
+				LIBRARY_SEARCH_PATHS = " /home/git_c++/linkedon-push/src/common/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/main";
+				OTHER_CPLUSPLUSFLAGS = "   -Wall        -DNDEBUG   -g -O0";
+				OTHER_LDFLAGS = " -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -ldl /home/git_c++/linkedon-push/objs/openssl/lib/libssl.a /home/git_c++/linkedon-push/objs/openssl/lib/libcrypto.a /home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a /home/git_c++/linkedon-push/objs/hiredis/libhiredis.a /home/git_c++/linkedon-push/objs/jsoncpp/lib/libjsoncpp.a /home/git_c++/linkedon-push/objs/st/libst.a -ldl";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lpush;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		2BD07445253E4A7585A4BDFC /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		3AFF532006774BB8B8EE03F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk;
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide/build";
+			};
+			name = Release;
+		};
+		4F3286DBB1D04386A870EA2D /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		57D2101314D942599D7C0CDD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main";
+				LIBRARY_SEARCH_PATHS = " /home/git_c++/linkedon-push/src/common/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/main";
+				OTHER_CPLUSPLUSFLAGS = "   -Wall     -DNDEBUG   -g -O0";
+				OTHER_LDFLAGS = " -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -ldl /home/git_c++/linkedon-push/objs/openssl/lib/libssl.a /home/git_c++/linkedon-push/objs/openssl/lib/libcrypto.a /home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a /home/git_c++/linkedon-push/objs/hiredis/libhiredis.a /home/git_c++/linkedon-push/objs/jsoncpp/lib/libjsoncpp.a /home/git_c++/linkedon-push/objs/st/libst.a -ldl";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lpush;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = Release;
+		};
+		6FCC424CAE5D487DAB4D6B9E /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		7B3100DFE452404683B442D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk;
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide/build";
+			};
+			name = Debug;
+		};
+		A62EC8E6DAF245659237F0EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main";
+				LIBRARY_SEARCH_PATHS = " /home/git_c++/linkedon-push/src/common/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/main";
+				OTHER_CPLUSPLUSFLAGS = "   -Wall      -g -O0";
+				OTHER_LDFLAGS = " -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -ldl /home/git_c++/linkedon-push/objs/openssl/lib/libssl.a /home/git_c++/linkedon-push/objs/openssl/lib/libcrypto.a /home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a /home/git_c++/linkedon-push/objs/hiredis/libhiredis.a /home/git_c++/linkedon-push/objs/jsoncpp/lib/libjsoncpp.a /home/git_c++/linkedon-push/objs/st/libst.a -ldl";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lpush;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = Debug;
+		};
+		A7FB7CE038A5429E9F3F68F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = Release;
+		};
+		B1479070158C4F25814A735D /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk;
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide/build";
+			};
+			name = RelWithDebInfo;
+		};
+		C2FD0FE2664044B58E8A378C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = Debug;
+		};
+		DD2E5192BEEB42B6A47AA4E5 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "/home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main";
+				LIBRARY_SEARCH_PATHS = " /home/git_c++/linkedon-push/src/common/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/common /home/git_c++/linkedon-push/src/kernel/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/kernel /home/git_c++/linkedon-push/src/core/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/core /home/git_c++/linkedon-push/src/protocol/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/protocol /home/git_c++/linkedon-push/src/app/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/app /home/git_c++/linkedon-push/src/main/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) /home/git_c++/linkedon-push/src/main";
+				OTHER_CPLUSPLUSFLAGS = "   -Wall     -DNDEBUG   -g -O0";
+				OTHER_LDFLAGS = " -Wl,-search_paths_first -Wl,-headerpad_max_install_names  -ldl /home/git_c++/linkedon-push/objs/openssl/lib/libssl.a /home/git_c++/linkedon-push/objs/openssl/lib/libcrypto.a /home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a /home/git_c++/linkedon-push/objs/hiredis/libhiredis.a /home/git_c++/linkedon-push/objs/jsoncpp/lib/libjsoncpp.a /home/git_c++/linkedon-push/objs/st/libst.a -ldl";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = lpush;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		DFDA948D1FED4F739E86E4A8 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk;
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide/build";
+			};
+			name = MinSizeRel;
+		};
+		F9920A6B5F584C1BBE990881 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/home/git_c++/linkedon-push/objs","/home/git_c++/linkedon-push/objs/hp","/home/git_c++/linkedon-push/objs/openssl/include","/home/git_c++/linkedon-push/objs/coroutine/include","/home/git_c++/linkedon-push/objs/jsoncpp/include","/home/git_c++/linkedon-push/objs/st","/home/git_c++/linkedon-push/objs/hiredis","/home/git_c++/linkedon-push/objs/mongo-c-driver-1.5.3/include","/home/git_c++/linkedon-push/src/common","/home/git_c++/linkedon-push/src/kernel","/home/git_c++/linkedon-push/src/core","/home/git_c++/linkedon-push/src/protocol","/home/git_c++/linkedon-push/src/app");
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = " ";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/home/git_c++/linkedon-push/xcodeide";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("-Wmost","-Wno-four-char-constants","-Wno-unknown-pragmas","$(inherited)");
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		31B2E48F1B9A4FBEB1DB0092 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9920A6B5F584C1BBE990881 /* Debug */,
+				14F379E4E6504B0C8B7B46E6 /* Release */,
+				4F3286DBB1D04386A870EA2D /* MinSizeRel */,
+				6FCC424CAE5D487DAB4D6B9E /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7B69B7D248324E9FBED44026 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2FD0FE2664044B58E8A378C /* Debug */,
+				A7FB7CE038A5429E9F3F68F1 /* Release */,
+				20C415EB10AA43C7989B2926 /* MinSizeRel */,
+				2BD07445253E4A7585A4BDFC /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		99622B4D42214A59BF78B9AE /* Build configuration list for PBXNativeTarget "lpush" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A62EC8E6DAF245659237F0EC /* Debug */,
+				57D2101314D942599D7C0CDD /* Release */,
+				DD2E5192BEEB42B6A47AA4E5 /* MinSizeRel */,
+				28045951723D445E9389E400 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E1B06A6AA6B9496C8AF6B5DA /* Build configuration list for PBXProject "linkedon-push" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7B3100DFE452404683B442D9 /* Debug */,
+				3AFF532006774BB8B8EE03F1 /* Release */,
+				DFDA948D1FED4F739E86E4A8 /* MinSizeRel */,
+				B1479070158C4F25814A735D /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 759605FC9B534A27AD5FCBBD /* Project object */;
+}
