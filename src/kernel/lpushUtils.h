@@ -97,4 +97,10 @@ namespace lpush
   
   long long getCurrentTime();
   
+  
+  std::string getCurrentDirect();
+  
+  
+  bool checkProDir();
+  
 }
