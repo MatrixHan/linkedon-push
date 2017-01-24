@@ -1,4 +1,5 @@
 #include <lpushCommon.h>
+#include <lpushUtils.h>
 #include <lpushJson.h>
 #include <lpushLogger.h>
 
@@ -8,8 +9,16 @@ static void start_daemon(void);
 
 int main(void)
 {
+	
+	if(!checkProDir())
+	{
+	   lp_trace("place move project root direct!\n");
+	   return 0;
+	}
+	
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
+	
 	
 	LogBS(" Hello world lpush!\n");
 	start_daemon();

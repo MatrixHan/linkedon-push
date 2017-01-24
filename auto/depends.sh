@@ -64,18 +64,18 @@ MONGO_BUILD="--enable-ssl=no"
                 )
 	fi
 	# build  conroutine
-	if [[  -f ${OBJS_DIR}/_flag.coroutine.tmp && -f ${OBJS_DIR}/coroutine/coroutine.h && -f ${OBJS_DIR}/coroutine/coroutinelib.a ]];then
-		echo "coroutine is ok";
-	else
-		echo "build coroutine"
-		(
-			rm -rf ${OBJS_DIR}/coroutine && cd ${OBJS_DIR} &&
-			unzip -q ../3rdparty/coroutine.zip && cd coroutine &&
-			mkdir -p include && cp *.h include &&
-			make && mkdir -p lib && cp *.a lib &&
-			cd ../.. && touch  ${OBJS_DIR}/_flag.coroutine.tmp
-		)
-	fi
+#	if [[  -f ${OBJS_DIR}/_flag.coroutine.tmp && -f ${OBJS_DIR}/coroutine/coroutine.h && -f ${OBJS_DIR}/coroutine/coroutinelib.a ]];then
+#		echo "coroutine is ok";
+#	else
+#		echo "build coroutine"
+#		(
+#			rm -rf ${OBJS_DIR}/coroutine && cd ${OBJS_DIR} &&
+#			unzip -q ../3rdparty/coroutine.zip && cd coroutine &&
+#			mkdir -p include && cp *.h include &&
+#			make && mkdir -p lib && cp *.a lib &&
+#			cd ../.. && touch  ${OBJS_DIR}/_flag.coroutine.tmp
+#		)
+#	fi
 
 	#build jsoncpp
 	if [[  -f ${OBJS_DIR}/_flag.jsoncpp.tmp && -f ${OBJS_DIR}/jsoncpp/include/json/json.h && -f ${OBJS_DIR}/jsoncpp/build/src/lib_json/libjsoncpp.a ]];then

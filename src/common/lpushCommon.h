@@ -23,6 +23,9 @@
 #include <sstream>
 #include <fstream>
 #include <stdarg.h>
+#include <map>
+
+
 #define CONFIG_DEFAULT_FILE_NAME "conf/lpush.conf"
 #define DEFAULT_LOG_FILE_NAME "logs/lpush.log"
   
@@ -49,6 +52,14 @@
 		exit(EXIT_FAILURE); \
 	} while(0)
 
+	
+#define LPUSH_PROJECT_NAME "linkedon-push"
+
+#define LPUSH_PROJECT_VERSION  1.0
+
+
+	
+	
 
 namespace lpush
 {

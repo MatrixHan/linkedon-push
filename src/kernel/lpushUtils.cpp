@@ -40,4 +40,34 @@ long long getCurrentTime()
    return tTime;
 }
 
+std::string getCurrentDirect()
+{
+  char filePath[260];
+  getcwd(filePath,260);
+  std::string rpath(filePath);
+  return rpath;
+}
+
+bool checkProDir()
+{
+   std::string proSuffix=LPUSH_PROJECT_NAME;
+   std::string currentDir = getCurrentDirect();
+   int currentNameSize = currentDir.size();
+   int proNameSize = proSuffix.size();
+   std::size_t index;
+   if((index=currentDir.find(proSuffix))!=std::string::npos)
+   {
+      if(index>0)
+      {
+	if(currentDir.find(proSuffix,index+1)==std::string::npos)
+	if(currentNameSize-proNameSize-index==0)
+	{
+	  return true;
+	}
+      }
+   }
+   return false;
+}
+
+
 }

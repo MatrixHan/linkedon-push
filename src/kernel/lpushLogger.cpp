@@ -1,8 +1,7 @@
 #include <lpushLogger.h>
 #include <lpushUtils.h>
 #include <sys/time.h>
-#include <coroutine.h>
-
+#include <st.h>
 
 namespace lpush 
 {
@@ -80,7 +79,7 @@ private:
 	};
 private:
     DateTime time;
-    //std::map<int, int> cache;
+    std::map<st_thread_t, int> cache;
 public:
     LogContext();
     virtual ~LogContext();
@@ -134,12 +133,13 @@ LogContext::~LogContext()
 
 void LogContext::generate_id()
 {
-	
+    static int id = 1;
+    cache[st_thread_self()] = id++;
 }
 
 int LogContext::get_id()
 {
-    return 0;
+    return cache[st_thread_self()];
 }
 
 const char* LogContext::format_time()
