@@ -3,6 +3,7 @@ project(linkedon-push CXX)
 
 set(CXX_FLAGS -g -Wall)
 set(CMAKE_CXX_COMPILE "g++")
+add_compile_options(-std=c++11)
 string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 #set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/common
