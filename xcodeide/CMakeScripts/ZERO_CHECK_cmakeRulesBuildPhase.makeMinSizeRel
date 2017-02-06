@@ -2,9 +2,9 @@
 # Custom rules for ZERO_CHECK
 .SUFFIXES: 
 all: \
-	/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK
+	/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK
 
 
-/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK: 
+/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK: 
 	echo ""
-	make -f /home/git_c++/linkedon-push/xcodeide/CMakeScripts/ReRunCMake.make
+	make -f /Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeScripts/ReRunCMake.make

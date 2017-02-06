@@ -1,3 +1,4 @@
-dependencies: /home/git_c++/linkedon-push/src/common/lpushCommon.cpp \
-  /home/git_c++/linkedon-push/src/common/lpushCommon.h \
-  /home/git_c++/linkedon-push/objs/st/st.h
+dependencies: \
+  /Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/src/common/lpushCommon.cpp \
+  /Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/src/common/lpushCommon.h \
+  /Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/objs/st/st.h
