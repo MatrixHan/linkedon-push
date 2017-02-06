@@ -3,6 +3,7 @@ project(linkedon-push CXX)
 
 set(CXX_FLAGS -g -Wall)
 set(CMAKE_CXX_COMPILE "g++")
+add_compile_options(-std=c++11)
 string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 #set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/common
@@ -16,7 +17,7 @@ ${PROJECT_SOURCE_DIR}/src/main
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   
     objs/jsoncpp/include  objs/st  objs/hiredis  objs/mongo-c-driver-1.5.3/include 
-    src/common src/kernel  src/core      src/protocol  src/app)
+    src/common src/kernel  src/core    src/protocol  src/app )
 
 set(SOURCE_FILES src/main/main.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_FILES)
