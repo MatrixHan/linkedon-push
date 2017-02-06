@@ -34,3 +34,8 @@ workspace $ProjectDir
 
 ./lpush
 
+
+
+# MAC Build before
+mkdir xcode direct
+cmake -G "Xcode"  current project root direct
