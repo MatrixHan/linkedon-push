@@ -1,4 +1,4 @@
-# Install script for directory: /home/git_c++/linkedon-push
+# Install script for directory: /Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -35,5 +35,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/git_c++/linkedon-push/xcodeide/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,3 +1,3 @@
-/home/git_c++/linkedon-push/xcodeide/CMakeFiles/lpush.dir
-/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD.dir
-/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK.dir
+/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/ZERO_CHECK.dir
+/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD.dir
+/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/lpush.dir

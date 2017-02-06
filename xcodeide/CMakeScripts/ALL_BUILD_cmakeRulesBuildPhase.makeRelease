@@ -2,9 +2,9 @@
 # Custom rules for ALL_BUILD
 .SUFFIXES: 
 all: \
-	/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD
+	/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD
 
 
-/home/git_c++/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD: 
+/Users/vanki/Documents/company/lofficiel/resgit/branch/push/linkedon-push/xcodeide/CMakeFiles/ALL_BUILD: 
 	echo ""
 	echo Build\ all\ projects
