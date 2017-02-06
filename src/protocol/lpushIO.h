@@ -4,7 +4,7 @@
 namespace lpush
 {
   
-  class ILPushBufferReader
+class ILPushBufferReader
 {
 public:
   ILPushBufferReader();

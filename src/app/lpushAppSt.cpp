@@ -6,7 +6,7 @@
 namespace lpush 
 {
   
-  LPushStSocket::LPushStSocket(st_netfd_t client_stfd)
+LPushStSocket::LPushStSocket(st_netfd_t client_stfd)
 {
     stfd = client_stfd;
     send_timeout = recv_timeout = ST_UTIME_NO_TIMEOUT;

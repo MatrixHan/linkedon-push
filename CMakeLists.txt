@@ -17,7 +17,7 @@ ${PROJECT_SOURCE_DIR}/src/main
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   
     objs/jsoncpp/include  objs/st  objs/hiredis  objs/mongo-c-driver-1.5.3/include 
-    src/common src/kernel  src/core      src/protocol  src/app)
+    src/common src/kernel  src/core    src/protocol  src/app )
 
 set(SOURCE_FILES src/main/main.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_FILES)
