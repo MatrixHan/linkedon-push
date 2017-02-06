@@ -21,7 +21,7 @@ class ILPushThreadHandler
 class LPushThread
 {
 private:
-  st_netfd_t tid;
+  st_thread_t tid;
   int _cid;
   bool loop;
   bool can_run;
