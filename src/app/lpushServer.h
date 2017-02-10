@@ -4,5 +4,8 @@
 
 namespace lpush 
 {
-  
+class LPushServer
+{
+    
+};
 }

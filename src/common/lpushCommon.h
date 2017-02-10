@@ -24,7 +24,7 @@
 #include <fstream>
 #include <stdarg.h>
 #include <map>
-
+#include <vector>
 
 #define CONFIG_DEFAULT_FILE_NAME "conf/lpush.conf"
 #define DEFAULT_LOG_FILE_NAME "logs/lpush.log"

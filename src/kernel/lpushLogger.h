@@ -3,7 +3,7 @@
 #include <lpushCommon.h>
 
 
-#define LP_LOG_LEVEL  3
+#define LP_LOG_LEVEL  0
 
 #define LP_LOG     1
 

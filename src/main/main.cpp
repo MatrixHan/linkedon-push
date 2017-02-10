@@ -2,11 +2,12 @@
 #include <lpushUtils.h>
 #include <lpushJson.h>
 #include <lpushLogger.h>
-
+#include <lpushMongoClient.h>
+using namespace std;
 using namespace lpush;
 static int errfd        = STDERR_FILENO;
 static void start_daemon(void);
-
+void run();
 int main(void)
 {
 	
@@ -18,11 +19,9 @@ int main(void)
 	
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
-	
-	
-	LogBS(" Hello world lpush!\n");
+
 	start_daemon();
-	
+	run();
 	CloseLog();
 	return 0;
 }
@@ -48,4 +47,10 @@ static void start_daemon(void)
   umask(022);
   if (chdir("./") < 0)
     err_sys_quit(errfd, "ERROR: can't change directory to %s: chdir", "./");
+}
+
+void run()
+{
+    LogBS(" Hello world lpush!\n");
+
 }

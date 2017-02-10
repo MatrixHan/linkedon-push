@@ -12,12 +12,16 @@ ${PROJECT_SOURCE_DIR}/src/core
 ${PROJECT_SOURCE_DIR}/src/protocol
 ${PROJECT_SOURCE_DIR}/src/app
 ${PROJECT_SOURCE_DIR}/src/main
+${PROJECT_SOURCE_DIR}/src/utest
 )
 
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   
-    objs/jsoncpp/include  objs/st  objs/hiredis  objs/mongo-c-driver-1.5.3/include 
-    src/common src/kernel  src/core    src/protocol  src/app )
+    objs/jsoncpp/include  objs/st  objs/hiredis  
+    objs/mongo-c-driver-1.5.3/include/bson 
+    objs/mongo-c-driver-1.5.3/include/yajl   
+    objs/mongo-c-driver-1.5.3/include  
+    src/common src/kernel  src/core   src/protocol  src/app  src/utest )
 
 set(SOURCE_FILES src/main/main.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_FILES)
@@ -33,9 +37,11 @@ TARGET_LINK_LIBRARIES(lpush dl )
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libbson.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libyajl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
-TARGET_LINK_LIBRARIES(lpush -ldl )
+TARGET_LINK_LIBRARIES(lpush -ldl -lpthread -lrt)
 
