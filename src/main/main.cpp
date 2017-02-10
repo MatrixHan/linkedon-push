@@ -2,7 +2,7 @@
 #include <lpushUtils.h>
 #include <lpushJson.h>
 #include <lpushLogger.h>
-#include <lpushMongoClient.h>
+#include <lpushProtocolStack.h>
 using namespace std;
 using namespace lpush;
 static int errfd        = STDERR_FILENO;
@@ -10,7 +10,6 @@ static void start_daemon(void);
 void run();
 int main(void)
 {
-	
 	if(!checkProDir())
 	{
 	   lp_trace("place move project root direct!\n");
@@ -52,5 +51,5 @@ static void start_daemon(void)
 void run()
 {
     LogBS(" Hello world lpush!\n");
-
+    
 }

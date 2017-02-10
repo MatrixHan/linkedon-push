@@ -12,7 +12,7 @@ namespace lpush
 {
   
 
-class LPushSocket: public virtual ILPushBufferReader,public virtual ILPushBufferWriter
+class LPushSocket: public virtual ILPushProtocolReaderWriter
 {
 private:
 	int64_t 	recv_timeout;
