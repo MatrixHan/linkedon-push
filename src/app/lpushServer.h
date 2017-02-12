@@ -6,6 +6,7 @@ namespace lpush
 {
 class LPushServer
 {
-    
+private:
+  
 };
 }

@@ -65,4 +65,80 @@ private:
   static void* thread_fun(void* arg);
 };
   
+
+/**
+   * 此处参考 
+   * open project simple rtmp server
+ * the reuse thread is a thread stop and start by other thread.
+ *       user can create thread and stop then start again and again,
+ *       generally must provides a start and stop method, @see LPushIngester.
+ *       the step to create a thread stop by other thread:
+ *       1. create LPushReusableThread field.
+ *       2. must manually stop the thread when started it.
+ *       for example:
+ *           class LPushIngester : public ILPushReusableThreadHandler {
+ *               public: LPushIngester() { pthread = new LPushReusableThread("ingest", this, SRS_AUTO_INGESTER_SLEEP_US); }
+ *               public: virtual int start() { return pthread->start(); }
+ *               public: virtual void stop() { pthread->stop(); }
+ *               public: virtual int cycle() {
+ *                   // check status, start ffmpeg when stopped.
+ *               }
+ *           };
+ */
+class ILPushReusableThreadHandler
+{
+public:
+    ILPushReusableThreadHandler();
+    virtual ~ILPushReusableThreadHandler();
+public:
+    /**
+     * the cycle method for the one cycle thread.
+     * @remark when the cycle has its inner loop, it must check whether
+     * the thread is interrupted.
+     */
+    virtual int cycle() = 0;
+public:
+    /**
+     * other callback for handler.
+     * @remark all callback is optional, handler can ignore it.
+     */
+    virtual void on_thread_start();
+    virtual int on_before_cycle();
+    virtual int on_end_cycle();
+    virtual void on_thread_stop();
+};
+class LPushReusableThread : public ILPushThreadHandler
+{
+private:
+    LPushThread* pthread;
+    ILPushReusableThreadHandler* handler;
+public:
+    LPushReusableThread(const char* n, ILPushReusableThreadHandler* h, int64_t interval_us = 0);
+    virtual ~LPushReusableThread();
+public:
+    /**
+     * for the reusable thread, start and stop by user.
+     */
+    virtual int start();
+    /**
+     * stop the thread, wait for the thread to terminate.
+     * @remark user can stop multiple times, ignore if already stopped.
+     */
+    virtual void stop();
+public:
+    /**
+     * get the context id. @see: ILPushThreadContext.get_id().
+     * used for parent thread to get the id.
+     * @remark when start thread, parent thread will block and wait for this id ready.
+     */
+    virtual int cid();
+// interface internal::ILPushThreadHandler
+public:
+    virtual int cycle();
+    virtual void on_thread_start();
+    virtual int on_before_cycle();
+    virtual int on_end_cycle();
+    virtual void on_thread_stop();
+};
+
 }

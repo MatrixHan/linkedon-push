@@ -230,4 +230,86 @@ void* LPushThread::thread_fun(void* arg)
     return NULL;
 }
   
+  
+  
+//**********
+ILPushReusableThreadHandler::ILPushReusableThreadHandler()
+{
+}
+
+ILPushReusableThreadHandler::~ILPushReusableThreadHandler()
+{
+}
+
+void ILPushReusableThreadHandler::on_thread_start()
+{
+}
+
+int ILPushReusableThreadHandler::on_before_cycle()
+{
+    return ERROR_SUCCESS;
+}
+
+int ILPushReusableThreadHandler::on_end_cycle()
+{
+    return ERROR_SUCCESS;
+}
+
+void ILPushReusableThreadHandler::on_thread_stop()
+{
+}
+
+LPushReusableThread::LPushReusableThread(const char* n, ILPushReusableThreadHandler* h, int64_t interval_us)
+{
+    handler = h;
+    pthread = new LPushThread(n, this, interval_us, true);
+}
+
+LPushReusableThread::~LPushReusableThread()
+{
+    pthread->stop();
+    SafeDelete(pthread);
+}
+
+int LPushReusableThread::start()
+{
+    return pthread->start();
+}
+
+void LPushReusableThread::stop()
+{
+    pthread->stop();
+}
+
+int LPushReusableThread::cid()
+{
+    return pthread->cid();
+}
+
+int LPushReusableThread::cycle()
+{
+    return handler->cycle();
+}
+
+void LPushReusableThread::on_thread_start()
+{
+    handler->on_thread_start();
+}
+
+int LPushReusableThread::on_before_cycle()
+{
+    return handler->on_before_cycle();
+}
+
+int LPushReusableThread::on_end_cycle()
+{
+    return handler->on_end_cycle();
+}
+
+void LPushReusableThread::on_thread_stop()
+{
+    handler->on_thread_stop();
+}
+  
+  
 }

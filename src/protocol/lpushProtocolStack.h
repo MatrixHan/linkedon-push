@@ -19,6 +19,7 @@ namespace lpush
  * dataType  1byte
  * datalenght 4byte
  * data	      (datalenght{byte})
+ * header totle 14 bytes 
  */  
 class LPushHeader;
 class LPushChunk;
@@ -35,7 +36,9 @@ public:
   LPushProtocol(ILPushProtocolReaderWriter *skt);
   virtual ~LPushProtocol();
 public:
+  virtual int readHeader(ILPushProtocolReaderWriter *skt,LPushHeader& lph);
   
+  virtual int readMessage(ILPushProtocolReaderWriter *skt,LPushChunk& lpc);
 };
   
 typedef struct LPushHeader

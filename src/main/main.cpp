@@ -2,7 +2,6 @@
 #include <lpushUtils.h>
 #include <lpushJson.h>
 #include <lpushLogger.h>
-#include <lpushProtocolStack.h>
 using namespace std;
 using namespace lpush;
 static int errfd        = STDERR_FILENO;
