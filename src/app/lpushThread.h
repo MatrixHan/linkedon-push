@@ -141,4 +141,85 @@ public:
     virtual void on_thread_stop();
 };
 
+
+/**
+ * the endless thread is a loop thread never quit.
+ *      user can create thread always running util server terminate.
+ *      the step to create a thread never stop:
+ *      1. create LPushEndlessThread field.
+ *      for example:
+ *          class LPushStreamCache : public ILPushEndlessThreadHandler {
+ *               public: LPushStreamCache() { pthread = new LPushEndlessThread("http-stream", this); }
+ *               public: virtual int cycle() {
+ *                   // do some work never end.
+ *               }
+ *          }
+ * @remark user must use block method in cycle method, for example, sleep or socket io.
+ */
+class ILPushEndlessThreadHandler
+{
+public:
+    ILPushEndlessThreadHandler();
+    virtual ~ILPushEndlessThreadHandler();
+public:
+    /**
+     * the cycle method for the common thread.
+     * @remark user must use block method in cycle method, for example, sleep or socket io.
+     */
+    virtual int cycle() = 0;
+public:
+    /**
+     * other callback for handler.
+     * @remark all callback is optional, handler can ignore it.
+     */
+    virtual void on_thread_start();
+    virtual int on_before_cycle();
+    virtual int on_end_cycle();
+    virtual void on_thread_stop();
+};
+class LPushEndlessThread : public ILPushThreadHandler
+{
+private:
+    LPushThread* pthread;
+    ILPushEndlessThreadHandler* handler;
+public:
+    LPushEndlessThread(const char* n, ILPushEndlessThreadHandler* h);
+    virtual ~LPushEndlessThread();
+public:
+    /**
+     * for the endless thread, never quit.
+     */
+    virtual int start();
+
+public:
+    virtual int cycle();
+    virtual void on_thread_start();
+    virtual int on_before_cycle();
+    virtual int on_end_cycle();
+    virtual void on_thread_stop();
+};
+
+/**
+ * the one cycle thread is a thread do the cycle only one time,
+ * that is, the thread will quit when return from the cycle.
+ *       user can create thread which stop itself,
+ *       generally only need to provides a start method,
+ *       the object will destroy itself then terminate the thread, @see LPushConnection
+ *       1. create LPushThread field
+ *       2. the thread quit when return from cycle.
+ *       for example:
+ *           class LPushConnection : public ILPushOneCycleThreadHandler {
+ *               public: LPushConnection() { pthread = new LPushOneCycleThread("conn", this); }
+ *               public: virtual int start() { return pthread->start(); }
+ *               public: virtual int cycle() {
+ *                   // serve client.
+ *                   // set loop to stop to quit, stop thread itself.
+ *                   pthread->stop_loop();
+ *               }
+ *               public: virtual void on_thread_stop() {
+ *                   // remove the connection in thread itself.
+ *                   server->remove(this);
+ *               }
+ *           };
+ */
 }

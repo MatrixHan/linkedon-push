@@ -25,9 +25,13 @@
 #include <stdarg.h>
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #define CONFIG_DEFAULT_FILE_NAME "conf/lpush.conf"
 #define DEFAULT_LOG_FILE_NAME "logs/lpush.log"
+#define DEFAULT_PID_FILE_NAME "objs/lpush.pid"
+
+#define DEFAULT_PROCESS_MAX	1000
   
 #define Abs(a) ((a) > 0 ? (a) : -(a))
 

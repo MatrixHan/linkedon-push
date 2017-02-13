@@ -311,5 +311,79 @@ void LPushReusableThread::on_thread_stop()
     handler->on_thread_stop();
 }
   
+ILPushEndlessThreadHandler::ILPushEndlessThreadHandler()
+{
+
+}
+
+ILPushEndlessThreadHandler::~ILPushEndlessThreadHandler()
+{
+
+}
+
+int ILPushEndlessThreadHandler::on_before_cycle()
+{
+    return ERROR_SUCCESS;
+}
+
+int ILPushEndlessThreadHandler::on_end_cycle()
+{
+    return ERROR_SUCCESS;
+}
+
+void ILPushEndlessThreadHandler::on_thread_start()
+{
+
+}
+
+void ILPushEndlessThreadHandler::on_thread_stop()
+{
+
+}
+
+  
+  
+LPushEndlessThread::LPushEndlessThread(const char* n, ILPushEndlessThreadHandler* h)
+{
+      handler = h;
+      pthread = new LPushThread(n,this,0,false);
+}
+
+LPushEndlessThread::~LPushEndlessThread()
+{
+     pthread->stop();
+      SafeDelete(pthread);
+}
+
+int LPushEndlessThread::on_before_cycle()
+{
+  return handler->on_before_cycle();
+}
+
+int LPushEndlessThread::cycle()
+{
+  return handler->cycle();
+}
+
+
+int LPushEndlessThread::on_end_cycle()
+{
+return handler->on_end_cycle();
+}
+void LPushEndlessThread::on_thread_start()
+{
+      handler->on_thread_start();
+}
+
+void LPushEndlessThread::on_thread_stop()
+{
+      handler->on_thread_stop();
+}
+
+int LPushEndlessThread::start()
+{
+      pthread->start();
+}
+
   
 }

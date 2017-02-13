@@ -2,13 +2,20 @@
 #include <lpushUtils.h>
 #include <lpushJson.h>
 #include <lpushLogger.h>
+#include <lpushServer.h>
+#include <lpushSystemErrorDef.h>
 using namespace std;
 using namespace lpush;
+
+LPushServer *server = new LPushServer();
+
 static int errfd        = STDERR_FILENO;
 static void start_daemon(void);
-void run();
+int run();
 int main(void)
 {
+  
+	int ret = ERROR_SUCCESS;
 	if(!checkProDir())
 	{
 	   lp_trace("place move project root direct!\n");
@@ -17,7 +24,10 @@ int main(void)
 	
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
-
+	if((ret = server->initializer()) != ERROR_SUCCESS)
+	{
+	  return ret;
+	}
 	start_daemon();
 	run();
 	CloseLog();
@@ -47,8 +57,35 @@ static void start_daemon(void)
     err_sys_quit(errfd, "ERROR: can't change directory to %s: chdir", "./");
 }
 
-void run()
+int run()
 {
-    LogBS(" Hello world lpush!\n");
+    int ret = ERROR_SUCCESS;
+    LogBS("lpush master run !\n");
+    LogBS("lpush server initializer_st!\n");
+    if((ret = server->initializer_st()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
+    LogBS("lpush server signal_init !\n");
+    if((ret = server->signal_init()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
+     LogBS("lpush server signal_register !\n");
+    if((ret = server->signal_register()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
+    LogBS("lpush server listen !\n");
+    if((ret = server->listen()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
+    LogBS("lpush server cycle !\n");
+    if((ret = server->cycle()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
     
+    return ret;
 }

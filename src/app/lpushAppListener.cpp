@@ -146,7 +146,7 @@ int LPushUdpListener::cycle()
     return ret;
 }
 
-LPushTcpListener::LPushTcpListener(ILPushTcpHandler* h, string i, int p)
+LPushTcpListener::LPushTcpListener(ILPushTcpHandler* h, std::string i, int p)
 {
     handler = h;
     ip = i;
