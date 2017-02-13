@@ -1,13 +1,14 @@
 #pragma once
 
-#include <lpushCommon.h>
+
 #include <lpushThread.h>
 #include <lpushAppSt.h>
 
 
 namespace lpush 
 {
-struct sockaddr_in;
+  
+
 
 /**
 * the udp packet handler.

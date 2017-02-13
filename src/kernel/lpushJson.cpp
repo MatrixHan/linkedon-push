@@ -42,7 +42,7 @@ LPushConfig* LPushConfig::parse(std::string confName)
 	cf->port   = root["port"].asInt();
 	cf->movieDir = root["movieDir"].asString();
 	cf->vhost   = root["vhost"].asString();
-     
+	cf->ip     = root["ip"].asString();
       
       return cf;
 }

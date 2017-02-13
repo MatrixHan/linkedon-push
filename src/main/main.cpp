@@ -66,6 +66,11 @@ int run()
     {
        return ret;
     }
+    LogBS("lpush server acquire_pid_file!\n");
+    if((ret = server->acquire_pid_file()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
     LogBS("lpush server signal_init !\n");
     if((ret = server->signal_init()) != ERROR_SUCCESS)
     {

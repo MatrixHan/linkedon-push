@@ -87,6 +87,8 @@ public:
   
   virtual int cycle();
   
+  virtual int do_cycle();
+  
   virtual void dispose();
   
   virtual void destroy();

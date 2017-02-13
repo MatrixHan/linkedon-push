@@ -51,6 +51,13 @@ typedef struct LPushHeader
   unsigned char dataType;
   
   int		datalenght;
+  LPushHeader()
+  {
+    lpush_flag = NULL;
+    timestamp = 0L;
+    dataType  = -1;
+    datalenght = 0;
+  }
   LPushHeader(char * flag,long long time,unsigned char type,int len):lpush_flag(flag),timestamp(time),
 	      dataType(type),datalenght(len)
 	      {}

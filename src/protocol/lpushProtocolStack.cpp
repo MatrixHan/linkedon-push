@@ -47,7 +47,7 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
 	  return ret;
       }
       LPushHeader lph;
-      if((ret = readHeader(skt,&lph)) != ERROR_SUCCESS)
+      if((ret = readHeader(skt,lph)) != ERROR_SUCCESS)
       {
 	  lp_error("readMessage header is error");
 	  return ret;
@@ -60,7 +60,7 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
       }
       
       char *buf = fast_buffer->read_slice(lph.datalenght);
-      LPushChunk pc(&lph,(unsigned char*)buf);
+      LPushChunk pc(lph,(unsigned char*)buf);
       lpc = pc;
       return ret;
 }

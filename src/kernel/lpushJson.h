@@ -13,6 +13,7 @@ int initConfig();
 struct LPushConfig
 {
   int 			gopsize;
+  std::string 		ip;
   int 			port;
   std::string 		movieDir;
   std::string 		vhost;

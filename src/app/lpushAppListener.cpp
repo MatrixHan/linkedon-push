@@ -2,6 +2,15 @@
 #include <lpushSystemErrorDef.h>
 #include <lpushLogger.h>
 
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 namespace lpush 
 {
   // set the max packet size.
@@ -34,7 +43,7 @@ ILPushTcpHandler::~ILPushTcpHandler()
 {
 }
 
-LPushUdpListener::LPushUdpListener(ILPushUdpHandler* h, string i, int p)
+LPushUdpListener::LPushUdpListener(ILPushUdpHandler* h, std::string i, int p)
 {
     handler = h;
     ip = i;

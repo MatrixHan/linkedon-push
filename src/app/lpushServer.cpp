@@ -265,7 +265,7 @@ int LPushServer::listen()
 int LPushServer::listen_lpush()
 {
     int ret = ERROR_SUCCESS;
-    std::string ip = conf->vhost;
+    std::string ip = conf->ip;
     int port = conf->port;
     LPushStreamListener *lpsl = new LPushStreamListener(this);
     
@@ -337,7 +337,58 @@ int LPushServer::accept_client(st_netfd_t client_stfd)
 
 int LPushServer::cycle()
 {
+    int ret = ERROR_SUCCESS;
 
+    ret = do_cycle();
+
+
+    lp_warn("main cycle terminated, system quit normally.");
+    dispose();
+    lp_trace("srs terminated");
+    exit(0);
+
+    return ret;
+}
+
+int LPushServer::do_cycle()
+{
+    int ret = ERROR_SUCCESS;
+    
+
+    
+    // the deamon thread, update the time cache
+    while (true) {
+
+        // the interval in config.
+        int heartbeat_max_resolution = (int)(9.9 / 1000);
+        
+        // dynamic fetch the max.
+        int temp_max = 1;
+        temp_max = Max(temp_max, heartbeat_max_resolution);
+        
+        for (int i = 0; i < temp_max; i++) {
+            st_usleep(1000 * 1000);
+            
+            // gracefully quit for SIGINT or SIGTERM.
+            if (signal_gracefully_quit) {
+                lp_trace("cleanup for gracefully terminate.");
+                return ret;
+            }
+        
+        
+            
+            // update the cache time
+            if ((i % 1) == 0) {
+                lp_info("update current time cache.");
+            }
+            
+            
+            lp_info("server main thread loop");
+        }
+    }
+
+    return ret;
+    
 }
 
 
