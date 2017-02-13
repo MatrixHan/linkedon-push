@@ -82,7 +82,7 @@ int LPushStSocket::read(void* buf, size_t size, ssize_t* nread)
     return ret;
 }
 
-int LPushStSocket::read_fully(void* buf, size_t size, ssize_t* nread)
+int LPushStSocket::read_fully( void* buf, size_t size, ssize_t* nread)
 {
     int ret = ERROR_SUCCESS;
     

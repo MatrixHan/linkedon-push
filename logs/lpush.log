@@ -12,3 +12,423 @@
 
 2017-02-13 16:14:08:lpush server cycle !
 
+[2017-02-13 20:53:53.504][debug][15113][0] lpush master run !
+
+[2017-02-13 20:54:00.925][debug][15113][0] lpush server initializer_st!
+
+[2017-02-13 20:54:00.925][trace][15113][0] st_set_eventsys to epoll
+[2017-02-13 20:54:00.925][trace][15113][0] st_init success, use epoll
+[2017-02-13 20:54:00.925][trace][15113][1] server main cid=1
+[2017-02-13 20:54:00.925][debug][15113][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:54:00.925][trace][15113][1] write pid=15113 to objs/lpush.pid success!
+[2017-02-13 20:54:00.925][debug][15113][1] lpush server signal_init !
+
+[2017-02-13 20:54:00.925][debug][15113][1] lpush server signal_register !
+
+[2017-02-13 20:54:00.925][trace][15113][1] signal installed
+[2017-02-13 20:54:00.925][debug][15113][2] thread signal cycle start
+[2017-02-13 20:54:00.935][debug][15113][1] lpush server listen !
+
+[2017-02-13 20:54:00.935][verb][15113][1] create linux socket success. port=9732, fd=8
+[2017-02-13 20:54:00.935][verb][15113][1] setsockopt reuse-addr success. port=9732, fd=8
+[2017-02-13 20:54:00.935][verb][15113][1] bind socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:54:00.935][verb][15113][1] listen socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:54:00.935][verb][15113][1] st open socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:54:00.935][debug][15113][2] thread ‡÷o on before cycle success
+[2017-02-13 20:54:00.935][debug][15113][3] thread tcp cycle start
+[2017-02-13 20:54:00.946][verb][15113][1] create st listen thread success, ep=0.0.0.0:9732
+[2017-02-13 20:54:00.946][debug][15113][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:54:00.946][trace][15113][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:54:00.946][debug][15113][1] lpush server cycle !
+
+[2017-02-13 20:54:06.747][debug][15119][0] lpush master run !
+
+[2017-02-13 20:54:06.747][debug][15119][0] lpush server initializer_st!
+
+[2017-02-13 20:54:06.747][trace][15119][0] st_set_eventsys to epoll
+[2017-02-13 20:54:06.747][trace][15119][0] st_init success, use epoll
+[2017-02-13 20:54:06.747][trace][15119][1] server main cid=1
+[2017-02-13 20:54:06.748][debug][15119][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:54:06.748][trace][15119][1] write pid=15119 to objs/lpush.pid success!
+[2017-02-13 20:54:06.748][debug][15119][1] lpush server signal_init !
+
+[2017-02-13 20:54:06.748][debug][15119][1] lpush server signal_register !
+
+[2017-02-13 20:54:06.748][trace][15119][1] signal installed
+[2017-02-13 20:54:06.748][debug][15119][2] thread signal cycle start
+[2017-02-13 20:54:06.758][debug][15119][1] lpush server listen !
+
+[2017-02-13 20:54:06.758][verb][15119][1] create linux socket success. port=9732, fd=8
+[2017-02-13 20:54:06.758][verb][15119][1] setsockopt reuse-addr success. port=9732, fd=8
+[2017-02-13 20:54:06.758][verb][15119][1] bind socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:54:06.758][verb][15119][1] listen socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:54:06.758][verb][15119][1] st open socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:54:06.758][debug][15119][2] thread ‡÷o on before cycle success
+[2017-02-13 20:54:06.758][debug][15119][3] thread tcp cycle start
+[2017-02-13 20:54:06.768][verb][15119][1] create st listen thread success, ep=0.0.0.0:9732
+[2017-02-13 20:54:06.768][debug][15119][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:54:06.768][trace][15119][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:54:06.768][debug][15119][1] lpush server cycle !
+
+[2017-02-13 20:54:16.325][debug][15125][0] lpush master run !
+
+[2017-02-13 20:55:09.845][debug][15125][0] lpush server initializer_st!
+
+[2017-02-13 20:55:15.332][trace][15125][0] st_set_eventsys to epoll
+[2017-02-13 20:55:20.248][trace][15125][0] st_init success, use epoll
+[2017-02-13 20:55:25.625][trace][15125][1] server main cid=1
+[2017-02-13 20:55:29.380][debug][15125][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:55:31.625][trace][15125][1] write pid=15125 to objs/lpush.pid success!
+[2017-02-13 20:55:33.332][debug][15125][1] lpush server signal_init !
+
+[2017-02-13 20:55:36.009][debug][15125][1] lpush server signal_register !
+
+[2017-02-13 20:55:36.284][trace][15125][1] signal installed
+[2017-02-13 20:55:36.578][debug][15125][2] thread signal cycle start
+[2017-02-13 20:55:37.139][debug][15125][1] lpush server listen !
+
+[2017-02-13 20:55:37.401][verb][15125][1] create linux socket success. port=9732, fd=8
+[2017-02-13 20:55:37.907][verb][15125][1] setsockopt reuse-addr success. port=9732, fd=8
+[2017-02-13 20:55:38.282][verb][15125][1] bind socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:55:38.563][verb][15125][1] listen socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:55:38.851][verb][15125][1] st open socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:55:39.146][debug][15125][2] thread ‡÷o on before cycle success
+[2017-02-13 20:55:39.436][debug][15125][3] thread tcp cycle start
+[2017-02-13 20:55:39.846][verb][15125][1] create st listen thread success, ep=0.0.0.0:9732
+[2017-02-13 20:55:40.244][debug][15125][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:55:40.521][trace][15125][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:55:41.403][debug][15125][1] lpush server cycle !
+
+[2017-02-13 20:55:52.106][debug][15139][0] lpush master run !
+
+[2017-02-13 20:55:52.106][debug][15139][0] lpush server initializer_st!
+
+[2017-02-13 20:55:52.106][trace][15139][0] st_set_eventsys to epoll
+[2017-02-13 20:55:52.106][trace][15139][0] st_init success, use epoll
+[2017-02-13 20:55:52.106][trace][15139][1] server main cid=1
+[2017-02-13 20:55:52.106][debug][15139][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:55:52.106][trace][15139][1] write pid=15139 to objs/lpush.pid success!
+[2017-02-13 20:55:52.106][debug][15139][1] lpush server signal_init !
+
+[2017-02-13 20:55:52.106][debug][15139][1] lpush server signal_register !
+
+[2017-02-13 20:55:52.106][trace][15139][1] signal installed
+[2017-02-13 20:55:52.106][debug][15139][2] thread signal cycle start
+[2017-02-13 20:55:52.116][debug][15139][1] lpush server listen !
+
+[2017-02-13 20:55:52.116][verb][15139][1] create linux socket success. port=9732, fd=8
+[2017-02-13 20:55:52.116][verb][15139][1] setsockopt reuse-addr success. port=9732, fd=8
+[2017-02-13 20:55:52.116][verb][15139][1] bind socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:55:52.116][verb][15139][1] listen socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:55:52.116][verb][15139][1] st open socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:55:52.116][debug][15139][2] thread ‡÷o on before cycle success
+[2017-02-13 20:55:52.116][debug][15139][3] thread tcp cycle start
+[2017-02-13 20:55:52.126][verb][15139][1] create st listen thread success, ep=0.0.0.0:9732
+[2017-02-13 20:55:52.126][debug][15139][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:55:52.126][trace][15139][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:55:52.126][debug][15139][1] lpush server cycle !
+
+[2017-02-13 20:56:22.612][debug][15154][0] lpush master run !
+
+[2017-02-13 20:56:22.612][debug][15154][0] lpush server initializer_st!
+
+[2017-02-13 20:56:22.612][trace][15154][0] st_set_eventsys to epoll
+[2017-02-13 20:56:22.612][trace][15154][0] st_init success, use epoll
+[2017-02-13 20:56:22.612][trace][15154][1] server main cid=1
+[2017-02-13 20:56:22.612][debug][15154][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:56:22.612][trace][15154][1] write pid=15154 to objs/lpush.pid success!
+[2017-02-13 20:56:22.612][debug][15154][1] lpush server signal_init !
+
+[2017-02-13 20:56:22.612][debug][15154][1] lpush server signal_register !
+
+[2017-02-13 20:56:22.612][trace][15154][1] signal installed
+[2017-02-13 20:56:22.612][debug][15154][2] thread signal cycle start
+[2017-02-13 20:56:22.622][debug][15154][1] lpush server listen !
+
+[2017-02-13 20:56:22.622][verb][15154][1] create linux socket success. port=9732, fd=8
+[2017-02-13 20:56:22.622][verb][15154][1] setsockopt reuse-addr success. port=9732, fd=8
+[2017-02-13 20:56:22.623][verb][15154][1] bind socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:56:22.623][verb][15154][1] listen socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:56:22.623][verb][15154][1] st open socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:56:22.623][debug][15154][2] thread ‡÷o on before cycle success
+[2017-02-13 20:56:22.623][debug][15154][3] thread tcp cycle start
+[2017-02-13 20:56:22.633][verb][15154][1] create st listen thread success, ep=0.0.0.0:9732
+[2017-02-13 20:56:22.633][debug][15154][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:56:22.633][trace][15154][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:56:22.633][debug][15154][1] lpush server cycle !
+
+[2017-02-13 20:57:55.691][debug][15170][0] lpush master run !
+
+[2017-02-13 20:57:55.691][debug][15170][0] lpush server initializer_st!
+
+[2017-02-13 20:57:55.691][trace][15170][0] st_set_eventsys to epoll
+[2017-02-13 20:57:55.691][trace][15170][0] st_init success, use epoll
+[2017-02-13 20:57:55.691][trace][15170][1] server main cid=1
+[2017-02-13 20:57:55.691][debug][15170][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:57:55.691][trace][15170][1] write pid=15170 to objs/lpush.pid success!
+[2017-02-13 20:57:55.691][debug][15170][1] lpush server signal_init !
+
+[2017-02-13 20:57:55.691][debug][15170][1] lpush server signal_register !
+
+[2017-02-13 20:57:55.691][trace][15170][1] signal installed
+[2017-02-13 20:57:55.691][debug][15170][2] thread signal cycle start
+[2017-02-13 20:57:55.701][debug][15170][1] lpush server listen !
+
+[2017-02-13 20:57:55.701][verb][15170][1] create linux socket success. port=9732, fd=8
+[2017-02-13 20:57:55.701][verb][15170][1] setsockopt reuse-addr success. port=9732, fd=8
+[2017-02-13 20:57:55.701][verb][15170][1] bind socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:57:55.701][verb][15170][1] listen socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:57:55.701][verb][15170][1] st open socket success. ep=0.0.0.0:9732, fd=8
+[2017-02-13 20:57:55.701][debug][15170][2] thread ‡÷o on before cycle success
+[2017-02-13 20:57:55.701][debug][15170][3] thread tcp cycle start
+[2017-02-13 20:57:55.712][verb][15170][1] create st listen thread success, ep=0.0.0.0:9732
+[2017-02-13 20:57:55.712][debug][15170][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:57:55.712][trace][15170][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:57:55.712][debug][15170][1] lpush server cycle !
+
+[2017-02-13 20:59:09.203][debug][15494][0] lpush master run !
+
+[2017-02-13 20:59:09.204][debug][15494][0] lpush server initializer_st!
+
+[2017-02-13 20:59:09.204][trace][15494][0] st_set_eventsys to epoll
+[2017-02-13 20:59:09.204][trace][15494][0] st_init success, use epoll
+[2017-02-13 20:59:09.204][trace][15494][1] server main cid=1
+[2017-02-13 20:59:09.204][debug][15494][1] lpush server acquire_pid_file!
+
+[2017-02-13 20:59:09.204][trace][15494][1] write pid=15494 to objs/lpush.pid success!
+[2017-02-13 20:59:09.204][debug][15494][1] lpush server signal_init !
+
+[2017-02-13 20:59:09.204][debug][15494][1] lpush server signal_register !
+
+[2017-02-13 20:59:09.204][trace][15494][1] signal installed
+[2017-02-13 20:59:09.204][debug][15494][2] thread signal cycle start
+[2017-02-13 20:59:09.214][debug][15494][1] lpush server listen !
+
+[2017-02-13 20:59:09.214][debug][15494][2] thread ‡÷o on before cycle success
+[2017-02-13 20:59:09.214][debug][15494][3] thread tcp cycle start
+[2017-02-13 20:59:09.224][debug][15494][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 20:59:09.224][trace][15494][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 20:59:09.224][debug][15494][1] lpush server cycle !
+
+[2017-02-13 21:02:43.388][debug][15513][0] lpush master run !
+
+[2017-02-13 21:02:56.114][debug][15513][0] lpush server initializer_st!
+
+[2017-02-13 21:02:56.637][trace][15513][0] st_set_eventsys to epoll
+[2017-02-13 21:02:57.381][trace][15513][0] st_init success, use epoll
+[2017-02-13 21:02:58.137][trace][15513][1] server main cid=1
+[2017-02-13 21:02:58.907][debug][15513][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:02:59.725][trace][15513][1] write pid=15513 to objs/lpush.pid success!
+[2017-02-13 21:03:00.325][debug][15513][1] lpush server signal_init !
+
+[2017-02-13 21:03:00.915][debug][15513][1] lpush server signal_register !
+
+[2017-02-13 21:03:01.604][trace][15513][1] signal installed
+[2017-02-13 21:03:02.154][debug][15513][2] thread signal cycle start
+[2017-02-13 21:03:02.654][debug][15513][1] lpush server listen !
+
+[2017-02-13 21:03:03.023][debug][15513][2] thread ‡÷o on before cycle success
+[2017-02-13 21:03:03.314][debug][15513][3] thread tcp cycle start
+[2017-02-13 21:03:03.563][debug][15513][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:03:03.774][trace][15513][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:03:03.973][debug][15513][1] lpush server cycle !
+
+[2017-02-13 21:03:36.635][debug][15525][0] lpush master run !
+
+[2017-02-13 21:03:36.635][debug][15525][0] lpush server initializer_st!
+
+[2017-02-13 21:03:36.635][trace][15525][0] st_set_eventsys to epoll
+[2017-02-13 21:03:36.635][trace][15525][0] st_init success, use epoll
+[2017-02-13 21:03:36.635][trace][15525][1] server main cid=1
+[2017-02-13 21:03:36.635][debug][15525][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:03:36.635][trace][15525][1] write pid=15525 to objs/lpush.pid success!
+[2017-02-13 21:03:36.635][debug][15525][1] lpush server signal_init !
+
+[2017-02-13 21:03:36.635][debug][15525][1] lpush server signal_register !
+
+[2017-02-13 21:03:36.635][trace][15525][1] signal installed
+[2017-02-13 21:03:36.635][debug][15525][2] thread signal cycle start
+[2017-02-13 21:03:36.646][debug][15525][1] lpush server listen !
+
+[2017-02-13 21:03:36.646][debug][15525][2] thread ‡÷o on before cycle success
+[2017-02-13 21:03:36.646][debug][15525][3] thread tcp cycle start
+[2017-02-13 21:03:36.656][debug][15525][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:03:36.656][trace][15525][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:03:45.749][debug][15525][1] lpush server cycle !
+
+[2017-02-13 21:04:16.425][debug][15533][0] lpush master run !
+
+[2017-02-13 21:04:16.425][debug][15533][0] lpush server initializer_st!
+
+[2017-02-13 21:04:16.425][trace][15533][0] st_set_eventsys to epoll
+[2017-02-13 21:04:16.425][trace][15533][0] st_init success, use epoll
+[2017-02-13 21:04:16.425][trace][15533][1] server main cid=1
+[2017-02-13 21:04:16.425][debug][15533][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:04:16.425][trace][15533][1] write pid=15533 to objs/lpush.pid success!
+[2017-02-13 21:04:16.425][debug][15533][1] lpush server signal_init !
+
+[2017-02-13 21:04:16.425][debug][15533][1] lpush server signal_register !
+
+[2017-02-13 21:04:16.425][trace][15533][1] signal installed
+[2017-02-13 21:04:16.425][debug][15533][2] thread signal cycle start
+[2017-02-13 21:04:16.435][debug][15533][1] lpush server listen !
+
+[2017-02-13 21:04:16.435][debug][15533][2] thread ‡÷o on before cycle success
+[2017-02-13 21:04:16.435][debug][15533][3] thread tcp cycle start
+[2017-02-13 21:04:16.445][debug][15533][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:04:16.445][trace][15533][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:04:16.445][debug][15533][1] lpush server cycle !
+
+[2017-02-13 21:04:56.950][debug][15541][0] lpush master run !
+
+[2017-02-13 21:04:56.950][debug][15541][0] lpush server initializer_st!
+
+[2017-02-13 21:04:56.950][trace][15541][0] st_set_eventsys to epoll
+[2017-02-13 21:04:56.950][trace][15541][0] st_init success, use epoll
+[2017-02-13 21:04:56.950][trace][15541][1] server main cid=1
+[2017-02-13 21:04:56.950][debug][15541][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:04:56.950][trace][15541][1] write pid=15541 to objs/lpush.pid success!
+[2017-02-13 21:04:56.950][debug][15541][1] lpush server signal_init !
+
+[2017-02-13 21:04:56.950][debug][15541][1] lpush server signal_register !
+
+[2017-02-13 21:04:56.950][trace][15541][1] signal installed
+[2017-02-13 21:04:56.950][debug][15541][2] thread signal cycle start
+[2017-02-13 21:04:56.960][debug][15541][1] lpush server listen !
+
+[2017-02-13 21:04:56.960][debug][15541][2] thread ‡÷o on before cycle success
+[2017-02-13 21:04:56.960][debug][15541][3] thread tcp cycle start
+[2017-02-13 21:04:56.970][debug][15541][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:04:56.970][trace][15541][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:04:56.970][debug][15541][1] lpush server cycle !
+
+[2017-02-13 21:07:13.835][debug][15616][0] lpush master run !
+
+[2017-02-13 21:07:13.835][debug][15616][0] lpush server initializer_st!
+
+[2017-02-13 21:07:13.835][trace][15616][0] st_set_eventsys to epoll
+[2017-02-13 21:07:13.835][trace][15616][0] st_init success, use epoll
+[2017-02-13 21:07:13.835][trace][15616][1] server main cid=1
+[2017-02-13 21:07:13.835][debug][15616][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:07:13.835][trace][15616][1] write pid=15616 to objs/lpush.pid success!
+[2017-02-13 21:07:13.835][debug][15616][1] lpush server signal_init !
+
+[2017-02-13 21:07:13.835][debug][15616][1] lpush server signal_register !
+
+[2017-02-13 21:07:13.835][trace][15616][1] signal installed
+[2017-02-13 21:07:13.835][debug][15616][2] thread signal cycle start
+[2017-02-13 21:07:13.845][debug][15616][1] lpush server listen !
+
+[2017-02-13 21:07:13.845][debug][15616][2] thread ‡÷o on before cycle success
+[2017-02-13 21:07:13.845][debug][15616][3] thread tcp cycle start
+[2017-02-13 21:07:13.855][debug][15616][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:07:13.855][trace][15616][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:07:13.855][debug][15616][1] lpush server cycle !
+
+[2017-02-13 21:07:28.335][debug][15808][0] lpush master run !
+
+[2017-02-13 21:07:28.335][debug][15808][0] lpush server initializer_st!
+
+[2017-02-13 21:07:28.335][trace][15808][0] st_set_eventsys to epoll
+[2017-02-13 21:07:28.335][trace][15808][0] st_init success, use epoll
+[2017-02-13 21:07:28.335][trace][15808][1] server main cid=1
+[2017-02-13 21:07:28.335][debug][15808][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:07:28.335][trace][15808][1] write pid=15808 to objs/lpush.pid success!
+[2017-02-13 21:07:28.335][debug][15808][1] lpush server signal_init !
+
+[2017-02-13 21:07:28.335][debug][15808][1] lpush server signal_register !
+
+[2017-02-13 21:07:28.335][trace][15808][1] signal installed
+[2017-02-13 21:07:28.335][debug][15808][2] thread signal cycle start
+[2017-02-13 21:07:28.345][debug][15808][1] lpush server listen !
+
+[2017-02-13 21:07:28.345][debug][15808][2] thread ‡÷o on before cycle success
+[2017-02-13 21:07:28.345][debug][15808][3] thread tcp cycle start
+[2017-02-13 21:07:28.355][debug][15808][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:07:28.356][trace][15808][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:07:28.356][debug][15808][1] lpush server cycle !
+
+[2017-02-13 21:10:19.267][debug][15837][0] lpush master run !
+
+[2017-02-13 21:10:19.267][debug][15837][0] lpush server initializer_st!
+
+[2017-02-13 21:10:19.267][trace][15837][0] st_set_eventsys to epoll
+[2017-02-13 21:10:19.267][trace][15837][0] st_init success, use epoll
+[2017-02-13 21:10:19.267][trace][15837][1] server main cid=1
+[2017-02-13 21:10:19.267][debug][15837][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:10:19.267][trace][15837][1] write pid=15837 to objs/lpush.pid success!
+[2017-02-13 21:10:19.267][debug][15837][1] lpush server signal_init !
+
+[2017-02-13 21:10:19.267][debug][15837][1] lpush server signal_register !
+
+[2017-02-13 21:10:19.267][trace][15837][1] signal installed
+[2017-02-13 21:10:19.267][debug][15837][2] thread signal cycle start
+[2017-02-13 21:10:19.277][debug][15837][1] lpush server listen !
+
+[2017-02-13 21:10:19.277][debug][15837][2] thread ‡÷o on before cycle success
+[2017-02-13 21:10:19.277][debug][15837][3] thread tcp cycle start
+[2017-02-13 21:10:19.288][debug][15837][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:10:19.288][trace][15837][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:10:19.288][debug][15837][1] lpush server cycle !
+
+[2017-02-13 21:10:35.778][debug][15845][0] lpush master run !
+
+[2017-02-13 21:10:35.778][debug][15845][0] lpush server initializer_st!
+
+[2017-02-13 21:10:35.778][trace][15845][0] st_set_eventsys to epoll
+[2017-02-13 21:10:35.778][trace][15845][0] st_init success, use epoll
+[2017-02-13 21:10:35.778][trace][15845][1] server main cid=1
+[2017-02-13 21:10:35.778][debug][15845][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:10:35.779][trace][15845][1] write pid=15845 to objs/lpush.pid success!
+[2017-02-13 21:10:35.779][debug][15845][1] lpush server signal_init !
+
+[2017-02-13 21:10:35.779][debug][15845][1] lpush server signal_register !
+
+[2017-02-13 21:10:35.779][trace][15845][1] signal installed
+[2017-02-13 21:10:35.779][debug][15845][2] thread signal cycle start
+[2017-02-13 21:10:35.789][debug][15845][1] lpush server listen !
+
+[2017-02-13 21:10:35.789][debug][15845][2] thread ‡÷o on before cycle success
+[2017-02-13 21:10:35.789][debug][15845][3] thread tcp cycle start
+[2017-02-13 21:10:35.799][debug][15845][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:10:35.799][trace][15845][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:10:35.799][debug][15845][1] lpush server cycle !
+
+[2017-02-13 21:11:41.770][debug][15872][0] lpush master run !
+
+[2017-02-13 21:11:41.770][debug][15872][0] lpush server initializer_st!
+
+[2017-02-13 21:11:43.036][trace][15872][0] st_set_eventsys to epoll
+[2017-02-13 21:11:54.547][trace][15872][0] st_init success, use epoll
+[2017-02-13 21:12:29.760][trace][15872][1] server main cid=1
+[2017-02-13 21:12:29.760][debug][15872][1] lpush server acquire_pid_file!
+
+[2017-02-13 21:12:29.760][trace][15872][1] write pid=15872 to objs/lpush.pid success!
+[2017-02-13 21:12:29.760][debug][15872][1] lpush server signal_init !
+
+[2017-02-13 21:12:29.760][debug][15872][1] lpush server signal_register !
+
+[2017-02-13 21:12:29.760][trace][15872][1] signal installed
+[2017-02-13 21:12:29.760][debug][15872][2] thread signal cycle start
+[2017-02-13 21:12:29.771][debug][15872][1] lpush server listen !
+
+[2017-02-13 21:12:29.771][debug][15872][2] thread ‡÷o on before cycle success
+[2017-02-13 21:12:29.771][debug][15872][3] thread tcp cycle start
+[2017-02-13 21:12:29.781][debug][15872][1] listen thread current_cid=1, listen at port=9732, type=tcp, fd=8 started success, ep=0.0.0.0:9732
+[2017-02-13 21:12:29.781][trace][15872][1]  listen at tcp://0.0.0.0:9732, fd=8
+[2017-02-13 21:12:29.781][debug][15872][1] lpush server cycle !
+

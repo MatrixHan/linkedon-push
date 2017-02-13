@@ -9,6 +9,7 @@ using namespace lpush;
 
 LPushServer *server = new LPushServer();
 
+
 static int errfd        = STDERR_FILENO;
 static void start_daemon(void);
 int run();
@@ -28,7 +29,7 @@ int main(void)
 	{
 	  return ret;
 	}
-	start_daemon();
+	//start_daemon();
 	run();
 	CloseLog();
 	return 0;
@@ -60,33 +61,33 @@ static void start_daemon(void)
 int run()
 {
     int ret = ERROR_SUCCESS;
-    LogBS("lpush master run !\n");
-    LogBS("lpush server initializer_st!\n");
+    lp_info("lpush master run !\n");
+    lp_info("lpush server initializer_st!\n");
     if((ret = server->initializer_st()) != ERROR_SUCCESS)
     {
        return ret;
     }
-    LogBS("lpush server acquire_pid_file!\n");
+    lp_info("lpush server acquire_pid_file!\n");
     if((ret = server->acquire_pid_file()) != ERROR_SUCCESS)
     {
        return ret;
     }
-    LogBS("lpush server signal_init !\n");
+    lp_info("lpush server signal_init !\n");
     if((ret = server->signal_init()) != ERROR_SUCCESS)
     {
        return ret;
     }
-     LogBS("lpush server signal_register !\n");
+     lp_info("lpush server signal_register !\n");
     if((ret = server->signal_register()) != ERROR_SUCCESS)
     {
        return ret;
     }
-    LogBS("lpush server listen !\n");
+    lp_info("lpush server listen !\n");
     if((ret = server->listen()) != ERROR_SUCCESS)
     {
        return ret;
     }
-    LogBS("lpush server cycle !\n");
+    lp_info("lpush server cycle !\n");
     if((ret = server->cycle()) != ERROR_SUCCESS)
     {
        return ret;

@@ -13,7 +13,7 @@ LPushProtocol::LPushProtocol(ILPushProtocolReaderWriter* skt)
 }
 LPushProtocol::~LPushProtocol()
 {
-    
+    SafeDelete(fast_buffer);
 }
 
 

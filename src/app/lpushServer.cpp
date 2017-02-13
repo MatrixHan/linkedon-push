@@ -367,7 +367,7 @@ int LPushServer::do_cycle()
         temp_max = Max(temp_max, heartbeat_max_resolution);
         
         for (int i = 0; i < temp_max; i++) {
-            st_usleep(1000 * 1000);
+            st_usleep(1 * 1000);
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
