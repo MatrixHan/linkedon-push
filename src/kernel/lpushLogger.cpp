@@ -1,55 +1,24 @@
 #include <lpushLogger.h>
 #include <lpushUtils.h>
+#include <lpushSystemErrorDef.h>
 #include <sys/time.h>
 #include <st.h>
 
 namespace lpush 
 {
-    std::ofstream *GLogStream = NULL;
+  LPushFastLog *_lpush_log = NULL;
     
 bool InitLog(const std::string& filename)
 {
-      if (GLogStream == NULL)
-      {
-	GLogStream = new std::ofstream();
-	GLogStream->open(filename.c_str());
-	if(GLogStream->good())
-	{
-	  return true;
-	}
-	return false;
-      }
+       _lpush_log = new LPushFastLog();
+      _lpush_log->initialize();
       return true;
-}
-
-void Log(const char* string, ...)
-{
-    if(GLogStream == NULL)
-       return ;
-    char buffer[256];
-    if (!string || !GLogStream)
-      return ;
-    
-    va_list arglist;
-    va_start(arglist,string);
-    vsprintf(buffer,string,arglist);
-    va_end(arglist);
-    
-    std::string info(buffer);
-    *GLogStream <<now()<<":"<< info << std::endl;
-    GLogStream->flush();
-}
-
-void LogBS(const std::string str)
-{
-  Log(str.c_str());
 }
 
 
 void CloseLog()
 {
-      GLogStream->close();
-      SafeDelete(GLogStream);
+      SafeDelete(_lpush_log);
 }
 
 ILogContext::ILogContext()
@@ -146,6 +115,270 @@ const char* LogContext::format_time()
 {
     return time.format_time();
 }
+
+
+// the max size of a line of log.
+#define LOG_MAX_SIZE 4096
+
+// the tail append to each log.
+#define LOG_TAIL '\n'
+// reserved for the end of log data, it must be strlen(LOG_TAIL)
+#define LOG_TAIL_SIZE 1
+
+LPushFastLog::LPushFastLog()
+{
+    _level = Info;
+    log_data = new char[LOG_MAX_SIZE];
+
+    fd = -1;
+    log_to_file_tank = false;
+    utc = false;
+}
+
+LPushFastLog::~LPushFastLog()
+{
+    SafeDelete(log_data);
+
+    if (fd > 0) {
+        ::close(fd);
+        fd = -1;
+    }
+
+}
+
+int LPushFastLog::initialize()
+{
+    int ret = ERROR_SUCCESS;
+    log_to_file_tank = true;
+    
+    
+    return ret;
+}
+
+void LPushFastLog::verbose(const char* tag, int context_id, const char* fmt, ...)
+{
+    if (_level > Verbose) {
+        return;
+    }
+    
+    int size = 0;
+    if (!generate_header(false, tag, context_id, "verb", &size)) {
+        return;
+    }
+    
+    va_list ap;
+    va_start(ap, fmt);
+    // we reserved 1 bytes for the new line.
+    size += vsnprintf(log_data + size, LOG_MAX_SIZE - size, fmt, ap);
+    va_end(ap);
+
+    write_log(fd, log_data, size, Verbose);
+}
+
+void LPushFastLog::info(const char* tag, int context_id, const char* fmt, ...)
+{
+    if (_level > Info) {
+        return;
+    }
+    
+    int size = 0;
+    if (!generate_header(false, tag, context_id, "debug", &size)) {
+        return;
+    }
+    
+    va_list ap;
+    va_start(ap, fmt);
+    // we reserved 1 bytes for the new line.
+    size += vsnprintf(log_data + size, LOG_MAX_SIZE - size, fmt, ap);
+    va_end(ap);
+
+    write_log(fd, log_data, size, Info);
+}
+
+void LPushFastLog::trace(const char* tag, int context_id, const char* fmt, ...)
+{
+    if (_level > Trace) {
+        return;
+    }
+    
+    int size = 0;
+    if (!generate_header(false, tag, context_id, "trace", &size)) {
+        return;
+    }
+    
+    va_list ap;
+    va_start(ap, fmt);
+    // we reserved 1 bytes for the new line.
+    size += vsnprintf(log_data + size, LOG_MAX_SIZE - size, fmt, ap);
+    va_end(ap);
+
+    write_log(fd, log_data, size, Trace);
+}
+
+void LPushFastLog::warn(const char* tag, int context_id, const char* fmt, ...)
+{
+    if (_level > Warn) {
+        return;
+    }
+    
+    int size = 0;
+    if (!generate_header(true, tag, context_id, "warn", &size)) {
+        return;
+    }
+    
+    va_list ap;
+    va_start(ap, fmt);
+    // we reserved 1 bytes for the new line.
+    size += vsnprintf(log_data + size, LOG_MAX_SIZE - size, fmt, ap);
+    va_end(ap);
+
+    write_log(fd, log_data, size, Warn);
+}
+
+void LPushFastLog::error(const char* tag, int context_id, const char* fmt, ...)
+{
+    if (_level > Error) {
+        return;
+    }
+    
+    int size = 0;
+    if (!generate_header(true, tag, context_id, "error", &size)) {
+        return;
+    }
+    
+    va_list ap;
+    va_start(ap, fmt);
+    // we reserved 1 bytes for the new line.
+    size += vsnprintf(log_data + size, LOG_MAX_SIZE - size, fmt, ap);
+    va_end(ap);
+
+    // add strerror() to error msg.
+    if (errno != 0) {
+        size += snprintf(log_data + size, LOG_MAX_SIZE - size, "(%s)", strerror(errno));
+    }
+
+    write_log(fd, log_data, size, Error);
+}
+
+
+
+bool LPushFastLog::generate_header(bool error, const char* tag, int context_id, const char* level_name, int* header_size)
+{
+    // clock time
+    timeval tv;
+    if (gettimeofday(&tv, NULL) == -1) {
+        return false;
+    }
+    
+    // to calendar time
+    struct tm* tm;
+    if (utc) {
+        if ((tm = gmtime(&tv.tv_sec)) == NULL) {
+            return false;
+        }
+    } else {
+        if ((tm = localtime(&tv.tv_sec)) == NULL) {
+            return false;
+        }
+    }
+    
+    // write log header
+    int log_header_size = -1;
+    
+    if (error) {
+        if (tag) {
+            log_header_size = snprintf(log_data, LOG_MAX_SIZE, 
+                "[%d-%02d-%02d %02d:%02d:%02d.%03d][%s][%s][%d][%d][%d] ", 
+                1900 + tm->tm_year, 1 + tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000), 
+                level_name, tag, getpid(), context_id, errno);
+        } else {
+            log_header_size = snprintf(log_data, LOG_MAX_SIZE, 
+                "[%d-%02d-%02d %02d:%02d:%02d.%03d][%s][%d][%d][%d] ", 
+                1900 + tm->tm_year, 1 + tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000), 
+                level_name, getpid(), context_id, errno);
+        }
+    } else {
+        if (tag) {
+            log_header_size = snprintf(log_data, LOG_MAX_SIZE, 
+                "[%d-%02d-%02d %02d:%02d:%02d.%03d][%s][%s][%d][%d] ", 
+                1900 + tm->tm_year, 1 + tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000), 
+                level_name, tag, getpid(), context_id);
+        } else {
+            log_header_size = snprintf(log_data, LOG_MAX_SIZE, 
+                "[%d-%02d-%02d %02d:%02d:%02d.%03d][%s][%d][%d] ", 
+                1900 + tm->tm_year, 1 + tm->tm_mon, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000), 
+                level_name, getpid(), context_id);
+        }
+    }
+
+    if (log_header_size == -1) {
+        return false;
+    }
+    
+    // write the header size.
+    *header_size = Min(LOG_MAX_SIZE - 1, log_header_size);
+    
+    return true;
+}
+
+void LPushFastLog::write_log(int& fd, char *str_log, int size, int level)
+{
+    // ensure the tail and EOF of string
+    //      LOG_TAIL_SIZE for the TAIL char.
+    //      1 for the last char(0).
+    size = Min(LOG_MAX_SIZE - 1 - LOG_TAIL_SIZE, size);
+    
+    // add some to the end of char.
+    str_log[size++] = LOG_TAIL;
+    
+    // if not to file, to console and return.
+    if (!log_to_file_tank) {
+        // if is error msg, then print color msg.
+        // \033[31m : red text code in shell
+        // \033[32m : green text code in shell
+        // \033[33m : yellow text code in shell
+        // \033[0m : normal text code
+        if (level <= Trace) {
+            printf("%.*s", size, str_log);
+        } else if (level == Warn) {
+            printf("\033[33m%.*s\033[0m", size, str_log);
+        } else{
+            printf("\033[31m%.*s\033[0m", size, str_log);
+        }
+
+        return;
+    }
+    
+    // open log file. if specified
+    if (fd < 0) {
+        open_log_file();
+    }
+    
+    // write log to file.
+    if (fd > 0) {
+        ::write(fd, str_log, size);
+    }
+}
+
+void LPushFastLog::open_log_file()
+{
+    
+    std::string filename = std::string(DEFAULT_LOG_FILE_NAME);
+    
+    if (filename.empty()) {
+        return;
+    }
+    
+    fd = ::open(filename.c_str(), O_RDWR | O_APPEND);
+    
+    if(fd == -1 && errno == ENOENT) {
+        fd = open(filename.c_str(), 
+            O_RDWR | O_CREAT | O_TRUNC, 
+            S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH
+        );
+    }
+}
+
 
 
 /*

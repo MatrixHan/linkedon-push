@@ -10,7 +10,7 @@ public:
   ILPushBufferReader();
   virtual ~ILPushBufferReader();
 public:
-  virtual int read(const void* buf, size_t size, ssize_t* nread)=0;
+  virtual int read(void* buf, size_t size, ssize_t* nread)=0;
 };
 
 class ILPushBufferWriter
@@ -19,7 +19,7 @@ public:
   ILPushBufferWriter();
   virtual ~ILPushBufferWriter();
 public:
-  virtual int write(const void* buf, size_t size, ssize_t* nwrite)=0;
+  virtual int write(void* buf, size_t size, ssize_t* nwrite)=0;
   virtual int writev(const iovec *iov, int iov_size, ssize_t* nwrite)=0;
 };
   
