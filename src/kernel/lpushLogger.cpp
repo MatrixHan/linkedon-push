@@ -9,9 +9,10 @@ namespace lpush
   LPushFastLog *_lpush_log = NULL;
     
 bool InitLog(const std::string& filename)
-{
+{	if(!_lpush_log){
        _lpush_log = new LPushFastLog();
       _lpush_log->initialize();
+      }	
       return true;
 }
 
@@ -127,7 +128,7 @@ const char* LogContext::format_time()
 
 LPushFastLog::LPushFastLog()
 {
-    _level = Info;
+    _level = Error;
     log_data = new char[LOG_MAX_SIZE];
 
     fd = -1;
@@ -356,7 +357,7 @@ void LPushFastLog::write_log(int& fd, char *str_log, int size, int level)
     
     // write log to file.
     if (fd > 0) {
-        ::write(fd, str_log, size);
+        write(fd, str_log, size);
     }
 }
 
