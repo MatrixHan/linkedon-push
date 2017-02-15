@@ -9,17 +9,18 @@ namespace lpush
   LPushFastLog *_lpush_log = NULL;
     
 bool InitLog(const std::string& filename)
-{	if(!_lpush_log){
-       _lpush_log = new LPushFastLog();
-      _lpush_log->initialize();
-      }	
-      return true;
+{
+	if (!_lpush_log) {
+		_lpush_log = new LPushFastLog();
+		_lpush_log->initialize();
+	}
+	return true;
 }
 
 
 void CloseLog()
 {
-      SafeDelete(_lpush_log);
+	SafeDelete(_lpush_log);
 }
 
 ILogContext::ILogContext()

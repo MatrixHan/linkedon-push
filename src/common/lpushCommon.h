@@ -67,7 +67,7 @@
 
 namespace lpush
 {
-  template<class T>
+    template<class T>
     const T& Min(const T& a,const T& b)
     {
       

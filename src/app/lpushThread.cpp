@@ -94,32 +94,32 @@ void LPushThread::stop()
 
 int LPushThread::start()
 {
-     int ret = ERROR_SUCCESS;
+	int ret = ERROR_SUCCESS;
         
-        if(tid) {
-            lp_info("thread %s already running.", _name);
-            return ret;
-        }
-        
-        if((tid = st_thread_create(thread_fun, this, (_joinable? 1:0), 0)) == NULL){
-            ret = ERROR_ST_CREATE_CYCLE_THREAD;
-            lp_error("st_thread_create failed. ret=%d", ret);
-            return ret;
-        }
-        
-        disposed = false;
-        // we set to loop to true for thread to run.
-        loop = true;
-        
-        // wait for cid to ready, for parent thread to get the cid.
-        while (_cid < 0) {
-            st_usleep(10 * 1000);
-        }
-        
-        // now, cycle thread can run.
-        can_run = true;
-        
-        return ret;
+	if (tid) {
+		lp_info("thread %s already running.", _name);
+		return ret;
+	}
+	
+	if ((tid = st_thread_create(thread_fun, this, (_joinable? 1:0), 0)) == NULL){
+		ret = ERROR_ST_CREATE_CYCLE_THREAD;
+		lp_error("st_thread_create failed. ret=%d", ret);
+		return ret;
+	}
+	
+	disposed = false;
+	// we set to loop to true for thread to run.
+	loop = true;
+	
+	// wait for cid to ready, for parent thread to get the cid.
+	while (_cid < 0) {
+		st_usleep(10 * 1000);
+	}
+	
+	// now, cycle thread can run.
+	can_run = true;
+	
+	return ret;
 }
 
 void LPushThread::dispose()
@@ -161,63 +161,63 @@ void LPushThread::thread_cycle()
 {
 	int ret = ERROR_SUCCESS;
         
-        log_context->generate_id();
-        lp_info("thread %s cycle start", _name);
-        
-        _cid = log_context->get_id();
-        
-        assert(_handler);
-        _handler->on_thread_start();
-        
-        // thread is running now.
-        really_terminated = false;
-        
-        // wait for cid to ready, for parent thread to get the cid.
-        while (!can_run && loop) {
-            st_usleep(10 * 1000);
-        }
-        
-        while (loop) {
-            if ((ret = _handler->on_before_cycle()) != ERROR_SUCCESS) {
-                lp_warn("thread %s on before cycle failed, ignored and retry, ret=%d", _name, ret);
-                goto failed;
-            }
-            lp_info("thread %s on before cycle success",st_thread_self());
-            
-            if ((ret = _handler->cycle()) != ERROR_SUCCESS) {
-                lp_warn("thread %s cycle failed, ignored and retry, ret=%d", _name, ret);
-                goto failed;
-            }
-            lp_info("thread %s cycle success", _name);
-            
-            if ((ret = _handler->on_end_cycle()) != ERROR_SUCCESS) {
-                lp_warn("thread %s on end cycle failed, ignored and retry, ret=%d", _name, ret);
-                goto failed;
-            }
-            lp_info("thread %s on end cycle success", _name);
-            
-        failed:
-            if (!loop) {
-                break;
-            }
-            
-            // to improve performance, donot sleep when interval is zero.
-            // @see: https://github.com/ossrs/srs/issues/237
-            if (cycle_interval_us != 0) {
-                st_usleep(cycle_interval_us);
-            }
-        }
-        
-        // readly terminated now.
-        really_terminated = true;
-        
-        // when thread terminated normally, also disposed.
-        // we must set to disposed before the on_thread_stop, which may free the thread.
-        // @see https://github.com/ossrs/srs/issues/546
-        disposed = true;
-        
-        _handler->on_thread_stop();
-        lp_info("thread %s cycle finished", _name);
+	log_context->generate_id();
+	lp_info("thread %s cycle start", _name);
+	
+	_cid = log_context->get_id();
+	
+	assert(_handler);
+	_handler->on_thread_start();
+	
+	// thread is running now.
+	really_terminated = false;
+	
+	// wait for cid to ready, for parent thread to get the cid.
+	while (!can_run && loop) {
+		st_usleep(10 * 1000);
+	}
+	
+	while (loop) {
+		if ((ret = _handler->on_before_cycle()) != ERROR_SUCCESS) {
+			lp_warn("thread %s on before cycle failed, ignored and retry, ret=%d", _name, ret);
+			goto failed;
+		}
+		lp_info("thread %s on before cycle success",st_thread_self());
+		
+		if ((ret = _handler->cycle()) != ERROR_SUCCESS) {
+			lp_warn("thread %s cycle failed, ignored and retry, ret=%d", _name, ret);
+			goto failed;
+		}
+		lp_info("thread %s cycle success", _name);
+		
+		if ((ret = _handler->on_end_cycle()) != ERROR_SUCCESS) {
+			lp_warn("thread %s on end cycle failed, ignored and retry, ret=%d", _name, ret);
+			goto failed;
+		}
+		lp_info("thread %s on end cycle success", _name);
+		
+	failed:
+		if (!loop) {
+			break;
+		}
+		
+		// to improve performance, donot sleep when interval is zero.
+		// @see: https://github.com/ossrs/srs/issues/237
+		if (cycle_interval_us != 0) {
+			st_usleep(cycle_interval_us);
+		}
+	}
+	
+	// readly terminated now.
+	really_terminated = true;
+	
+	// when thread terminated normally, also disposed.
+	// we must set to disposed before the on_thread_stop, which may free the thread.
+	// @see https://github.com/ossrs/srs/issues/546
+	disposed = true;
+	
+	_handler->on_thread_stop();
+	lp_info("thread %s cycle finished", _name);
 }
 
 void* LPushThread::thread_fun(void* arg)

@@ -15,11 +15,11 @@ namespace lpush
 LPushSignalManager* LPushSignalManager::instance = NULL;
 LPushSignalManager::LPushSignalManager(LPushServer* _server)
 {
-      LPushSignalManager::instance = this;
-      server = _server;
-      sig_pipe[0] = sig_pipe[1] = -1;
-      pthread = new LPushEndlessThread("signal", this);
-      signal_read_stfd = NULL;
+	LPushSignalManager::instance = this;
+	server = _server;
+	sig_pipe[0] = sig_pipe[1] = -1;
+	pthread = new LPushEndlessThread("signal", this);
+	signal_read_stfd = NULL;
 }
 
 LPushSignalManager::~LPushSignalManager()
@@ -317,7 +317,7 @@ int LPushServer::accept_client(st_netfd_t client_stfd)
     
     LPushConnection *conn ;
     
-    conn = new LPushConn(this,client_stfd);
+    conn = new LPushConn(this, client_stfd);
     
     assert(conn);
     

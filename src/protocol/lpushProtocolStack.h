@@ -8,10 +8,10 @@ namespace lpush
  * lpush tcp header data chunk
  *
  *
- *  flag    timestamp   datatype  datalenght      data
+ *  flag    timestamp   datatype  datalength      data
  * ************************************************************
  *         |	     |		  |	   |		      *
- *   5byte |  4byte  |   1byte    |  4byte | datalenght(byte) *  
+ *   5byte |  4byte  |   1byte    |  4byte | datalength(byte) *  
  *	   | 	     |		  | 	   |		      *
  * ************************************************************
  * lpush  5byte  (L P U S H)
@@ -28,64 +28,61 @@ class LPushProtocol
 {
 private:
     
-  ILPushProtocolReaderWriter 		*lst;
-  
-  LPushFastBuffer  			*fast_buffer;
+	ILPushProtocolReaderWriter 		*lst;
+	LPushFastBuffer  			*fast_buffer;
   
 public:
-  LPushProtocol(ILPushProtocolReaderWriter *skt);
-  virtual ~LPushProtocol();
+	LPushProtocol(ILPushProtocolReaderWriter *skt);
+	virtual ~LPushProtocol();
 public:
-  virtual int readHeader(ILPushProtocolReaderWriter *skt,LPushHeader& lph);
-  
-  virtual int readMessage(ILPushProtocolReaderWriter *skt,LPushChunk& lpc);
+	virtual int readHeader(ILPushProtocolReaderWriter *skt, LPushHeader& lph);
+	virtual int readMessage(ILPushProtocolReaderWriter *skt, LPushChunk& lpc);
 };
   
 typedef struct LPushHeader
 {
 
-  char * lpush_flag;
-  
-  long long timestamp;
-  
-  unsigned char dataType;
-  
-  int		datalenght;
-  LPushHeader()
-  {
-    lpush_flag = NULL;
-    timestamp = 0L;
-    dataType  = -1;
-    datalenght = 0;
-  }
-  LPushHeader(char * flag,long long time,unsigned char type,int len):lpush_flag(flag),timestamp(time),
-	      dataType(type),datalenght(len)
-	      {}
-  LPushHeader(LPushHeader &header):lpush_flag(header.lpush_flag),timestamp(header.timestamp),
-	      dataType(header.dataType),datalenght(header.datalenght)
-  {
-    
-  }
-  ~LPushHeader()
-  {
-    SafeDelete(lpush_flag);
-  }
-}LPushHeader;
+	char * lpush_flag;
+	long long timestamp;
+	unsigned char dataType;
+	int		datalenght;
+	LPushHeader()
+	{
+		lpush_flag = NULL;
+		timestamp = 0L;
+		dataType  = -1;
+		datalenght = 0;
+	}
+	LPushHeader(char * flag, long long time, unsigned char type, int len):lpush_flag(flag), timestamp(time),
+			dataType(type), datalenght(len)
+	{
+		
+	}
+	LPushHeader(LPushHeader &header):lpush_flag(header.lpush_flag), timestamp(header.timestamp),
+			dataType(header.dataType), datalenght(header.datalenght)
+	{
+
+	}
+	~LPushHeader()
+	{
+		SafeDelete(lpush_flag);
+	}
+} LPushHeader;
 
 struct LPushChunk
 {
-  LPushHeader header;
-  unsigned char *data;
-  LPushChunk(LPushHeader &hd,unsigned char * chunk):header(hd)
-  {
-    data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
-    memcpy(data,chunk,hd.datalenght);
-  }
-  
-  ~LPushChunk()
-  {
-    SafeDelete(data);
-  }
+	LPushHeader header;
+	unsigned char *data;
+	LPushChunk(LPushHeader &hd, unsigned char * chunk):header(hd)
+	{
+		data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
+		memcpy(data, chunk, hd.datalenght);
+	}
+
+	~LPushChunk()
+	{
+		SafeDelete(data);
+	}
 };
 
 
