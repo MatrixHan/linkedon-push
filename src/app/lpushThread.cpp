@@ -182,7 +182,7 @@ void LPushThread::thread_cycle()
                 lp_warn("thread %s on before cycle failed, ignored and retry, ret=%d", _name, ret);
                 goto failed;
             }
-            lp_info("thread %s on before cycle success");
+            lp_info("thread %s on before cycle success",st_thread_self());
             
             if ((ret = _handler->cycle()) != ERROR_SUCCESS) {
                 lp_warn("thread %s cycle failed, ignored and retry, ret=%d", _name, ret);
