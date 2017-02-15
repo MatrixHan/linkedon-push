@@ -29,7 +29,7 @@ int main(void)
 	{
 	  return ret;
 	}
-	start_daemon();
+	//start_daemon();
 	run();
 	CloseLog();
 	return 0;

@@ -4,8 +4,20 @@
 #include <lpushFastBuffer.h>
 #include <lpushSystemErrorDef.h>
 
+#include <lpushFmt.h>
+#include <lpushMath.h>
+
 namespace lpush 
 {
+  
+LPushChunk* LPushChunk::copy()
+{
+    LPushChunk * lpc = new LPushChunk(header,data);
+    return lpc;
+}
+
+  
+  
 LPushProtocol::LPushProtocol(ILPushProtocolReaderWriter* skt)
 {
     lst=skt;
@@ -29,7 +41,7 @@ int LPushProtocol::readHeader(ILPushProtocolReaderWriter* skt,LPushHeader& lph)
 	return ERROR_SYSTEM_FILE_READ;
     }
     buf = fast_buffer->read_slice(4);
-    long long timestamp = (*buf++)<<24 | (*buf++)<<16 | (*buf++)<<8 | (*buf++);
+    int timestamp = (*buf++)<<24 | (*buf++)<<16 | (*buf++)<<8 | (*buf++);
     unsigned char dataType = (unsigned char)fast_buffer->read_1byte();
     buf = fast_buffer->read_slice(4);
     int dataLen = (*buf++)<<24 | (*buf++)<<16 | (*buf++)<<8 | (*buf++);
@@ -63,6 +75,186 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
       LPushChunk pc(lph,(unsigned char*)buf);
       lpc = pc;
       return ret;
+}
+
+int LPushProtocol::handshake(LPushChunk* message,LPushHandshakeMessage &msk)
+{
+      int ret = ERROR_SUCCESS;
+      if((message->header.dataType&0x0F)!=LPUSH_HEADER_TYPE_HANDSHAKE)
+      {
+	  lp_error("lpush handshake data header type not ok!");
+	  return ERROR_SYSTEM_HANDSHAKE;
+      }
+      if(LPushFMT::isType(message->data)!=LPUSH_FMT_JSON)
+      {
+	  lp_error("lpush handshake data must be json data");
+	  return ERROR_SYSTEM_HANDSHAKE;
+      }
+      
+      std::map<std::string,std::string> parms;
+      int len = LPushFMT::decodeJson(message->data,parms);
+      if(len!=message->header.datalenght)
+      {
+	    lp_error("lpush handshake data length error");
+	    return ERROR_SYSTEM_HANDSHAKE;
+      }
+      LPushHandshakeMessage lphm(parms);
+      if(!lphm.check())
+      {
+	return ERROR_SYSTEM_HANDSHAKE;
+      }
+      msk = lphm;
+      return ret;
+}
+
+int LPushProtocol::createConnection(LPushChunk* message, LPushCreateMessage& pcm)
+{
+      int ret = ERROR_SUCCESS;
+       if((message->header.dataType&0x0F)!=LPUSH_HEADER_TYPE_CREATE_CONNECTION)
+      {
+	  lp_error("lpush create connection data header type not ok!");
+	  return ERROR_SYSTEM_HANDSHAKE;
+      }
+      char *buf = new char[message->header.datalenght];
+      memset(buf,0,message->header.datalenght);
+      memcpy(buf,message->data,message->header.datalenght);
+      buf[message->header.datalenght+1]='\0';
+      pcm = LPushCreateMessage(buf);
+      delete buf;
+      return ret;
+}
+
+
+int LPushProtocol::recvhreatbeat(LPushChunk* message)
+{
+      int ret = ERROR_SUCCESS;
+      if((message->header.dataType&0x0F)!=LPUSH_HEADER_TYPE_HREATBEAT)
+      {
+	  lp_error("lpush hreatbeat data header type not ok!");
+	  return ERROR_SYSTEM_HANDSHAKE;
+      }
+      return ret;
+}
+
+int LPushProtocol::sendHandshake(LPushChunk* message)
+{
+    return sendPacket(message);
+}
+
+int LPushProtocol::sendCreateConnection(LPushChunk* message)
+{
+    return sendPacket(message);
+}
+
+int LPushProtocol::sendHreatbeat(LPushChunk* message)
+{
+    return sendPacket(message);
+}
+
+int LPushProtocol::sendPacket(LPushChunk* message)
+{
+    int ret = ERROR_SUCCESS;
+    iovec iovs[2];
+    LPushHeader *header = &(message->header);
+    char *buf=new char[14];
+    iovs[0].iov_base = buf+0;
+    memset(buf,0,14);
+    *buf++ |='L';
+    *buf++ |='P';
+    *buf++ |='U';
+    *buf++ |='S';
+    *buf++ |='H';
+    *buf++ |=(header->timestamp>>24)&0xFF;
+    *buf++ |=(header->timestamp>>16)&0xFF;
+    *buf++ |=(header->timestamp>>8)&0xFF;
+    *buf++ |=(header->timestamp)&0xFF;
+    *buf++ |=header->dataType;
+    *buf++ |=(header->datalenght>>24)&0xFF;
+    *buf++ |=(header->datalenght>>16)&0xFF;
+    *buf++ |=(header->datalenght>>8)&0xFF;
+    *buf++ |=(header->datalenght)&0xFF;
+    iovs[0].iov_len = 14;
+    iovs[1].iov_base = message->data;
+    iovs[1].iov_len = header->datalenght;
+    
+    if((ret=lst->writev(iovs,2,NULL))!=ERROR_SUCCESS)
+    {
+	lp_error("send message packet error");
+	delete buf;
+	return ret;
+    }
+    delete buf;
+    return ret;
+}
+
+LPushHandshakeMessage::LPushHandshakeMessage()
+{
+
+}
+
+
+LPushHandshakeMessage::LPushHandshakeMessage(std::map<std::string,std::string> parms)
+{
+    appId = parms["appId"];
+    screteKey = parms["screteKey"];
+    md5Data = parms["md5Data"];
+    userId = parms["userId"];
+    clientFlag = parms["clientFlag"];
+}
+
+LPushHandshakeMessage::~LPushHandshakeMessage()
+{
+
+}
+
+bool LPushHandshakeMessage::check()
+{
+     std::string md5Src    = userId + appId + screteKey;
+     std::string md5Temple = md5Encoder(md5Src);
+     
+     if(md5Data.length()!=md5Temple.length())
+     {
+       lp_error("handshake Authorization error");
+       return false;
+    }
+     if(md5Data.find(md5Temple.c_str())==std::string::npos)
+     {
+       lp_error("handshake Authorization error");
+       return false;
+    }
+     return true;
+}
+
+
+LPushHreatbeat::LPushHreatbeat()
+{
+
+}
+
+LPushHreatbeat::LPushHreatbeat(const char flag)
+{
+    clientFlag.append(&flag);
+}
+
+LPushHreatbeat::~LPushHreatbeat()
+{
+
+}
+
+LPushCreateMessage::LPushCreateMessage()
+{
+
+}
+
+
+LPushCreateMessage::LPushCreateMessage(std::__cxx11::string cs)
+{
+    createString = cs;
+}
+
+LPushCreateMessage::~LPushCreateMessage()
+{
+
 }
 
 

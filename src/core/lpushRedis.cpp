@@ -25,6 +25,13 @@ bool LPushRedisClient::initRedis()
     }
     return true;
 }
+bool LPushRedisClient::selectDb(int dbnum)
+{
+      reply = (redisReply*)redisCommand(context,"select %d",dbnum);
+      lp_info("redisClient checkout db  %d",dbnum);
+      freeReplyObject(reply);
+      return true;
+}
 
 bool LPushRedisClient::closeRedis()
 {
