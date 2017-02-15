@@ -46,6 +46,10 @@ private:
     bool log_to_file_tank;
     // whether use utc time.
     bool utc;
+    
+    std::string logdir;
+    
+    std::string logfilename;
 public:
     LPushFastLog();
     virtual ~LPushFastLog();

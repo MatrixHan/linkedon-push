@@ -12,13 +12,13 @@ extern LPushConfig * conf;
 int initConfig();
 struct LPushConfig
 {
-  int 			gopsize;
+
   std::string 		ip;
   int 			port;
-  std::string 		movieDir;
-  std::string 		vhost;
   int 			maxconnect;
-  
+  std::string 		logdir;
+  std::string 		logfilename;
+  int 			loglevel;
   LPushConfig();
   ~LPushConfig();
   

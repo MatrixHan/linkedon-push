@@ -4,6 +4,8 @@
 #include <sys/time.h>
 #include <st.h>
 
+#include <lpushJson.h>
+
 namespace lpush 
 {
   LPushFastLog *_lpush_log = NULL;
@@ -128,7 +130,7 @@ const char* LogContext::format_time()
 
 LPushFastLog::LPushFastLog()
 {
-    _level = Error;
+    _level = conf->loglevel;
     log_data = new char[LOG_MAX_SIZE];
 
     fd = -1;
@@ -152,6 +154,9 @@ int LPushFastLog::initialize()
     int ret = ERROR_SUCCESS;
     log_to_file_tank = true;
     
+    logdir = conf->logdir;
+    
+    logfilename = conf->logfilename;
     
     return ret;
 }
@@ -364,7 +369,14 @@ void LPushFastLog::write_log(int& fd, char *str_log, int size, int level)
 void LPushFastLog::open_log_file()
 {
     
-    std::string filename = std::string(DEFAULT_LOG_FILE_NAME);
+    std::string filename = logdir +"/"+logfilename;
+    
+    int direct_is_ok = access(logdir.c_str(),0);
+    
+    if(direct_is_ok != ERROR_SUCCESS)
+    {
+      int ret = mkdir(logdir.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    }
     
     if (filename.empty()) {
         return;
