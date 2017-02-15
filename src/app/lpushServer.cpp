@@ -17,8 +17,8 @@ LPushSignalManager::LPushSignalManager(LPushServer* _server)
 {
       LPushSignalManager::instance = this;
       server = _server;
-      sig_pipe[0]=sig_pipe[1]=-1;
-      pthread = new  LPushEndlessThread("signal",this);
+      sig_pipe[0] = sig_pipe[1] = -1;
+      pthread = new LPushEndlessThread("signal", this);
       signal_read_stfd = NULL;
 }
 
@@ -255,7 +255,7 @@ void LPushServer::close_listeners()
 int LPushServer::listen()
 {
     int ret = ERROR_SUCCESS;
-    if((ret = listen_lpush())!=ERROR_SUCCESS)
+    if ((ret = listen_lpush()) != ERROR_SUCCESS)
     {
       return ret;
     }

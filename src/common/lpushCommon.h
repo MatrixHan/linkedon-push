@@ -37,7 +37,7 @@
 
 #define STRLENGTH(str) (sizeof(str))
   
-#define SafeDelete(p) if(p) {delete p;p=0x0;}
+#define SafeDelete(p) if(p) {delete p; p=0x0;}
   
 #define SafeDeleteArray(p) if(p) {delete [] p;p=0x0;}
   

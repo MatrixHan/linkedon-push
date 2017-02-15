@@ -17,7 +17,7 @@ int main(void)
 {
   
 	int ret = ERROR_SUCCESS;
-	if(!checkProDir())
+	if (!checkProDir())
 	{
 	   lp_trace("place move project root direct!\n");
 	   return 0;
@@ -25,7 +25,7 @@ int main(void)
 	
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
-	if((ret = server->initializer()) != ERROR_SUCCESS)
+	if ((ret = server->initializer()) != ERROR_SUCCESS)
 	{
 	  return ret;
 	}

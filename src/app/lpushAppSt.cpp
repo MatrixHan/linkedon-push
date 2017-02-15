@@ -198,13 +198,15 @@ int lp_st_init()
         lp_error("st_set_eventsys use %s failed. ret=%d", st_get_eventsys_name(), ret);
         return ret;
     }
+    
     lp_trace("st_set_eventsys to %s", st_get_eventsys_name());
 
-    if(st_init() != 0){
+    if (st_init() != 0) {
         ret = ERROR_ST_INITIALIZE;
         lp_error("st_init failed. ret=%d", ret);
         return ret;
     }
+    
     lp_trace("st_init success, use %s", st_get_eventsys_name());
     
     return ret;

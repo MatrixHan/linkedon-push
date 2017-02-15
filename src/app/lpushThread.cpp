@@ -346,7 +346,7 @@ void ILPushEndlessThreadHandler::on_thread_stop()
 LPushEndlessThread::LPushEndlessThread(const char* n, ILPushEndlessThreadHandler* h)
 {
       handler = h;
-      pthread = new LPushThread(n,this,0,false);
+      pthread = new LPushThread(n, this, 0, false);
 }
 
 LPushEndlessThread::~LPushEndlessThread()

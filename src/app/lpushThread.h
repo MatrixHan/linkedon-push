@@ -45,7 +45,7 @@ public:
         /**
          * TODO: FIXME: maybe all thread must be reap by others threads,
 	 */
-  LPushThread(const char * name,ILPushThreadHandler *handler,int64_t interval_us,bool joinable);
+  LPushThread(const char * name, ILPushThreadHandler *handler, int64_t interval_us,bool joinable);
   virtual ~LPushThread();
 public:
   

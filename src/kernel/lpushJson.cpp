@@ -30,19 +30,19 @@ LPushConfig* LPushConfig::parse(std::string confName)
       assert(ifs.is_open());
       Json::Reader reader;
       Json::Value  root;
-      if(!reader.parse(ifs,root,false))
+      if (!reader.parse(ifs, root, false))
       {
 	return NULL;
       }
       int size = root.size();
       LPushConfig * cf = new LPushConfig();
       
-	cf->gopsize = root["gopsize"].asInt();
-	cf->maxconnect = root["maxconnect"].asInt();
-	cf->port   = root["port"].asInt();
-	cf->movieDir = root["movieDir"].asString();
-	cf->vhost   = root["vhost"].asString();
-	cf->ip     = root["ip"].asString();
+      cf->gopsize = root["gopsize"].asInt();
+      cf->maxconnect = root["maxconnect"].asInt();
+      cf->port   = root["port"].asInt();
+      cf->movieDir = root["movieDir"].asString();
+      cf->vhost   = root["vhost"].asString();
+      cf->ip     = root["ip"].asString();
       
       return cf;
 }

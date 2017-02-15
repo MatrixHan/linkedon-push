@@ -26,14 +26,12 @@ public:
     virtual ~LPushSignalManager();
 public:
     virtual int initializer();
-    virtual int start();
-    
+    virtual int start();   
 public:
     virtual int cycle();
     
 public:
-    static LPushSignalManager *instance;
-    
+    static LPushSignalManager *instance;    
     static void signal_catcher(int signo);
 };
   
@@ -58,56 +56,34 @@ public:
 class LPushConnection;
 class LPushServer
 {
-private:
-  
-    int pid_fd;
-    
-    vector<LPushConnection *> conns;
-    
-    vector<LPushStreamListener *>  listeners;
-    
-    LPushSignalManager *signalManager;
-    
-    
+private: 
+    int pid_fd;   
+    vector<LPushConnection *> conns;   
+    vector<LPushStreamListener *>  listeners;   
+    LPushSignalManager *signalManager;        
     bool signal_reload ;
     bool signal_gracefully_quit;
 public:
   LPushServer();
   virtual ~LPushServer();
 public:
-  virtual int initializer();
-  
-  virtual int initializer_st();
-  
-  virtual int signal_init();
-  
-  virtual int signal_register();
-  
-  virtual int listen();
-  
+  virtual int initializer(); 
+  virtual int initializer_st();  
+  virtual int signal_init(); 
+  virtual int signal_register(); 
+  virtual int listen(); 
   virtual int cycle();
-  
-  virtual int do_cycle();
-  
-  virtual void dispose();
-  
+  virtual int do_cycle(); 
+  virtual void dispose(); 
   virtual void destroy();
 private:
   virtual void close_listeners();
 public:
-  virtual void remove(LPushConnection *conn);
-  
- 
-  
-  virtual void on_signal(int signo);
-  
-  
-  
-  virtual int acquire_pid_file();
-  
+  virtual void remove(LPushConnection *conn);  
+  virtual void on_signal(int signo);    
+  virtual int acquire_pid_file();  
 public:
-  virtual int listen_lpush();
-  
+  virtual int listen_lpush();  
   virtual int accept_client(st_netfd_t client_stfd);
 };
 }
