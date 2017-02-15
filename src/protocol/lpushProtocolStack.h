@@ -94,8 +94,7 @@ public:
 	virtual ~LPushProtocol();
 public:
 	
-	virtual int readHeader(ILPushProtocolReaderWriter *skt, LPushHeader& lph);
-	virtual int readMessage(ILPushProtocolReaderWriter *skt, LPushChunk& lpc);
+
 	virtual int readHeader(ILPushProtocolReaderWriter *skt,LPushHeader& lph);
 
 	virtual int readMessage(ILPushProtocolReaderWriter *skt,LPushChunk& lpc);
