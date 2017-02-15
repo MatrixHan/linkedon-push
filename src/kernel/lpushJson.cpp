@@ -14,7 +14,7 @@ namespace lpush
  
 LPushConfig::LPushConfig()
 {
-    gopsize = port = maxconnect = 0;
+   port = maxconnect = 0;
 }
 
 LPushConfig::~LPushConfig()
@@ -37,13 +37,12 @@ LPushConfig* LPushConfig::parse(std::string confName)
       int size = root.size();
       LPushConfig * cf = new LPushConfig();
       
-      cf->gopsize = root["gopsize"].asInt();
       cf->maxconnect = root["maxconnect"].asInt();
       cf->port   = root["port"].asInt();
-      cf->movieDir = root["movieDir"].asString();
-      cf->vhost   = root["vhost"].asString();
+      cf->loglevel= root["loglevel"].asInt();
       cf->ip     = root["ip"].asString();
-      
+      cf->logdir = root["logdir"].asString();
+      cf->logfilename= root["logfilename"].asString();;
       return cf;
 }
 
@@ -54,11 +53,11 @@ int LPushConfig::writeConf(LPushConfig* config)
     Json::Value person;
     std::string json_file = writer.write(root);
     
-    person["gopsize"] = config->gopsize;
+   
     person["maxconnect"] = config->maxconnect;
     person["port"] = config->port;
-    person["movieDIr"] = config->movieDir;
-    person["vhost"] = config->vhost;
+    
+    
  
     ofstream ofs;
     ofs.open(CONFIG_DEFAULT_FILE_NAME);

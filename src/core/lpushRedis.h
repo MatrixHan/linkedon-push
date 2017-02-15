@@ -17,6 +17,7 @@ public:
 public:
   virtual bool initRedis();
   virtual void setTimeout(int seconds,int naseconds);
+  virtual bool selectDb(int dbnum);
   virtual std::string set(std::string key,std::string value);
   virtual std::string setForBinary(std::string key,std::string value);
   virtual std::string get(std::string key);

@@ -48,7 +48,7 @@ void* LPushConnection::cycle_thread(void* arg)
 {
 	LPushConnection *conn = (LPushConnection*)(arg);
 	assert(conn);
-	conn->start();
+	conn->cycle();
 	return NULL;
 }
 
