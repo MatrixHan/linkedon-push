@@ -64,10 +64,10 @@ namespace lpush
  * lpush tcp header data chunk
  *
  *
- *  flag    timestamp   datatype  datalenght      data
+ *  flag    timestamp   datatype  datalength      data
  * ************************************************************
  *         |	     |		  |	   |		      *
- *   5byte |  4byte  |   1byte    |  4byte | datalenght(byte) *  
+ *   5byte |  4byte  |   1byte    |  4byte | datalength(byte) *  
  *	   | 	     |		  | 	   |		      *
  * ************************************************************
  * lpush  5byte  (L P U S H)
@@ -86,31 +86,33 @@ class LPushProtocol
 {
 private:
     
-  ILPushProtocolReaderWriter 		*lst;
-  
-  LPushFastBuffer  			*fast_buffer;
+	ILPushProtocolReaderWriter 		*lst;
+	LPushFastBuffer  			*fast_buffer;
   
 public:
-  LPushProtocol(ILPushProtocolReaderWriter *skt);
-  virtual ~LPushProtocol();
+	LPushProtocol(ILPushProtocolReaderWriter *skt);
+	virtual ~LPushProtocol();
 public:
-  virtual int readHeader(ILPushProtocolReaderWriter *skt,LPushHeader& lph);
-  
-  virtual int readMessage(ILPushProtocolReaderWriter *skt,LPushChunk& lpc);
-  
-  virtual int handshake(LPushChunk *message,LPushHandshakeMessage &msk);
-  
-  virtual int createConnection(LPushChunk *message,LPushCreateMessage &pcm);
-  
-  virtual int recvhreatbeat(LPushChunk *message);
+	
+	virtual int readHeader(ILPushProtocolReaderWriter *skt, LPushHeader& lph);
+	virtual int readMessage(ILPushProtocolReaderWriter *skt, LPushChunk& lpc);
+	virtual int readHeader(ILPushProtocolReaderWriter *skt,LPushHeader& lph);
+
+	virtual int readMessage(ILPushProtocolReaderWriter *skt,LPushChunk& lpc);
+
+	virtual int handshake(LPushChunk *message,LPushHandshakeMessage &msk);
+
+	virtual int createConnection(LPushChunk *message,LPushCreateMessage &pcm);
+
+	virtual int recvhreatbeat(LPushChunk *message);
 public:
-  virtual int sendHandshake(LPushChunk *message);
-  
-  virtual int sendCreateConnection(LPushChunk *message);
-  
-  virtual int sendHreatbeat(LPushChunk *message);
-  
-  virtual int sendPacket(LPushChunk *message);
+	virtual int sendHandshake(LPushChunk *message);
+
+	virtual int sendCreateConnection(LPushChunk *message);
+
+	virtual int sendHreatbeat(LPushChunk *message);
+
+	virtual int sendPacket(LPushChunk *message);
   
 };
   
@@ -118,6 +120,7 @@ public:
 
 typedef struct LPushHeader
 {
+
 
   char  lpush_flag[5];
   
@@ -159,10 +162,12 @@ typedef struct LPushHeader
   {
     
   }
+
 }LPushHeader;
 
 struct LPushChunk
 {
+
   LPushHeader header;
   unsigned char *data;
   LPushChunk(){data=NULL;}
@@ -198,21 +203,21 @@ public:
 class LPushHreatbeat
 {
 private:
-  std::string clientFlag;
+	std::string clientFlag;
 public:
-  LPushHreatbeat();
-  LPushHreatbeat(const char flag);
-  virtual ~LPushHreatbeat();
+	LPushHreatbeat();
+	LPushHreatbeat(const char flag);
+	virtual ~LPushHreatbeat();
 };
 
 class LPushCreateMessage
 {
 private:
-  std::string createString;
+	std::string createString;
 public:
-  LPushCreateMessage();
-  LPushCreateMessage(std::string cs);
-  virtual ~LPushCreateMessage();
+	LPushCreateMessage();
+	LPushCreateMessage(std::string cs);
+	virtual ~LPushCreateMessage();
 };
 
 }
