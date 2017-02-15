@@ -119,7 +119,7 @@ public:
 typedef struct LPushHeader
 {
 
-  char * lpush_flag;
+  char  lpush_flag[5];
   
   int timestamp;
   
@@ -128,22 +128,36 @@ typedef struct LPushHeader
   int		datalenght;
   LPushHeader()
   {
-    lpush_flag = NULL;
+    lpush_flag[0] = 'L';
+    lpush_flag[1] = 'P';
+    lpush_flag[2] = 'U';
+    lpush_flag[3] = 'S';
+    lpush_flag[4] = 'H';
     timestamp = 0L;
     dataType  = -1;
     datalenght = 0;
   }
-  LPushHeader(char * flag,int time,unsigned char type,int len):lpush_flag(flag),timestamp(time),
+  LPushHeader(char * flag,int time,unsigned char type,int len):timestamp(time),
 	      dataType(type),datalenght(len)
-	      {}
-  LPushHeader(LPushHeader &header):lpush_flag(header.lpush_flag),timestamp(header.timestamp),
+	      {
+		  lpush_flag[0] = 'L';
+		  lpush_flag[1] = 'P';
+		  lpush_flag[2] = 'U';
+		  lpush_flag[3] = 'S';
+		  lpush_flag[4] = 'H';
+	      }
+  LPushHeader(LPushHeader &header):timestamp(header.timestamp),
 	      dataType(header.dataType),datalenght(header.datalenght)
   {
-    
+		  lpush_flag[0] = 'L';
+		  lpush_flag[1] = 'P';
+		  lpush_flag[2] = 'U';
+		  lpush_flag[3] = 'S';
+		  lpush_flag[4] = 'H';
   }
   ~LPushHeader()
   {
-    SafeDelete(lpush_flag);
+    
   }
 }LPushHeader;
 
@@ -151,7 +165,7 @@ struct LPushChunk
 {
   LPushHeader header;
   unsigned char *data;
-  LPushChunk(){}
+  LPushChunk(){data=NULL;}
   LPushChunk(LPushHeader &hd,unsigned char * chunk):header(hd)
   {
     data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);

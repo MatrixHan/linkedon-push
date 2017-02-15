@@ -35,17 +35,17 @@ int LPushProtocol::readHeader(ILPushProtocolReaderWriter* skt,LPushHeader& lph)
     //			       4C  50  55  53  48
     static char LPushFlag[5]={'L','P','U','S','H'};
     int ret = ERROR_SUCCESS;
-    char* buf = fast_buffer->read_slice(5);
-    if(strstr(buf,LPushFlag)==NULL)
+    unsigned char* buf = (unsigned char*)fast_buffer->read_slice(5);
+    if(strstr((char*)buf,LPushFlag)==NULL)
     {
 	return ERROR_SYSTEM_FILE_READ;
     }
-    buf = fast_buffer->read_slice(4);
-    int timestamp = (*buf++)<<24 | (*buf++)<<16 | (*buf++)<<8 | (*buf++);
+    buf = (unsigned char*)fast_buffer->read_slice(4);
+    int timestamp = *buf++<<24 | *buf++<<16 | *buf++<<8 | *buf++;
     unsigned char dataType = (unsigned char)fast_buffer->read_1byte();
-    buf = fast_buffer->read_slice(4);
-    int dataLen = (*buf++)<<24 | (*buf++)<<16 | (*buf++)<<8 | (*buf++);
-    LPushHeader ph(LPushFlag,timestamp,dataType,dataLen);
+    buf = (unsigned char*)fast_buffer->read_slice(4);
+    int dataLen = *buf++<<24 | *buf++<<16 | *buf++<<8 | *buf++;
+    LPushHeader ph(LPushFlag,(int)timestamp,dataType,(int)dataLen);
     lph = ph;
     return ret;
 }
