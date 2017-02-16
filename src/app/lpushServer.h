@@ -78,6 +78,7 @@ public:
   virtual void destroy();
 private:
   virtual void close_listeners();
+  virtual void close_conns();
 public:
   virtual void remove(LPushConnection *conn);  
   virtual void on_signal(int signo);    

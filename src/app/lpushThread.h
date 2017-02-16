@@ -133,6 +133,14 @@ public:
      */
     virtual int cid();
 // interface internal::ILPushThreadHandler
+    
+    virtual void interrupt();
+    /**
+     * whether the thread is interrupted,
+     * for the cycle has its loop, the inner loop should quit when thread
+     * is interrupted.
+     */
+    virtual bool interrupted();
 public:
     virtual int cycle();
     virtual void on_thread_start();

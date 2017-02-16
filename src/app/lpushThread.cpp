@@ -310,6 +310,17 @@ void LPushReusableThread::on_thread_stop()
 {
     handler->on_thread_stop();
 }
+
+void LPushReusableThread::interrupt()
+{
+    pthread->stop_loop();
+}
+
+bool LPushReusableThread::interrupted()
+{
+    return !pthread->can_loop();
+}
+
   
 ILPushEndlessThreadHandler::ILPushEndlessThreadHandler()
 {

@@ -4,7 +4,9 @@
 #include <st.h>
 namespace lpush 
 {
-  
+class LPushHandshakeMessage;
+class LPushSource;
+
 class LPushWorkerMessage
 {
 private:
@@ -42,8 +44,7 @@ public:
 };
   
   
-class LPushHandshakeMessage;
-class LPushSource;
+
 class LPushClient
 {
 private:
@@ -60,7 +61,6 @@ public:
 };
   
 
-extern LPushSource *lSource;
 
 class LPushSource
 {

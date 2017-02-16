@@ -20,7 +20,7 @@ LPushWorkerMessage::~LPushWorkerMessage()
 
 }
 
-LPushWorkerMessage& LPushWorkerMessage::copy()
+LPushWorkerMessage* LPushWorkerMessage::copy()
 {
     LPushWorkerMessage *result = new LPushWorkerMessage(workerType,workString,workContent);
     return result;
@@ -62,9 +62,9 @@ int LPushFastQueue::pop(LPushWorkerMessage** msg)
 	lp_warn("queue size is 0");
     }
     std::vector<LPushWorkerMessage*>::iterator itr = queue.begin();
-    lpwm = (LPushWorkerMessage*)itr;
+    lpwm = *itr;
     *msg = lpwm->copy();
-    queue.erase(itr);
+    itr=queue.erase(itr);
     SafeDelete(lpwm);
     return 0;
 }
@@ -88,7 +88,7 @@ LPushClient::~LPushClient()
 
 }
 
-LPushSource *lSource = new LPushSource();
+std::map<st_netfd_t,LPushSource*> LPushSource::sources;
 
 LPushSource::LPushSource()
 {

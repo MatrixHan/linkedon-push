@@ -10,6 +10,7 @@ namespace lpush
   class ILPushProtocolReaderWriter;
   struct LPushChunk;
   class LPushHandshakeMessage;
+  class LPushClient;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -19,6 +20,7 @@ namespace lpush
     LPushProtocol *lpushProtocol;
     LPushStSocket *skt;
     LPushHandshakeMessage *lphandshakeMsg;
+    LPushClient		  *client;
   public:
       LPushConn(LPushServer* _server, st_netfd_t client_stfd);
       virtual ~LPushConn();
@@ -32,9 +34,10 @@ namespace lpush
       
       virtual int hreatbeat();
       
-      virtual int controller_loop();
+  public:
+      virtual int readMessage(LPushChunk *message);
       
-      virtual int server_loop();
+      virtual int forwardServer(LPushChunk *message);
   };
   
 }

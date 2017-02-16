@@ -238,6 +238,7 @@ void LPushServer::destroy()
 void LPushServer::dispose()
 {
     close_listeners();
+    close_conns();
 }
 
 void LPushServer::close_listeners()
@@ -248,6 +249,16 @@ void LPushServer::close_listeners()
         
         SafeDelete(listener);
         it = listeners.erase(it);
+    }
+}
+void LPushServer::close_conns()
+{
+    std::vector<LPushConnection*>::iterator it;
+    for(it = conns.begin();it != conns.end();)
+    {
+      LPushConnection *conn = *it;
+      SafeDelete(conn);
+      it = conns.erase(it);
     }
 }
 
