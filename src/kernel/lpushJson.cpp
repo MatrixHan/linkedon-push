@@ -15,11 +15,12 @@ namespace lpush
 LPushConfig::LPushConfig()
 {
    port = maxconnect = 0;
+   redisConfig = new LPushRedisConfig();
 }
 
 LPushConfig::~LPushConfig()
 {
-
+    SafeDelete(redisConfig);
 }
 
 
@@ -42,7 +43,14 @@ LPushConfig* LPushConfig::parse(std::string confName)
       cf->loglevel= root["loglevel"].asInt();
       cf->ip     = root["ip"].asString();
       cf->logdir = root["logdir"].asString();
-      cf->logfilename= root["logfilename"].asString();;
+      cf->logfilename= root["logfilename"].asString();
+      cf->localhost  = root["localhost"].asString();
+      
+      cf->redisConfig->host = root["redis.host"].asString();
+      cf->redisConfig->pass = root["redis.pass"].asString();
+      cf->redisConfig->port = root["redis.port"].asInt();
+      cf->redisConfig->db = root["redis.db"].asInt();
+      
       return cf;
 }
 
@@ -66,6 +74,21 @@ int LPushConfig::writeConf(LPushConfig* config)
  
     return 0;
     
+}
+string LPushConfig::parse(map< string, string > params)
+{
+    Json::Value root;
+    Json::FastWriter writer;
+    Json::Value person;
+    std::string json_file = writer.write(root);
+    std::string ret;
+    std::map< std::string, std::string >::iterator itr=params.begin();
+    for(;itr!=params.end();++itr)
+    {
+      person[itr->first]=itr->second;
+    }
+    ret.append(json_file);
+    return ret;
 }
 
   

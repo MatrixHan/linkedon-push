@@ -3,6 +3,15 @@
 
 namespace lpush 
 {
+  
+class LPushRedisClient;  
+  
+extern LPushRedisClient * redis_client;  
+
+extern bool RedisInitializer();
+
+extern bool RedisClose();
+
 class LPushRedisClient
 {
 private:
@@ -18,7 +27,9 @@ public:
   virtual bool initRedis();
   virtual void setTimeout(int seconds,int naseconds);
   virtual bool selectDb(int dbnum);
+  virtual bool auth(std::string pass);
   virtual std::string set(std::string key,std::string value);
+  virtual std::string set(std::string key,int value);
   virtual std::string setForBinary(std::string key,std::string value);
   virtual std::string get(std::string key);
   virtual void del(std::string key);

@@ -10,6 +10,14 @@ class LPushConfig;
   
 extern LPushConfig * conf;
 int initConfig();
+struct LPushRedisConfig
+{
+  std::string host;
+  int 		port;
+  std::string pass;
+  int 		db;
+};
+
 struct LPushConfig
 {
 
@@ -19,11 +27,15 @@ struct LPushConfig
   std::string 		logdir;
   std::string 		logfilename;
   int 			loglevel;
+  std::string 		localhost;
+  LPushRedisConfig      *redisConfig;
   LPushConfig();
   ~LPushConfig();
   
   static LPushConfig* parse(std::string confName);
   static int 	    writeConf(LPushConfig* config);
+  
+  static std::string parse(std::map<std::string,std::string> params);
 };
 
   

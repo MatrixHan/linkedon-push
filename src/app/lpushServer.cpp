@@ -6,7 +6,7 @@
 #include <lpushConnection.h>
 
 #include <lpushJson.h>
-
+#include <lpushRedis.h>
 
 namespace lpush 
 {
@@ -377,8 +377,13 @@ int LPushServer::do_cycle()
         int temp_max = 1;
         temp_max = Max(temp_max, heartbeat_max_resolution);
         
+	if((ret = hreatRedis())!=ERROR_SUCCESS)
+	{
+	    lp_warn("redis conn hreat error");
+	}
+	
         for (int i = 0; i < temp_max; i++) {
-            st_usleep(100 * 1000);
+            st_usleep(1 * 1000);
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
@@ -402,6 +407,15 @@ int LPushServer::do_cycle()
     
 }
 
+int LPushServer::hreatRedis()
+{
+    int ret = ERROR_SUCCESS;
+    char buf[6];
+    sprintf(buf,"%d",getpid());
+    static std::string serverKey = conf->localhost + std::string(buf);
+    redis_client->set(serverKey,conns.size());
+    return ret;
+}
 
 
 int LPushServer::signal_init()

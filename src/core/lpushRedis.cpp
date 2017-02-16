@@ -1,8 +1,28 @@
 #include <lpushRedis.h>
 #include <lpushLogger.h>
-
+#include <lpushJson.h>
 namespace lpush 
 {
+  
+LPushRedisClient *redis_client =NULL;  
+
+bool RedisInitializer()
+{
+    LPushRedisConfig *redisConf = conf->redisConfig;
+    if(!redis_client)
+    {
+	 redis_client = new LPushRedisClient(redisConf->host.c_str(),redisConf->port);
+	 redis_client->initRedis();
+	 redis_client->auth(redisConf->pass);
+	 redis_client->selectDb(redisConf->db);
+    }
+}
+
+bool RedisClose()
+{
+    SafeDelete(redis_client);
+}
+  
 LPushRedisClient::LPushRedisClient(const char* _hostname, int _port):hostname(_hostname),port(_port)
 {
     timeout  = {1 , 500000};
@@ -32,6 +52,13 @@ bool LPushRedisClient::selectDb(int dbnum)
       freeReplyObject(reply);
       return true;
 }
+bool LPushRedisClient::auth(std::string pass)
+{
+      reply = (redisReply*)redisCommand(context,"AUTH %s",pass.c_str());
+      lp_info("redisClient AUTH   %s",reply->str);
+      freeReplyObject(reply);
+      return true;
+}
 
 bool LPushRedisClient::closeRedis()
 {
@@ -43,6 +70,15 @@ bool LPushRedisClient::closeRedis()
 std::string LPushRedisClient::set(std::string key, std::string value)
 {
       reply = (redisReply*)redisCommand(context,"SET %s %s",key.c_str(),value.c_str());
+      std::string result = reply->str;
+      lp_info("redisClient SET result return %s",reply->str);
+      freeReplyObject(reply);
+      return result;
+}
+
+std::string LPushRedisClient::set(std::string key, int value)
+{
+      reply = (redisReply*)redisCommand(context,"SET %s %d",key.c_str(),value);
       std::string result = reply->str;
       lp_info("redisClient SET result return %s",reply->str);
       freeReplyObject(reply);

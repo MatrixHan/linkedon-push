@@ -80,6 +80,8 @@ private:
   virtual void close_listeners();
   virtual void close_conns();
 public:
+  virtual int  hreatRedis();
+public:
   virtual void remove(LPushConnection *conn);  
   virtual void on_signal(int signo);    
   virtual int acquire_pid_file();  

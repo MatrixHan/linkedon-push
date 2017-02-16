@@ -4,6 +4,7 @@
 #include <lpushLogger.h>
 #include <lpushServer.h>
 #include <lpushSystemErrorDef.h>
+#include <lpushRedis.h>
 using namespace std;
 using namespace lpush;
 
@@ -24,6 +25,8 @@ int main(void)
 	}	
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
+	RedisInitializer();
+	
 	if ((ret = server->initializer()) != ERROR_SUCCESS)
 	{
 	  return ret;
@@ -31,6 +34,7 @@ int main(void)
 	//start_daemon();
 	run();
 	CloseLog();
+	RedisClose();
 	return 0;
 }
 
