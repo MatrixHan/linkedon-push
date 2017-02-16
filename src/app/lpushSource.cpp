@@ -2,6 +2,7 @@
 #include <lpushProtocolStack.h>
 #include <lpushLogger.h>
 #include <lpushSystemErrorDef.h>
+#include <lpushAppLpushConn.h>
 namespace lpush 
 {
 LPushWorkerMessage::LPushWorkerMessage()
@@ -68,19 +69,28 @@ int LPushFastQueue::pop(LPushWorkerMessage** msg)
     SafeDelete(lpwm);
     return 0;
 }
-void LPushFastQueue::clear()
-{
 
+bool LPushFastQueue::empty()
+{
+    return queue.empty();
 }
 
-LPushClient::LPushClient(st_netfd_t _cstfd, LPushSource* lpsource, LPushHandshakeMessage* message)
+
+void LPushFastQueue::clear()
+{
+    queue.clear();
+}
+
+LPushClient::LPushClient(st_netfd_t _cstfd, LPushSource* lpsource, LPushHandshakeMessage* message,LPushConn *_conn)
 {
     cstfd = _cstfd;
     source = lpsource;
+    conn = _conn;
     appId = message->appId;
     screteKey = message->screteKey;
     userId = message->userId;
     clientFlag = message->clientFlag;
+    can_play  = true;
 }
 
 LPushClient::~LPushClient()
@@ -88,8 +98,32 @@ LPushClient::~LPushClient()
 
 }
 
-std::map<st_netfd_t,LPushSource*> LPushSource::sources;
+int LPushClient::playing()
+{
+    int ret = ERROR_SUCCESS;
+	LPushWorkerMessage *work;
+	if((ret = source->pop(&work))!=ERROR_SUCCESS)
+	{
+	   lp_error("source pop error");
+	   return ret;
+	}
+	if((ret = conn->sendForward(work))!=ERROR_SUCCESS)
+	{
+	    lp_error("source send conn forward error!");
+	    return ret;
+	}
+    return ret;
+}
 
+bool LPushClient::can_loop()
+{
+    return !source->empty();
+}
+
+
+
+std::map<st_netfd_t,LPushSource*> LPushSource::sources;
+std::map<std::string,LPushClient*> LPushSource::clients;
 LPushSource::LPushSource()
 {
     queue = new LPushFastQueue();
@@ -117,6 +151,31 @@ LPushSource* LPushSource::instance(st_netfd_t stfd)
       
       return NULL;
 }
+
+LPushClient* LPushSource::create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn)
+{
+    LPushClient *lps = new LPushClient(_cstfd,lpsource,message,_conn);
+    std::string key = message->userId + message->appId +message->screteKey;
+    clients.insert(std::make_pair(key,lps));
+    return lps;
+}
+
+LPushClient* LPushSource::instance(std::string userId, std::string appId, std::string screteKey)
+{
+  std::string key = userId + appId +screteKey;
+   std::map<std::string,LPushClient*>::iterator itr = clients.find(key);
+   if(itr!=clients.end())
+   {
+     return (LPushClient*)itr->second;
+  }
+  return NULL;
+}
+
+bool LPushSource::empty()
+{
+    return queue->empty();
+}
+
 
 void LPushSource::destroy(st_netfd_t stfd)
 {

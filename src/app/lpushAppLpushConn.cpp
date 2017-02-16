@@ -6,6 +6,7 @@
 #include <lpushProtocolStack.h>
 #include <lpushSource.h>
 #include <lpushRecvThread.h>
+#include <lpushConsumThread.h>
 namespace lpush{
   
 #define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*60*1000*1000LL)
@@ -80,11 +81,15 @@ int LPushConn::createConnection()
     
     LPushSource * source = LPushSource::create(stfd);
     
-    client = new LPushClient(stfd,source,lphandshakeMsg);
+    client = LPushSource::create(stfd,source,lphandshakeMsg,this);
     
     LPushRecvThread trd(client,this,350);
     
     trd.start();
+    
+    LPushConsumThread trd2(client,350);
+    
+    trd2.start();
     
     return ret;
 }
@@ -135,6 +140,15 @@ int LPushConn::forwardServer(LPushChunk *message)
       default:
 	break;
     }
+    return ret;
+}
+
+int LPushConn::sendForward(LPushWorkerMessage* message)
+{
+    int ret = ERROR_SUCCESS;
+    int type = 0;
+    //LPushChunk lp;
+    //lpushProtocol->sendPacket();
     return ret;
 }
 

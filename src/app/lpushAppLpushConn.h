@@ -11,6 +11,7 @@ namespace lpush
   struct LPushChunk;
   class LPushHandshakeMessage;
   class LPushClient;
+  class LPushWorkerMessage;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -38,6 +39,9 @@ namespace lpush
       virtual int readMessage(LPushChunk *message);
       
       virtual int forwardServer(LPushChunk *message);
+      
+  public:
+      virtual int sendForward(LPushWorkerMessage *message);
   };
   
 }
