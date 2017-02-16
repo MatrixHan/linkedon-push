@@ -4,13 +4,22 @@
 #include <lpushSystemErrorDef.h>
 #include <lpushUtils.h>
 #include <lpushProtocolStack.h>
+#include <lpushSource.h>
 namespace lpush{
+  
+#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*60*1000*1000LL)
+// if timeout, close the connection.
+#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*60*1000*1000LL)
+  
 
 LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
 {
+    before_data_time = 0;
+    dispose = false;
     skt = new LPushStSocket(client_stfd);
     
     lpushProtocol = new LPushProtocol(skt);
+    
 }
 
 LPushConn::~LPushConn()
@@ -72,10 +81,24 @@ int LPushConn::createConnection()
 int LPushConn::controller_loop()
 {
     int ret = ERROR_SUCCESS;
-    while(true)
+    while(!dispose)
     {
+      ret = server_loop();
       
+      if(ret == ERROR_SUCCESS)
+      {
+	 continue;
+      }
       
+      if(ret==ERROR_SOCKET_TIMEOUT)
+      {
+	skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
+	skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
+	continue;
+      }
+      
+      lp_error("controller loop back error");
+      return ret;
     }
     return ret;
 }
@@ -84,6 +107,11 @@ int LPushConn::hreatbeat()
 {
       int ret = ERROR_SUCCESS;
       long long now = getCurrentTime();
+      
+}
+
+int LPushConn::server_loop()
+{
       
 }
 

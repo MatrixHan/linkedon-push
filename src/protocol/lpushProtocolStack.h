@@ -173,6 +173,7 @@ struct LPushChunk
   LPushChunk(LPushHeader &hd,unsigned char * chunk):header(hd)
   {
     data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
+    memset(data,0,hd.datalenght);
     memcpy(data,chunk,hd.datalenght);
   }
   ~LPushChunk()
@@ -185,7 +186,7 @@ struct LPushChunk
 
 class LPushHandshakeMessage
 {
-private:
+public:
   std::string appId;
   std::string screteKey;
   std::string userId;

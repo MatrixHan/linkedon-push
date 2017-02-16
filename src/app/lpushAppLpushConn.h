@@ -13,7 +13,9 @@ namespace lpush
   class LPushConn : virtual public LPushConnection
   {
   private:
-    long long before_data_time;
+    int before_data_time;
+    bool dispose;
+    
     LPushProtocol *lpushProtocol;
     LPushStSocket *skt;
     LPushHandshakeMessage *lphandshakeMsg;
@@ -31,6 +33,8 @@ namespace lpush
       virtual int hreatbeat();
       
       virtual int controller_loop();
+      
+      virtual int server_loop();
   };
   
 }
