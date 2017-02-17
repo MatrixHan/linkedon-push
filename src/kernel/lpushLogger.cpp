@@ -1,7 +1,7 @@
 #include <lpushLogger.h>
 #include <lpushUtils.h>
 #include <lpushSystemErrorDef.h>
-#include <sys/time.h>
+
 #include <st.h>
 
 #include <lpushJson.h>
@@ -278,17 +278,18 @@ bool LPushFastLog::generate_header(bool error, const char* tag, int context_id, 
     }
     
     // to calendar time
-    struct tm* tm;
-    if (utc) {
-        if ((tm = gmtime(&tv.tv_sec)) == NULL) {
-            return false;
-        }
-    } else {
-        if ((tm = localtime(&tv.tv_sec)) == NULL) {
-            return false;
-        }
-    }
-    
+//     struct tm* tm;
+//     if (utc) {
+//         if ((tm = gmtime(&tv.tv_sec)) == NULL) {
+//             return false;
+//         }
+//     } else {
+//         if ((tm = localtime_r(&tv.tv_sec)) == NULL) {
+//             return false;
+//         }
+//     }
+    struct tm *tm = (struct tm*)malloc(sizeof(struct tm));
+    tm = localtime_r(&tv.tv_sec,tm);
     // write log header
     int log_header_size = -1;
     
@@ -317,7 +318,7 @@ bool LPushFastLog::generate_header(bool error, const char* tag, int context_id, 
                 level_name, getpid(), context_id);
         }
     }
-
+    SafeDelete(tm);
     if (log_header_size == -1) {
         return false;
     }

@@ -48,6 +48,11 @@ int LPushConn::do_cycle()
        return ret;
     }
     lphandshakeMsg = &lpsm;
+    if((ret = lpushProtocol->sendHandshake(lpsm))!=ERROR_SUCCESS)
+    {
+	lp_error("lpush send handshake error");
+	return ret;
+    }
     if((ret = createConnection()) != ERROR_SUCCESS)
     {
       lp_error("conn createConnection error");

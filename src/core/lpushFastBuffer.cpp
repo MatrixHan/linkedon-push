@@ -18,6 +18,7 @@ LPushFastBuffer::LPushFastBuffer()
 {
     nb_buffer = LP_DEFAULT_RECV_BUFFER_SIZE;
     start = (char*)malloc(nb_buffer);
+    memset(start,0,nb_buffer);
     p = end = start;
 }
 

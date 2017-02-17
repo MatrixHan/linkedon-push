@@ -105,7 +105,7 @@ public:
 
 	virtual int recvhreatbeat(LPushChunk *message);
 public:
-	virtual int sendHandshake(LPushChunk *message);
+	virtual int sendHandshake(LPushHandshakeMessage lphm);
 
 	virtual int sendCreateConnection(LPushChunk *message);
 
@@ -170,7 +170,7 @@ struct LPushChunk
   LPushHeader header;
   unsigned char *data;
   LPushChunk(){data=NULL;}
-  LPushChunk(LPushHeader &hd,unsigned char * chunk):header(hd)
+  LPushChunk(LPushHeader hd,unsigned char * chunk):header(hd)
   {
     data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
     memset(data,0,hd.datalenght);
@@ -179,6 +179,13 @@ struct LPushChunk
   ~LPushChunk()
   {
     SafeDelete(data);
+  }
+  void setData(LPushHeader hd,unsigned char * chunk)
+  {
+     header = hd;
+    data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
+    memset(data,0,hd.datalenght);
+    memcpy(data,chunk,hd.datalenght);
   }
   
   LPushChunk* copy();
@@ -198,6 +205,7 @@ public:
   virtual ~LPushHandshakeMessage();
 public:
   virtual bool check();
+  virtual std::map<std::string,std::string> tomap();
 };
 
 class LPushHreatbeat

@@ -72,8 +72,8 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
       }
       
       char *buf = fast_buffer->read_slice(lph.datalenght);
-      LPushChunk pc(lph,(unsigned char*)buf);
-      lpc = pc;
+      lpc.setData(lph,(unsigned char*)buf);
+      lp_info("lpc data %0X",lpc.data);
       return ret;
 }
 
@@ -136,9 +136,26 @@ int LPushProtocol::recvhreatbeat(LPushChunk* message)
       return ret;
 }
 
-int LPushProtocol::sendHandshake(LPushChunk* message)
-{
-    return sendPacket(message);
+int LPushProtocol::sendHandshake(LPushHandshakeMessage lphm)
+{	
+    int ret = ERROR_SUCCESS;
+    int time = (int)getCurrentTime();
+    std::string data = LPushConfig::parse(lphm.tomap());
+    LPushHeader lp("LPUSH",time,LPUSH_CALLBACK_TYPE_HANDSHAKE,data.length()+1);
+    char *buf = new char[data.length()+1];
+    memset(buf,0,data.length()+1);
+    char  *b = buf;
+    b[0] = LPUSH_FMT_JSON;
+    memcpy(&b[1],data.c_str(),data.length());
+    LPushChunk* message=new LPushChunk(lp,(unsigned char*)buf);
+    SafeDelete(buf);
+    if((ret=sendPacket(message))!=ERROR_SUCCESS)
+    {
+	lp_error("send packet error");
+	return ret;
+    }
+    SafeDelete(message);
+    return ret;
 }
 
 int LPushProtocol::sendCreateConnection(LPushChunk* message)
@@ -180,10 +197,10 @@ int LPushProtocol::sendPacket(LPushChunk* message)
     if((ret=lst->writev(iovs,2,NULL))!=ERROR_SUCCESS)
     {
 	lp_error("send message packet error");
-	delete buf;
+	SafeDelete(buf);
 	return ret;
     }
-    delete buf;
+    SafeDelete(buf);
     return ret;
 }
 
@@ -223,6 +240,16 @@ bool LPushHandshakeMessage::check()
        return false;
     }
      return true;
+}
+std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::tomap()
+{
+    std::map< std::__cxx11::string, std::__cxx11::string > map;
+    map.insert(std::make_pair("appId",appId));
+    map.insert(std::make_pair("screteKey",screteKey));
+    map.insert(std::make_pair("userId",userId));
+    map.insert(std::make_pair("clientFlag",clientFlag));
+    map.insert(std::make_pair("md5Data",md5Data));
+    return map;
 }
 
 
