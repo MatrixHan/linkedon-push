@@ -67,7 +67,7 @@ int LPushFMT::decodeJson(unsigned char* data, std::map< std::string, std::string
 	str = std::string(jsonData);
 	if (!reader.parse(str, root, false))
 	{
-	    return NULL;
+	    return ERROR_FMT;
 	}
 	Json::Value::iterator itr = root.begin();
 	for(;itr!=root.end();++itr)

@@ -72,6 +72,7 @@ int LPushRecvThread::cycle()
         }
         lp_verbose("thread loop recv message. ret=%d", ret);
     }
+    return ret;
 }
 
 int LPushRecvThread::start()

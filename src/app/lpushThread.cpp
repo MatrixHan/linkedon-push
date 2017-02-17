@@ -379,7 +379,7 @@ int LPushEndlessThread::cycle()
 
 int LPushEndlessThread::on_end_cycle()
 {
-return handler->on_end_cycle();
+  return handler->on_end_cycle();
 }
 void LPushEndlessThread::on_thread_start()
 {
@@ -393,7 +393,7 @@ void LPushEndlessThread::on_thread_stop()
 
 int LPushEndlessThread::start()
 {
-      pthread->start();
+     return  pthread->start();
 }
 
   

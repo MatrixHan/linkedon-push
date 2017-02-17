@@ -16,11 +16,13 @@ bool RedisInitializer()
 	 redis_client->auth(redisConf->pass);
 	 redis_client->selectDb(redisConf->db);
     }
+    return true;
 }
 
 bool RedisClose()
 {
     SafeDelete(redis_client);
+    return true;
 }
   
 LPushRedisClient::LPushRedisClient(const char* _hostname, int _port):hostname(_hostname),port(_port)
@@ -65,6 +67,7 @@ bool LPushRedisClient::closeRedis()
     /* Disconnects and frees the context */
     if(context)
     redisFree(context);
+    return true;
 }
 
 std::string LPushRedisClient::set(std::string key, std::string value)
