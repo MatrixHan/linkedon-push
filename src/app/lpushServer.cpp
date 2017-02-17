@@ -4,7 +4,7 @@
 #include <lpushAppSt.h>
 
 #include <lpushConnection.h>
-
+#include <lpushSource.h>
 #include <lpushJson.h>
 #include <lpushRedis.h>
 
@@ -410,10 +410,9 @@ int LPushServer::do_cycle()
 int LPushServer::hreatRedis()
 {
     int ret = ERROR_SUCCESS;
-    char buf[6];
-    sprintf(buf,"%d",getpid());
-    static std::string serverKey = conf->localhost + std::string(buf);
-    redis_client->set(serverKey,conns.size());
+    static std::string serverKey = conf->localhost;
+    std::string status = LPushSystemStatus::statusToJson(conns.size());
+    redis_client->hset("serverList",serverKey,status);
     return ret;
 }
 

@@ -3,8 +3,29 @@
 #include <lpushLogger.h>
 #include <lpushSystemErrorDef.h>
 #include <lpushAppLpushConn.h>
+#include <lpushJson.h>
 namespace lpush 
 {
+  
+std::string LPushSystemStatus::statusToJson(int conns)
+{
+    std::string result;
+    std::map<std::string,std::string> status;
+    std::string localhost = conf->localhost;
+    status.insert(std::make_pair("localhost",localhost));
+    char buf[6];
+    memset(buf,0,6);
+    sprintf(buf,"%d",getpid());
+    status.insert(std::make_pair("processId",std::string(buf)));
+    memset(buf,0,6);
+    sprintf(buf,"%d",conns);
+    status.insert(std::make_pair("serverConnectionNO",std::string(buf)));
+    
+    result = LPushConfig::parse(status);
+    return result;
+}
+  
+  
 LPushWorkerMessage::LPushWorkerMessage()
 {
       workerType = 0;

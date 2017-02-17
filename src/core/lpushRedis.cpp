@@ -137,10 +137,27 @@ bool LPushRedisClient::lPushForList(std::string key, std::string value)
      return true;
 }
 
-std::string LPushRedisClient::setForBinary(std::string key, std::string value)
+bool LPushRedisClient::lpop(std::__cxx11::string key)
 {
-     reply = (redisReply*)redisCommand(context,"SET %b %b",key.c_str(),key.size(),value.c_str(),value.size());
-      std::string result = reply->str;
+      reply = (redisReply*)redisCommand(context,"lpop %s ",key.c_str());
+     lp_info("redisClient lpop beging top  key %s  ",key.c_str());
+     freeReplyObject(reply);
+     return true;
+}
+
+bool LPushRedisClient::rpop(std::__cxx11::string key)
+{
+      reply = (redisReply*)redisCommand(context,"rpop %s ",key.c_str());
+     lp_info("redisClient rpop beging last  key %s ",key.c_str());
+     freeReplyObject(reply);
+     return true;
+}
+
+
+std::string LPushRedisClient::setForBinary(const char* buf,int blen,const char* value,int vlen)
+{
+     reply = (redisReply*)redisCommand(context,"SET %b %b",buf,blen,value,vlen);
+      std::string result = std::string(reply->str);
       lp_info("redisClient SET result return %s",reply->str);
       freeReplyObject(reply);
       return result;
@@ -149,6 +166,54 @@ std::string LPushRedisClient::setForBinary(std::string key, std::string value)
 void LPushRedisClient::setTimeout(int seconds, int naseconds)
 {
     timeout = {seconds,naseconds};
+}
+
+
+bool LPushRedisClient::hset(std::__cxx11::string key, std::__cxx11::string field, std::__cxx11::string value)
+{
+      reply = (redisReply*)redisCommand(context,"hset %s %s %s",key.c_str(),field.c_str(),value.c_str());
+      lp_info("redis client hset key %s field %s ",key.c_str(),field.c_str());
+      freeReplyObject(reply);
+      return true;
+}
+
+std::__cxx11::string LPushRedisClient::hget(std::__cxx11::string key, std::__cxx11::string field)
+{
+      reply = (redisReply*)redisCommand(context,"hget %s %s ",key.c_str(),field.c_str());
+      std::string result = std::string(reply->str);
+      lp_info("redis client hget key %s field %s value %s",key.c_str(),field.c_str(),reply->str);
+      freeReplyObject(reply);
+      return result;
+}
+
+bool LPushRedisClient::hsetnx(std::__cxx11::string key, std::__cxx11::string field, std::__cxx11::string value)
+{
+      reply = (redisReply*)redisCommand(context,"hsetnx %s %s %s",key.c_str(),field.c_str(),value.c_str());
+      lp_info("redis client hsetnx key %s field %s ",key.c_str(),field.c_str());
+      freeReplyObject(reply);
+      return true;
+}
+
+std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hmget(char *format, ...)
+{
+      std::map<std::string,std::string > result;
+      va_list ap;
+      va_start(ap, format);
+      reply = (redisReply*)redisCommand(context,format,ap);
+      va_end(ap);
+      lp_info("redis client hmget ");
+      freeReplyObject(reply);
+      return result;
+}
+
+std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hgetall(std::__cxx11::string key)
+{
+      std::map<std::string,std::string > result;
+      reply = (redisReply*)redisCommand(context,"hgetall %s",key.c_str());
+      
+      freeReplyObject(reply);
+      
+      return result;
 }
 
 

@@ -77,17 +77,15 @@ int LPushConfig::writeConf(LPushConfig* config)
 }
 string LPushConfig::parse(map< string, string > params)
 {
-    Json::Value root;
     Json::FastWriter writer;
     Json::Value person;
-    std::string json_file = writer.write(root);
     std::string ret;
     std::map< std::string, std::string >::iterator itr=params.begin();
     for(;itr!=params.end();++itr)
     {
       person[itr->first]=itr->second;
     }
-    ret.append(json_file);
+    ret.append(person.toStyledString());
     return ret;
 }
 

@@ -4,6 +4,14 @@
 #include <st.h>
 namespace lpush 
 {
+  
+class LPushSystemStatus
+{
+public:
+  static std::string statusToJson(int conns);
+};
+  
+  
 class LPushHandshakeMessage;
 class LPushSource;
 class LPushConn;

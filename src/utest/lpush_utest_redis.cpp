@@ -9,7 +9,7 @@ void LPushUtestRedis::test1()
   client->initRedis();
   client->set("foo","t11");
   string result = client->get("foo"); 
-  client->setForBinary("tpp","saa");
+  client->setForBinary("tpp",3,"saa",3);
   result = client->get("tpp"); 
   client->lPushForList("mylist","{\"name\":\"lisi\"}");
   client->list("mylist",0,-1);
