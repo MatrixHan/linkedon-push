@@ -2,6 +2,7 @@
 #include <lpushRedis.h>
 
 using namespace lpush;
+using namespace std;
 void LPushUtestRedis::test1()
 {
   LPushRedisClient *client = new LPushRedisClient("127.0.0.1",6379);
