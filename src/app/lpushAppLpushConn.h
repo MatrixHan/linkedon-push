@@ -19,7 +19,8 @@ namespace lpush
   private:
     int before_data_time;
     bool dispose;
-    
+    std::string  clientKey;
+  private:
     LPushProtocol *lpushProtocol;
     LPushStSocket *skt;
     LPushHandshakeMessage *lphandshakeMsg;
@@ -48,7 +49,7 @@ namespace lpush
   public:
       virtual int sendForward(LPushWorkerMessage *message);
       
-      virtual void dispose();
+      virtual void do_dispose();
   };
   
 }

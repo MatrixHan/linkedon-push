@@ -7,6 +7,8 @@
 #include <lpushSource.h>
 #include <lpushRecvThread.h>
 #include <lpushConsumThread.h>
+#include <lpushJson.h>
+#include <lpushRedis.h>
 namespace lpush{
   
 #define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*60*1000*1000LL)
@@ -94,6 +96,12 @@ int LPushConn::createConnection()
 	return ret;
     }
     
+    char buf[6];
+    clientKey = lphandshakeMsg->appId + lphandshakeMsg->userId;
+    sprintf(buf,"%d",conf->port);
+    std::string  hostname = conf->localhost+":"+std::string(buf);
+    redis_client->set(clientKey,hostname);
+    
     LPushSource * source = LPushSource::create(stfd);
     
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
@@ -125,11 +133,12 @@ int LPushConn::readMessage(LPushChunk *message)
     return ret;
 }
 
-void LPushConn::dispose()
+void LPushConn::do_dispose()
 {
     dispose = true;
     trd->stop();
     trd2->stop();
+    redis_client->del(clientKey);
 }
 
 
@@ -146,7 +155,7 @@ int LPushConn::forwardServer(LPushChunk *message)
       case LPUSH_HEADER_TYPE_HREATBEAT:
 	break;
       case LPUSH_HEADER_TYPE_CLOSE:
-	dispose();
+	do_dispose();
 	break;
       case LPUSH_HEADER_TYPE_TEST_PUSH:
 	break;

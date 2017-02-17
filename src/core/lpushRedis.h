@@ -49,8 +49,6 @@ public:
   
   virtual bool hsetnx(std::string key,std::string field,std::string value);
   
-  virtual std::map<std::string,std::string> hmget(char *format,...);
-  
   virtual std::map<std::string,std::string> hgetall(std::string key);
   
 };

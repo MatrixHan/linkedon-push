@@ -66,8 +66,8 @@ int LPushRecvThread::cycle()
     
             // we use no timeout to recv, should never got any error.
             trd->interrupt();
-           
-    
+	    
+	    stack->do_dispose();
             return ret;
         }
         lp_verbose("thread loop recv message. ret=%d", ret);

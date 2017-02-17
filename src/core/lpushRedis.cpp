@@ -194,23 +194,17 @@ bool LPushRedisClient::hsetnx(std::__cxx11::string key, std::__cxx11::string fie
       return true;
 }
 
-std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hmget(char *format, ...)
-{
-      std::map<std::string,std::string > result;
-      va_list ap;
-      va_start(ap, format);
-      reply = (redisReply*)redisCommand(context,format,ap);
-      va_end(ap);
-      lp_info("redis client hmget ");
-      freeReplyObject(reply);
-      return result;
-}
-
 std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hgetall(std::__cxx11::string key)
 {
       std::map<std::string,std::string > result;
       reply = (redisReply*)redisCommand(context,"hgetall %s",key.c_str());
-      
+      if (reply->type == REDIS_REPLY_ARRAY) {
+        for (int j = 0; j < reply->elements; j+=2) {
+            lp_info("key) %s  value) %s\n", reply->element[j]->str, reply->element[j+1]->str);
+	    result.insert(std::make_pair(std::string(reply->element[j]->str),
+					 std::string(reply->element[j+1]->str)));
+        }
+    }
       freeReplyObject(reply);
       
       return result;
