@@ -50,14 +50,14 @@ bool LPushRedisClient::initRedis()
 bool LPushRedisClient::selectDb(int dbnum)
 {
       reply = (redisReply*)redisCommand(context,"select %d",dbnum);
-      lp_info("redisClient checkout db  %d",dbnum);
+      lp_trace("redisClient checkout db  %d",dbnum);
       freeReplyObject(reply);
       return true;
 }
 bool LPushRedisClient::auth(std::string pass)
 {
       reply = (redisReply*)redisCommand(context,"AUTH %s",pass.c_str());
-      lp_info("redisClient AUTH   %s",reply->str);
+      lp_trace("redisClient AUTH   %s",reply->str);
       freeReplyObject(reply);
       return true;
 }
@@ -74,7 +74,7 @@ std::string LPushRedisClient::set(std::string key, std::string value)
 {
       reply = (redisReply*)redisCommand(context,"SET %s %s",key.c_str(),value.c_str());
       std::string result = reply->str;
-      lp_info("redisClient SET result return %s",reply->str);
+      lp_trace("redisClient SET result return %s",reply->str);
       freeReplyObject(reply);
       return result;
 }
@@ -83,7 +83,7 @@ std::string LPushRedisClient::set(std::string key, int value)
 {
       reply = (redisReply*)redisCommand(context,"SET %s %d",key.c_str(),value);
       std::string result = reply->str;
-      lp_info("redisClient SET result return %s",reply->str);
+      lp_trace("redisClient SET result return %s",reply->str);
       freeReplyObject(reply);
       return result;
 }
@@ -92,7 +92,7 @@ std::string LPushRedisClient::get(std::string key)
 {
       reply = (redisReply*)redisCommand(context,"GET %s",key.c_str());
       std::string result = std::string(reply->str);
-      lp_info("redisClient GET key %s result %s",key.c_str(),result.c_str());
+      lp_trace("redisClient GET key %s result %s",key.c_str(),result.c_str());
       freeReplyObject(reply);
       return result;
 }
@@ -100,7 +100,7 @@ std::string LPushRedisClient::get(std::string key)
 void LPushRedisClient::del(std::string key)
 {
       reply = (redisReply*)redisCommand(context,"DEL %s",key.c_str());
-      lp_info("redisClient DEL key %s",key.c_str());
+      lp_trace("redisClient DEL key %s",key.c_str());
       freeReplyObject(reply);
 }
 
@@ -124,7 +124,7 @@ std::vector< std::string > LPushRedisClient::list(std::string key, int page, int
     reply = (redisReply*)redisCommand(context,"LRANGE %s %d %d",key.c_str(),begin,end);
     if (reply->type == REDIS_REPLY_ARRAY) {
         for (int j = 0; j < reply->elements; j++) {
-            lp_info("%u) %s\n", j, reply->element[j]->str);
+            lp_trace("%u) %s\n", j, reply->element[j]->str);
 	    lists.push_back(std::string(reply->element[j]->str));
         }
     }
@@ -135,7 +135,7 @@ std::vector< std::string > LPushRedisClient::list(std::string key, int page, int
 bool LPushRedisClient::lPushForList(std::string key, std::string value)
 {
      reply = (redisReply*)redisCommand(context,"LPUSH %s %s",key.c_str(),value.c_str());
-     lp_info("redisClient LPUSH key %s value %s",key.c_str(),value.c_str());
+     lp_trace("redisClient LPUSH key %s value %s",key.c_str(),value.c_str());
      freeReplyObject(reply);
      return true;
 }
@@ -143,7 +143,7 @@ bool LPushRedisClient::lPushForList(std::string key, std::string value)
 bool LPushRedisClient::lpop(std::__cxx11::string key)
 {
       reply = (redisReply*)redisCommand(context,"lpop %s ",key.c_str());
-     lp_info("redisClient lpop beging top  key %s  ",key.c_str());
+     lp_trace("redisClient lpop beging top  key %s  ",key.c_str());
      freeReplyObject(reply);
      return true;
 }
@@ -151,7 +151,7 @@ bool LPushRedisClient::lpop(std::__cxx11::string key)
 bool LPushRedisClient::rpop(std::__cxx11::string key)
 {
       reply = (redisReply*)redisCommand(context,"rpop %s ",key.c_str());
-     lp_info("redisClient rpop beging last  key %s ",key.c_str());
+     lp_trace("redisClient rpop beging last  key %s ",key.c_str());
      freeReplyObject(reply);
      return true;
 }
@@ -161,7 +161,7 @@ std::string LPushRedisClient::setForBinary(const char* buf,int blen,const char* 
 {
      reply = (redisReply*)redisCommand(context,"SET %b %b",buf,blen,value,vlen);
       std::string result = std::string(reply->str);
-      lp_info("redisClient SET result return %s",reply->str);
+      lp_trace("redisClient SET result return %s",reply->str);
       freeReplyObject(reply);
       return result;
 }
@@ -175,7 +175,7 @@ void LPushRedisClient::setTimeout(int seconds, int naseconds)
 bool LPushRedisClient::hset(std::__cxx11::string key, std::__cxx11::string field, std::__cxx11::string value)
 {
       reply = (redisReply*)redisCommand(context,"hset %s %s %s",key.c_str(),field.c_str(),value.c_str());
-      lp_info("redis client hset key %s field %s ",key.c_str(),field.c_str());
+      lp_trace("redis client hset key %s field %s ",key.c_str(),field.c_str());
       freeReplyObject(reply);
       return true;
 }
@@ -184,7 +184,7 @@ std::__cxx11::string LPushRedisClient::hget(std::__cxx11::string key, std::__cxx
 {
       reply = (redisReply*)redisCommand(context,"hget %s %s ",key.c_str(),field.c_str());
       std::string result = std::string(reply->str);
-      lp_info("redis client hget key %s field %s value %s",key.c_str(),field.c_str(),reply->str);
+      lp_trace("redis client hget key %s field %s value %s",key.c_str(),field.c_str(),reply->str);
       freeReplyObject(reply);
       return result;
 }
@@ -192,7 +192,7 @@ std::__cxx11::string LPushRedisClient::hget(std::__cxx11::string key, std::__cxx
 bool LPushRedisClient::hsetnx(std::__cxx11::string key, std::__cxx11::string field, std::__cxx11::string value)
 {
       reply = (redisReply*)redisCommand(context,"hsetnx %s %s %s",key.c_str(),field.c_str(),value.c_str());
-      lp_info("redis client hsetnx key %s field %s ",key.c_str(),field.c_str());
+      lp_trace("redis client hsetnx key %s field %s ",key.c_str(),field.c_str());
       freeReplyObject(reply);
       return true;
 }
@@ -203,7 +203,7 @@ std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hgetall
       reply = (redisReply*)redisCommand(context,"hgetall %s",key.c_str());
       if (reply->type == REDIS_REPLY_ARRAY) {
         for (int j = 0; j < reply->elements; j+=2) {
-            lp_info("key) %s  value) %s\n", reply->element[j]->str, reply->element[j+1]->str);
+            lp_trace("key) %s  value) %s\n", reply->element[j]->str, reply->element[j+1]->str);
 	    result.insert(std::make_pair(std::string(reply->element[j]->str),
 					 std::string(reply->element[j+1]->str)));
         }

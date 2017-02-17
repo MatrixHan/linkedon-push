@@ -63,6 +63,8 @@ private:
     LPushSignalManager *signalManager;        
     bool signal_reload ;
     bool signal_gracefully_quit;
+    long long startTime;
+    long long beforeTime;
 public:
   LPushServer();
   virtual ~LPushServer();

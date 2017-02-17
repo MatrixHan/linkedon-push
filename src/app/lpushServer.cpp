@@ -7,6 +7,7 @@
 #include <lpushSource.h>
 #include <lpushJson.h>
 #include <lpushRedis.h>
+#include <lpushUtils.h>
 
 namespace lpush 
 {
@@ -172,7 +173,7 @@ LPushServer::LPushServer()
 {
     signal_reload = false;
     signal_gracefully_quit = false;
-    
+    startTime = beforeTime = 0L;
     signalManager = NULL;
 }
 
@@ -366,7 +367,7 @@ int LPushServer::do_cycle()
     int ret = ERROR_SUCCESS;
     
 
-    
+    startTime=beforeTime = getCurrentTime();
     // the deamon thread, update the time cache
     while (true) {
 
@@ -410,9 +411,13 @@ int LPushServer::do_cycle()
 int LPushServer::hreatRedis()
 {
     int ret = ERROR_SUCCESS;
+    long long nowtime = getCurrentTime();
+    if(nowtime-beforeTime>5){
     static std::string serverKey = conf->localhost;
     std::string status = LPushSystemStatus::statusToJson(conns.size());
     redis_client->hset("serverList",serverKey,status);
+    beforeTime = getCurrentTime();
+    }
     return ret;
 }
 
