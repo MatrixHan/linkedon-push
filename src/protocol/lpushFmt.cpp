@@ -188,10 +188,8 @@ std::string LPushFMT::encodeString(std::string src)
 
 std::string LPushFMT::encodeJson(std::map< std::string, std::string > src)
 {
-    Json::Value root;
     Json::FastWriter writer;
     Json::Value person;
-    std::string json_file = writer.write(root);
     std::string ret;
     std::map< std::string, std::string >::iterator itr=src.begin();
     for(;itr!=src.end();++itr)
@@ -200,14 +198,14 @@ std::string LPushFMT::encodeJson(std::map< std::string, std::string > src)
     }
     char *buf = (char*)malloc(5);
     memset(buf,0,5);
-    int len = json_file.size();
+    int len = person.toStyledString().size();
     *buf++ |= LPUSH_FMT_JSON;
     *buf++ |=(len>>24)&0xFF;
     *buf++ |=(len>>16)&0xFF;
     *buf++ |=(len>>8)&0xFF;
     *buf++ |=(len)&0xFF;
     ret.append(buf);
-    ret.append(json_file);
+    ret.append(person.toStyledString());
     SafeDelete(buf);
     return ret;
 }

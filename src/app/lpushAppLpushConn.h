@@ -12,6 +12,8 @@ namespace lpush
   class LPushHandshakeMessage;
   class LPushClient;
   class LPushWorkerMessage;
+  class LPushRecvThread;
+  class LPushConsumThread;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -22,6 +24,9 @@ namespace lpush
     LPushStSocket *skt;
     LPushHandshakeMessage *lphandshakeMsg;
     LPushClient		  *client;
+  private:
+    LPushRecvThread *trd;
+    LPushConsumThread *trd2;
   public:
       LPushConn(LPushServer* _server, st_netfd_t client_stfd);
       virtual ~LPushConn();
@@ -42,6 +47,8 @@ namespace lpush
       
   public:
       virtual int sendForward(LPushWorkerMessage *message);
+      
+      virtual void dispose();
   };
   
 }

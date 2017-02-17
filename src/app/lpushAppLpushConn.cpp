@@ -21,6 +21,8 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     skt = new LPushStSocket(client_stfd);
     client =NULL;
     lpushProtocol = new LPushProtocol(skt);
+    trd = NULL;
+    trd2 = NULL;
     
 }
 
@@ -29,6 +31,8 @@ LPushConn::~LPushConn()
     SafeDelete(lpushProtocol);
     SafeDelete(skt);
     SafeDelete(client);
+    SafeDelete(trd);
+    SafeDelete(trd2);
 }
 
 
@@ -46,6 +50,17 @@ int LPushConn::do_cycle()
     {
       lp_error("conn createConnection error");
        return ret;
+    }
+    trd =new LPushRecvThread (client,this,350);
+    
+    trd->start();
+    
+    trd2 = new LPushConsumThread(client,350);
+    
+    trd2->start();
+    while(!dispose)
+    {
+	st_usleep(350*1000);
     }
     return ret;
 }
@@ -83,14 +98,6 @@ int LPushConn::createConnection()
     
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
     
-    LPushRecvThread trd(client,this,350);
-    
-    trd.start();
-    
-    LPushConsumThread trd2(client,350);
-    
-    trd2.start();
-    
     return ret;
 }
 
@@ -118,6 +125,13 @@ int LPushConn::readMessage(LPushChunk *message)
     return ret;
 }
 
+void LPushConn::dispose()
+{
+    dispose = true;
+    trd->stop();
+    trd2->stop();
+}
+
 
 int LPushConn::forwardServer(LPushChunk *message)
 {
@@ -132,6 +146,7 @@ int LPushConn::forwardServer(LPushChunk *message)
       case LPUSH_HEADER_TYPE_HREATBEAT:
 	break;
       case LPUSH_HEADER_TYPE_CLOSE:
+	dispose();
 	break;
       case LPUSH_HEADER_TYPE_TEST_PUSH:
 	break;
