@@ -140,7 +140,7 @@ int LPushProtocol::sendHandshake(LPushHandshakeMessage lphm)
 {	
     int ret = ERROR_SUCCESS;
     int time = (int)getCurrentTime();
-    std::string data = LPushConfig::parse(lphm.tomap());
+    std::string data = LPushConfig::mapToJsonStr(lphm.tomap());
     LPushHeader lp("LPUSH",time,LPUSH_CALLBACK_TYPE_HANDSHAKE,data.length()+1);
     char *buf = new char[data.length()+1];
     memset(buf,0,data.length()+1);

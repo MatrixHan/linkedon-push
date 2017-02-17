@@ -35,7 +35,7 @@ struct LPushConfig
   static LPushConfig* parse(std::string confName);
   static int 	    writeConf(LPushConfig* config);
   
-  static std::string parse(std::map<std::string,std::string> params);
+  static std::string mapToJsonStr(std::map<std::string,std::string> params);
 };
 
   

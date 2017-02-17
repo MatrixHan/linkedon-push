@@ -75,7 +75,7 @@ int LPushConfig::writeConf(LPushConfig* config)
     return 0;
     
 }
-string LPushConfig::parse(map< string, string > params)
+string LPushConfig::mapToJsonStr(map< string, string > params)
 {
     Json::FastWriter writer;
     Json::Value person;

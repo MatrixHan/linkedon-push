@@ -21,7 +21,7 @@ std::string LPushSystemStatus::statusToJson(int conns)
     sprintf(buf,"%d",conns);
     status.insert(std::make_pair("serverConnectionNO",std::string(buf)));
     
-    result = LPushConfig::parse(status);
+    result = LPushConfig::mapToJsonStr(status);
     return result;
 }
   

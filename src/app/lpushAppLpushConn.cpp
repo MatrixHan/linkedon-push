@@ -146,7 +146,7 @@ void LPushConn::do_dispose()
     redis_client->del(clientKey);
 }
 
-
+//recv thread use
 int LPushConn::forwardServer(LPushChunk *message)
 {
     int ret = ERROR_SUCCESS;
@@ -171,7 +171,7 @@ int LPushConn::forwardServer(LPushChunk *message)
     }
     return ret;
 }
-
+//consum thread use
 int LPushConn::sendForward(LPushWorkerMessage* message)
 {
     int ret = ERROR_SUCCESS;
