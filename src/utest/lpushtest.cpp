@@ -1,4 +1,5 @@
 #include "lpushtest.h"
+#include "lpushUtils.h"
 
 using namespace lpush;
 
@@ -61,11 +62,9 @@ int LpushTest::send_handshake_message()
 	set_handshake_message();
 	set_packet_header();
 	
-	while (1)
-	{			
-		len = send(client_sockfd, buf, datalen+14, 0);
-		sleep(3);
-	}	
+		
+	len = send(client_sockfd, buf, datalen+14, 0);
+
 	
 	return RET_SUCCESS;
 }
@@ -84,12 +83,13 @@ int LpushTest::set_handshake_message()
 	headjson.insert(pair<string, string>("md5Data", md5Data));
 	
 	string msg = LPushConfig::mapToJsonStr(headjson);
+	Trim(msg);
 	
 	datalen = msg.size() + 5;
 	unsigned int jsonlen = htonl(msg.size());
 	memcpy(p + 15, &jsonlen, 4);
 	
-	memcpy(p + 20, msg.c_str(), msg.size());
+	memcpy(p + 19, msg.c_str(), msg.size());
 }
 
 int LpushTest::set_packet_header()

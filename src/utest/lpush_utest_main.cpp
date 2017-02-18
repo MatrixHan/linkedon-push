@@ -29,14 +29,14 @@ void *thread_recv(void *)
 {
 	while (1)
 	{
-		pthread_mutex_lock(&mut);
+		//pthread_mutex_lock(&mut);
 		if (test.recv_message() > 0)
 		{	
 			test.buf[test.datalen] = 0x0;
 			printf("%s\n", test.buf);
 			test.init_message();
 		}
-		pthread_mutex_unlock(&mut);
+		//pthread_mutex_unlock(&mut);
 		sleep(1);
 	}	
 	
@@ -46,10 +46,12 @@ void *thread_recv(void *)
 void thread_create()
 {
 	memset(&thread, 0, sizeof(thread));
-	if (pthread_create(&thread[0], NULL, send_heart, NULL) != 0)
-	{
-		printf("thread heart create fail!\n");
-	}
+	
+// 	if (pthread_create(&thread[0], NULL, send_heart, NULL) != 0)
+// 	{
+// 		printf("thread heart create fail!\n");
+// 	}
+	
 	if (pthread_create(&thread[1], NULL, thread_recv, NULL) != 0)
 	{
 		printf("thread recv create fail!\n");
