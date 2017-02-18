@@ -1,6 +1,6 @@
 #include <lpushFmt.h>
 #include <lpushMath.h>
-
+#include <lpushUtils.h>
 namespace lpush 
 {
   
@@ -55,24 +55,30 @@ int LPushFMT::decodeJson(unsigned char* data, std::map< std::string, std::string
     unsigned char *buf = data;
     Json::Reader reader;
     Json::Value  root;
+    Json::Value::Members members;  
     char * jsonData ;
     int jsonLenght = 0;
     if((*buf++ & 0x0F) == LPUSH_FMT_JSON)
     {
 	jsonLenght = (*buf++ & 0xFF) << 24 | (*buf++ & 0xFF) << 16 | (*buf++ & 0xFF) << 8 | (*buf++ & 0xFF); 
 	jsonData = (char*)malloc(jsonLenght);
+	memset(jsonData,0,jsonLenght);
 	memcpy(jsonData,buf,jsonLenght);
 	buf+=jsonLenght;
-	jsonData[jsonLenght++] = '\0';
-	str = std::string(jsonData);
-	if (!reader.parse(str, root, false))
+	char *begin ,*end;
+	begin=jsonData;
+	end = jsonData+jsonLenght;
+	if (!reader.parse(begin , end, root, false))
 	{
 	    return ERROR_FMT;
 	}
-	Json::Value::iterator itr = root.begin();
-	for(;itr!=root.end();++itr)
+	members = root.getMemberNames();
+	Json::Value::Members::iterator itr = members.begin();
+	for(;itr!=members.end();++itr)
 	{
-	  ret.insert(std::make_pair(itr.name(),itr.key().asString()));
+	  std::string key = *itr;
+	  std::string value = root[key].asString();
+	  ret.insert(std::make_pair(key,value));
 	}
 	SafeDelete(jsonData);
     }

@@ -204,6 +204,7 @@ public:
   LPushHandshakeMessage(std::map<std::string,std::string> parms);
   virtual ~LPushHandshakeMessage();
 public:
+  virtual void setParams(std::map<std::string,std::string> parms);
   virtual bool check();
   virtual std::map<std::string,std::string> tomap();
 };
@@ -226,6 +227,8 @@ public:
 	LPushCreateMessage();
 	LPushCreateMessage(std::string cs);
 	virtual ~LPushCreateMessage();
+public:
+  virtual void setStr(std::string cs);
 };
 
 }

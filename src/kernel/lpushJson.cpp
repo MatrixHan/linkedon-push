@@ -1,4 +1,5 @@
 #include <lpushJson.h>
+#include <lpushUtils.h>
 using namespace std;
 namespace lpush 
 {
@@ -86,6 +87,7 @@ string LPushConfig::mapToJsonStr(map< string, string > params)
       person[itr->first]=itr->second;
     }
     ret.append(person.toStyledString());
+    Trim(ret);
     return ret;
 }
 

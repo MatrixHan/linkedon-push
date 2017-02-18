@@ -6,6 +6,7 @@
 #define ERROR_SYSTEM_HANDSHAKE                     	200	
 #define ERROR_FMT					201
 #define ERROR_CONN_HREATBEAT_TIMEOUT			202
+#define ERROR_DATA_EMPTY				203
 
 #define ERROR_SOCKET_CREATE                 		1000
 #define ERROR_SOCKET_SETREUSE               		1001
