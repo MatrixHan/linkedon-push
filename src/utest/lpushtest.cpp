@@ -57,18 +57,25 @@ int LpushTest::init_message()
 int LpushTest::send_handshake_message()
 {
 	int len = -1;
-	set_packet_header();
-	set_handshake_message();
 	
-	len = send(client_sockfd, buf, datalen, 0);
+	set_handshake_message();
+	set_packet_header();
+	
+	while (1)
+	{			
+		len = send(client_sockfd, buf, datalen+14, 0);
+		sleep(3);
+	}	
 	
 	return RET_SUCCESS;
 }
 
 int LpushTest::set_handshake_message()
 {
+	p[14] = 0x06;
+
 	string md5keystr = userId + appId + screteKey;
-	md5Data = md5Encoder(md5keystr);
+	md5Data = getmd5str(md5keystr);
 	
 	headjson.insert(pair<string, string>("appId", appId));
 	headjson.insert(pair<string, string>("screteKey", screteKey));
@@ -78,9 +85,11 @@ int LpushTest::set_handshake_message()
 	
 	string msg = LPushConfig::mapToJsonStr(headjson);
 	
-	datalen = strlen(msg.c_str());	
-	memcpy(p, msg.c_str(), datalen);
-	datalen = p - buf;
+	datalen = msg.size() + 5;
+	unsigned int jsonlen = htonl(msg.size());
+	memcpy(p + 15, &jsonlen, 4);
+	
+	memcpy(p + 20, msg.c_str(), msg.size());
 }
 
 int LpushTest::set_packet_header()
@@ -88,11 +97,17 @@ int LpushTest::set_packet_header()
 	memcpy(&stheader.flag, "LPUSH", 5);
 	time_t timep; 
 	time(&timep);
-	stheader.timestamp = timep;
+	stheader.timestamp = htonl(timep);
 	stheader.datatype = 0x01;
-	stheader.datalen = datalen;
-	memcpy(p, &stheader, sizeof(stheader));
-	p += sizeof(stheader);
+	stheader.datalen = htonl(datalen);
+		
+	memcpy(p, &stheader.flag, 5);
+	p += 5;
+	memcpy(p, &(stheader.timestamp), 4);
+	p += 4;
+	memcpy(p, &(stheader.datatype), 1);
+	p += 1;
+	memcpy(p, &(stheader.datalen), 4);
 }
 
 int LpushTest::set_packet_body(const char *data)
@@ -108,4 +123,17 @@ int LpushTest::recv_message()
 }
 
 
+string LpushTest::getmd5str(std::string src)
+{
+    unsigned char digest[16];
+    const char *str = src.c_str();
+    
+    MD5((unsigned char*)str,strlen(str),(unsigned char*)&digest);
+    
+    char mdString[33];
+    for(int i = 0; i < 16; i++)
+         sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
+    
+    return std::string(mdString);
+}
 
