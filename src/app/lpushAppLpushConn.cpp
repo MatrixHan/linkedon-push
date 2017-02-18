@@ -11,9 +11,11 @@
 #include <lpushRedis.h>
 namespace lpush{
   
-#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*60*1000*1000LL)
+#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*1000*1000LL)
 // if timeout, close the connection.
-#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*60*1000*1000LL)
+#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*1000*1000LL)
+  
+#define LP_HREAT_TIMEOUT_US (int64_t)(60)
   
 
 LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
@@ -21,8 +23,6 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     before_data_time = 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
-    skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
-    skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
     client =NULL;
     lpushProtocol = new LPushProtocol(skt);
     trd = NULL;
@@ -43,6 +43,9 @@ LPushConn::~LPushConn()
 int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
+    before_data_time = getCurrentTime();
+    skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
+    skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
    LPushHandshakeMessage lpsm;
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
@@ -69,6 +72,12 @@ int LPushConn::do_cycle()
     trd2->start();
     while(!dispose)
     {
+	long long now = getCurrentTime();
+	if(now-before_data_time > LP_HREAT_TIMEOUT_US)
+	{
+	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
+	   break;
+	}
 	st_usleep(350*1000);
     }
     return ret;
@@ -171,6 +180,7 @@ int LPushConn::forwardServer(LPushChunk *message)
       default:
 	break;
     }
+    before_data_time = getCurrentTime();
     return ret;
 }
 //consum thread use

@@ -22,7 +22,7 @@ INCLUDE_DIRECTORIES(objs
     objs/mongo-c-driver-1.5.3/include/yajl   
     objs/mongo-c-driver-1.5.3/include  
     src/common src/kernel  src/core   src/protocol  src/app  src/utest )
-set(CompileParent false)
+set(CompileParent true)
 
 IF(CompileParent)
 set(SOURCE_FILES src/main/main.cpp )
@@ -49,7 +49,7 @@ TARGET_LINK_LIBRARIES(lpush -ldl -lpthread -lrt)
 ENDIF(CompileParent)
 
 
-set(TESTOPEN true)
+set(TESTOPEN false)
 
 IF(TESTOPEN)
 
