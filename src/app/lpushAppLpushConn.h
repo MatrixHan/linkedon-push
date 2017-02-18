@@ -17,7 +17,7 @@ namespace lpush
   class LPushConn : virtual public LPushConnection
   {
   private:
-    int before_data_time;
+    long long before_data_time;
     bool dispose;
     std::string  clientKey;
   private:
