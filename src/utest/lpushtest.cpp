@@ -61,13 +61,19 @@ int LpushTest::send_handshake_message()
 	set_handshake_message();
 	set_packet_header();
 	
-	len = send(client_sockfd, buf, datalen+14, 0);
+	while (1)
+	{			
+		len = send(client_sockfd, buf, datalen+14, 0);
+		sleep(3);
+	}	
 	
 	return RET_SUCCESS;
 }
 
 int LpushTest::set_handshake_message()
 {
+	p[14] = 0x06;
+
 	string md5keystr = userId + appId + screteKey;
 	md5Data = getmd5str(md5keystr);
 	
@@ -79,8 +85,11 @@ int LpushTest::set_handshake_message()
 	
 	string msg = LPushConfig::mapToJsonStr(headjson);
 	
-	datalen = msg.size();	
-	memcpy(p + 14, msg.c_str(), msg.size());
+	datalen = msg.size() + 5;
+	unsigned int jsonlen = htonl(msg.size());
+	memcpy(p + 15, &jsonlen, 4);
+	
+	memcpy(p + 20, msg.c_str(), msg.size());
 }
 
 int LpushTest::set_packet_header()
