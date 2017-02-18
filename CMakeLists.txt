@@ -22,7 +22,9 @@ INCLUDE_DIRECTORIES(objs
     objs/mongo-c-driver-1.5.3/include/yajl   
     objs/mongo-c-driver-1.5.3/include  
     src/common src/kernel  src/core   src/protocol  src/app  src/utest )
+set(CompileParent true)
 
+IF(CompileParent)
 set(SOURCE_FILES src/main/main.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_FILES)
 AUX_SOURCE_DIRECTORY(src/kernel SOURCE_FILES)
@@ -44,6 +46,8 @@ TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
 TARGET_LINK_LIBRARIES(lpush -ldl -lpthread -lrt)
+ENDIF(CompileParent)
+
 
 set(TESTOPEN true)
 
