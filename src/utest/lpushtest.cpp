@@ -26,17 +26,18 @@ LpushTest::~LpushTest()
 int LpushTest::connection()
 {
 	struct sockaddr_in remote_addr;
+	memset(&remote_addr, 0x0, sizeof(remote_addr));
 	remote_addr.sin_family = AF_INET;
-	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	remote_addr.sin_port = htons(8888);
+	remote_addr.sin_addr.s_addr = inet_addr("172.16.104.21");
+	remote_addr.sin_port = htons(9732);
 	
-	if (client_sockfd = socket(PF_INET, SOCK_STREAM, 0) < 0)
+	if ((client_sockfd = socket(PF_INET, SOCK_STREAM, 0))< 0)
 	{
 		perror("socket");
 		return RET_ERROR;
 	}
-	
-	if (connect(client_sockfd, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr) < 0))
+	int i;
+	if ( connect(client_sockfd, (struct sockaddr *)&remote_addr, sizeof(remote_addr)) < 0)
 	{
 		perror("connect");
 		return RET_ERROR;

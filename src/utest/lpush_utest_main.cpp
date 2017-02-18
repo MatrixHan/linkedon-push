@@ -59,7 +59,7 @@ void thread_create()
 
 int main(int argc, char **argv)
 {
-	
+	signal(SIGPIPE, SIG_IGN);
 	test.connection();
 	test.set_packet_header();
 	test.set_handshake_message();
