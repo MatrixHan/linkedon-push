@@ -21,6 +21,8 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     before_data_time = 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
+    skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
+    skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
     client =NULL;
     lpushProtocol = new LPushProtocol(skt);
     trd = NULL;
