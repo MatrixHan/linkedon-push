@@ -45,6 +45,11 @@ int LPushProtocol::readHeader(ILPushProtocolReaderWriter* skt,LPushHeader& lph)
     unsigned char dataType = (unsigned char)fast_buffer->read_1byte();
     buf = (unsigned char*)fast_buffer->read_slice(4);
     int dataLen = *buf++<<24 | *buf++<<16 | *buf++<<8 | *buf++;
+    if(dataLen<=0)
+    {
+      ret = ERROR_DATA_EMPTY;
+      return ret;
+    }
     LPushHeader ph(LPushFlag,(int)timestamp,dataType,(int)dataLen);
     lph = ph;
     return ret;
@@ -98,12 +103,11 @@ int LPushProtocol::handshake(LPushChunk* message,LPushHandshakeMessage &msk)
 	    lp_error("lpush handshake data length error");
 	    return ERROR_SYSTEM_HANDSHAKE;
       }
-      LPushHandshakeMessage lphm(parms);
-      if(!lphm.check())
+      msk.setParams(parms);
+      if(!msk.check())
       {
 	return ERROR_SYSTEM_HANDSHAKE;
       }
-      msk = lphm;
       return ret;
 }
 
@@ -119,7 +123,7 @@ int LPushProtocol::createConnection(LPushChunk* message, LPushCreateMessage& pcm
       memset(buf,0,message->header.datalenght);
       memcpy(buf,message->data,message->header.datalenght);
       buf[message->header.datalenght+1]='\0';
-      pcm = LPushCreateMessage(buf);
+      pcm.setStr(std::string(buf));
       delete buf;
       return ret;
 }
@@ -174,22 +178,23 @@ int LPushProtocol::sendPacket(LPushChunk* message)
     iovec iovs[2];
     LPushHeader *header = &(message->header);
     char *buf=new char[14];
-    iovs[0].iov_base = buf+0;
+    char *pbuf  = buf;
+    iovs[0].iov_base = pbuf+0;
     memset(buf,0,14);
-    *buf++ |='L';
-    *buf++ |='P';
-    *buf++ |='U';
-    *buf++ |='S';
-    *buf++ |='H';
-    *buf++ |=(header->timestamp>>24)&0xFF;
-    *buf++ |=(header->timestamp>>16)&0xFF;
-    *buf++ |=(header->timestamp>>8)&0xFF;
-    *buf++ |=(header->timestamp)&0xFF;
-    *buf++ |=header->dataType;
-    *buf++ |=(header->datalenght>>24)&0xFF;
-    *buf++ |=(header->datalenght>>16)&0xFF;
-    *buf++ |=(header->datalenght>>8)&0xFF;
-    *buf++ |=(header->datalenght)&0xFF;
+    *pbuf++ |='L';
+    *pbuf++ |='P';
+    *pbuf++ |='U';
+    *pbuf++ |='S';
+    *pbuf++ |='H';
+    *pbuf++ |=(header->timestamp>>24)&0xFF;
+    *pbuf++ |=(header->timestamp>>16)&0xFF;
+    *pbuf++ |=(header->timestamp>>8)&0xFF;
+    *pbuf++ |=(header->timestamp)&0xFF;
+    *pbuf++ |=header->dataType;
+    *pbuf++ |=(header->datalenght>>24)&0xFF;
+    *pbuf++ |=(header->datalenght>>16)&0xFF;
+    *pbuf++ |=(header->datalenght>>8)&0xFF;
+    *pbuf++ |=(header->datalenght)&0xFF;
     iovs[0].iov_len = 14;
     iovs[1].iov_base = message->data;
     iovs[1].iov_len = header->datalenght;
@@ -222,6 +227,15 @@ LPushHandshakeMessage::LPushHandshakeMessage(std::map<std::string,std::string> p
 LPushHandshakeMessage::~LPushHandshakeMessage()
 {
 
+}
+
+void LPushHandshakeMessage::setParams(std::map<std::string,std::string> parms)
+{
+    appId = parms["appId"];
+    screteKey = parms["screteKey"];
+    md5Data = parms["md5Data"];
+    userId = parms["userId"];
+    clientFlag = parms["clientFlag"];
 }
 
 bool LPushHandshakeMessage::check()
@@ -282,6 +296,10 @@ LPushCreateMessage::LPushCreateMessage(std::__cxx11::string cs)
 LPushCreateMessage::~LPushCreateMessage()
 {
 
+}
+void LPushCreateMessage::setStr(std::__cxx11::string cs)
+{
+    createString = cs;
 }
 
 
