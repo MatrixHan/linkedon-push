@@ -45,7 +45,7 @@ TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
 TARGET_LINK_LIBRARIES(lpush -ldl -lpthread -lrt)
 
-set(TESTOPEN false)
+set(TESTOPEN true)
 
 IF(TESTOPEN)
 
