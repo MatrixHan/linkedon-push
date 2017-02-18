@@ -35,7 +35,7 @@ namespace lpush {
 	
 	class LpushTest
 	{
-	private:
+	public:
 		int	client_sockfd;
 		int datalen;
 		string appId;
