@@ -9,6 +9,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <openssl/md5.h>
 
 #include "lpushJson.h"
 #include "lpushMath.h"
@@ -44,8 +45,8 @@ namespace lpush {
 		string clientFlag;
 		string md5Data;
 		
-		char *p;
-		char buf[BUFFER_SIZE];
+		unsigned char *p;
+		unsigned char buf[BUFFER_SIZE];
 		push_header stheader;
 		map<string, string> headjson;
 	public:	
@@ -60,7 +61,7 @@ namespace lpush {
 		int send_handshake_message();
 		int recv_message();
 		int init_message();
-		
+		string getmd5str(string src);
 	};
 
 	void *fun_thrReceiveHandler(void *socketCon);
