@@ -63,7 +63,7 @@ namespace lpush
 /**
  * lpush tcp header data chunk
  *
- *
+ *	use big endian
  *  flag    timestamp   datatype  datalength      data
  * ************************************************************
  *         |	     |		  |	   |		      *
@@ -77,6 +77,11 @@ namespace lpush
  * data	      (datalenght{byte})
  * header totle 14 bytes 
  */  
+
+#define LPUSH_HANDSHAKE_DATA_MAX  400
+
+
+
 class LPushHeader;
 class LPushChunk;
 class LPushFastBuffer;
