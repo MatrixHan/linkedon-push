@@ -22,7 +22,7 @@ INCLUDE_DIRECTORIES(objs
     objs/mongo-c-driver-1.5.3/include/yajl   
     objs/mongo-c-driver-1.5.3/include  
     src/common src/kernel  src/core   src/protocol  src/app  src/utest )
-set(CompileParent false)
+set(CompileParent true)
 
 IF(CompileParent)
 set(SOURCE_FILES src/main/main.cpp )
