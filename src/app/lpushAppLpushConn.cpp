@@ -152,8 +152,6 @@ int LPushConn::readMessage(LPushChunk *message)
 void LPushConn::do_dispose()
 {
     dispose = true;
-    trd->stop();
-    trd2->stop();
     redis_client->del(clientKey);
 }
 

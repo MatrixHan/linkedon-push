@@ -42,7 +42,7 @@ int LPushConsumThread::start()
 
 void LPushConsumThread::stop()
 {
-    trd->stop();
+    trd->interrupt();
 }
 
   
