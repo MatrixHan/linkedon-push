@@ -23,12 +23,13 @@ void *send_heart(void *)
 		test.datalen = 1;
 		test.buf[14] = 0x01;
 		test.set_packet_header(datatype);
-		int len = send(test.client_sockfd, test.buf, 15, 0);
+		send(test.client_sockfd, test.buf, 15, 0);
 		cout << "send heartbeat end..." << endl;
 		pthread_mutex_unlock(&mut);
 		
 		sleep(10);		
 	}
+	pthread_exit(NULL);
 	
 }
 
@@ -63,8 +64,7 @@ void *thread_recv(void *)
 		pthread_mutex_unlock(&mut);
 		sleep(1);
 	}	
-	
-	
+	pthread_exit(NULL);	
 }
 
 void thread_create()
@@ -89,16 +89,15 @@ void thread_wait(void)
 	if(thread[0] !=0)
 	{ 
 		pthread_join(thread[0],NULL);
-		printf("");
+		printf("heartbeat thread exit...\n");
 	}
 	//wait recv thread
  	if(thread[1] !=0) 
  	{
  		pthread_join(thread[1],NULL);
- 		printf("");
+ 		printf("recv thread exit...\n");
  	}
 }
-
 
 
 int main(int argc, char **argv)
