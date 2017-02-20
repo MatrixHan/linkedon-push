@@ -146,11 +146,16 @@ int LPushProtocol::sendHandshake(LPushHandshakeMessage lphm)
     int time = (int)getCurrentTime();
     std::string data = LPushConfig::mapToJsonStr(lphm.tomap());
     LPushHeader lp("LPUSH",time,LPUSH_CALLBACK_TYPE_HANDSHAKE,data.length()+1);
-    char *buf = new char[data.length()+1];
+    char *buf = new char[data.length()+5];
     memset(buf,0,data.length()+1);
     char  *b = buf;
     b[0] = LPUSH_FMT_JSON;
-    memcpy(&b[1],data.c_str(),data.length());
+    int  jsonlen = data.length();
+    b[1] |=jsonlen>>24 &0xFF;
+    b[2] |=jsonlen>>16 &0xFF;
+    b[3] |=jsonlen>>8 &0xFF;
+    b[4] |=jsonlen & 0xFF;
+    memcpy(&b[5],data.c_str(),data.length());
     LPushChunk* message=new LPushChunk(lp,(unsigned char*)buf);
     SafeDelete(buf);
     if((ret=sendPacket(message))!=ERROR_SUCCESS)
