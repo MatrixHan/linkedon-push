@@ -15,4 +15,7 @@ namespace lpush
   
   extern std::string md5Encoder(std::string src);
   
+  extern bool empty(std::string data);
+  
+  extern bool empty(int data);
 }

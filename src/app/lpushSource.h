@@ -10,7 +10,8 @@ class LPushSystemStatus
 public:
   static std::string statusToJson(int conns);
 };
-  
+
+
   
 class LPushHandshakeMessage;
 class LPushSource;
@@ -19,14 +20,22 @@ class LPushConn;
 class LPushWorkerMessage
 {
 public:
-  int workerType;
-  std::string workString;
-  std::string workContent;
+  std::string 		taskId;
+  std::string 		msgId;
+  std::string 		appKey;
+  std::string 		appSecret;
+  std::string 		userId;
+  std::string 		title;
+  std::string 		content;
+  std::string 		ext;
+  int 			createTime;
+  int 			expiresTime;
 public:
   LPushWorkerMessage();
-  LPushWorkerMessage(int type,std::string _workString,std::string _workContent);
+  LPushWorkerMessage(std::string jsonStr);
   virtual ~LPushWorkerMessage();
 public:
+  std::string toJsonString();
   LPushWorkerMessage* copy();
 };
   
@@ -77,6 +86,10 @@ public:
   virtual int playing();
   
   virtual bool can_loop();
+  
+  virtual int push(LPushWorkerMessage* msg);
+  
+  virtual int pop(LPushWorkerMessage** msg);
 };
   
 
@@ -96,6 +109,8 @@ public:
   
   static LPushClient * create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn);
   static LPushClient * instance(std::string userId,std::string appId,std::string screteKey);
+  
+  static int cycle_all(std::string queueName);
   
   static void destroy(st_netfd_t stfd);
   

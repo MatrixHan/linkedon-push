@@ -3,7 +3,9 @@
 #include <lpushLogger.h>
 #include <lpushSystemErrorDef.h>
 #include <lpushAppLpushConn.h>
+#include <lpushMath.h>
 #include <lpushJson.h>
+#include <lpushRedis.h>
 namespace lpush 
 {
   
@@ -28,23 +30,66 @@ std::string LPushSystemStatus::statusToJson(int conns)
   
 LPushWorkerMessage::LPushWorkerMessage()
 {
-      workerType = 0;
-      
+    createTime = 0;
+    expiresTime = 0;
 }
-LPushWorkerMessage::LPushWorkerMessage(int type, std::__cxx11::string _workString, std::__cxx11::string _workContent):
-workerType(type),workString(_workString),workContent(_workContent)
+LPushWorkerMessage::LPushWorkerMessage(std::__cxx11::string jsonStr)
 {
-
+    Json::Value json;
+    Json::Reader reader;
+    if(!reader.parse(jsonStr,json,false))
+    {
+	createTime = 0;
+	expiresTime = 0;
+    }else{
+    taskId = json["TaskId"].asString();
+    msgId = json["MsgId"].asString();
+    appKey = json["AppKey"].asString();
+    appSecret = json["AppSecret"].asString();
+    userId = json["UserId"].asString();
+    ext = json["Ext"].asString();
+    createTime = json["CreateTime"].asInt();
+    expiresTime = json["ExpiresTime"].asInt();
+    }
 }
+
 
 LPushWorkerMessage::~LPushWorkerMessage()
 {
 
 }
 
+
+std::__cxx11::string LPushWorkerMessage::toJsonString()
+{
+    Json::Value pjson;
+    if(!empty(title))
+    {
+       pjson["Title"] = title;
+    }
+    if(!empty(content))
+    {
+      pjson["Content"] = content;
+    }
+    if(!empty(ext))
+    {
+      pjson["Ext"] = ext;
+    }
+    if(!empty(createTime))
+    {
+      pjson["CreateTime"] = createTime;
+    }
+    if(!empty(expiresTime))
+    {
+      pjson["ExpiresTime"] = expiresTime;
+    }
+    return pjson.toStyledString();
+}
+
+
 LPushWorkerMessage* LPushWorkerMessage::copy()
 {
-    LPushWorkerMessage *result = new LPushWorkerMessage(workerType,workString,workContent);
+    LPushWorkerMessage *result = this;
     return result;
 }
 
@@ -141,6 +186,16 @@ bool LPushClient::can_loop()
     return !source->empty();
 }
 
+int LPushClient::pop(LPushWorkerMessage** msg)
+{
+    return source->pop(msg);
+}
+
+int LPushClient::push(LPushWorkerMessage* msg)
+{
+    return source->push(msg);
+}
+
 
 
 std::map<st_netfd_t,LPushSource*> LPushSource::sources;
@@ -195,6 +250,23 @@ LPushClient* LPushSource::instance(std::string userId, std::string appId, std::s
 bool LPushSource::empty()
 {
     return queue->empty();
+}
+
+int LPushSource::cycle_all(std::string queueName)
+{
+    std::vector<std::string> works=redis_client->list(queueName,0,100);
+    std::vector<std::string>::iterator itr = works.begin();
+    for(;itr!=works.end();++itr)
+    {
+	std::string str = *itr;
+	LPushWorkerMessage lwm(str);
+	LPushClient *client = LPushSource::instance(lwm.userId,lwm.appKey,lwm.appSecret);
+	if(client)
+	{
+	   client->push(&lwm);
+	}
+    }
+    
 }
 
 
