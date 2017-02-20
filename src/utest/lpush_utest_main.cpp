@@ -16,12 +16,18 @@ void *send_heart(void *)
 {
 	while (1)
 	{
+		cout << "send heartbeat begin..." << endl;
 		pthread_mutex_lock(&mut);
-		char *hearstr = "keep alive";
-		int len = send(test.client_sockfd, hearstr, strlen(hearstr), 0);
-		pthread_mutex_unlock(&mut);
+		char datatype = 0x05;
+		test.init_message();
+		test.datalen = 1;
+		test.buf[14] = 0x01;
+		test.set_packet_header(datatype);
+		int len = send(test.client_sockfd, test.buf, 15, 0);
 		cout << "send heartbeat end..." << endl;
-		sleep(60);		
+		pthread_mutex_unlock(&mut);
+		
+		sleep(10);		
 	}
 	
 }
@@ -30,14 +36,31 @@ void *thread_recv(void *)
 {
 	while (1)
 	{
-		//pthread_mutex_lock(&mut);
+		pthread_mutex_lock(&mut);
+		cout << "thread recv..." << endl;
+		test.init_message();
 		if (test.recv_message() > 0)
 		{	
-			test.buf[test.datalen] = 0x0;
-			printf("%s\n", test.buf);
-			test.init_message();
+			char datatype =test.buf[9];
+			cout << "datatype: " << datatype << endl;
+			if (datatype == 0x07 || datatype == 0x08)
+			{
+				char flags[6] = {'\0'};
+				memcpy(flags, test.buf, 5);
+				cout << "flags: " << flags << endl;
+				unsigned int k;
+				memcpy(&k, &(test.buf[5]), 4);
+				k = ntohl(k);
+				cout << "time: " << k << endl;
+				memcpy(&k, &(test.buf[10]), 4);
+				k = ntohl(k);
+				cout << "datalen: " << k << endl;
+				string msg;
+				memcpy((void *)msg.c_str(), &(test.buf[14]), k);
+				cout << "recv message: " << msg << endl;				
+			}			
 		}
-		//pthread_mutex_unlock(&mut);
+		pthread_mutex_unlock(&mut);
 		sleep(1);
 	}	
 	
@@ -53,10 +76,10 @@ void thread_create()
  		printf("thread heart create fail!\n");
  	}
 	
-// 	if (pthread_create(&thread[1], NULL, thread_recv, NULL) != 0)
-// 	{
-// 		printf("thread recv create fail!\n");
-// 	}
+ 	if (pthread_create(&thread[1], NULL, thread_recv, NULL) != 0)
+ 	{
+ 		printf("thread recv create fail!\n");
+ 	}
 	printf("thread create success.....\n");
 }
 
@@ -69,18 +92,17 @@ void thread_wait(void)
 		printf("");
 	}
 	//wait recv thread
-// 	if(thread[1] !=0) 
-// 	{
-// 		pthread_join(thread[1],NULL);
-// 		printf("");
-// 	}
+ 	if(thread[1] !=0) 
+ 	{
+ 		pthread_join(thread[1],NULL);
+ 		printf("");
+ 	}
 }
 
 
 
 int main(int argc, char **argv)
 {
-	signal(SIGPIPE, SIG_IGN);
 	test.connection();
 	
 	//handshake

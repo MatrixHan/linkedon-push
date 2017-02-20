@@ -43,7 +43,7 @@ int LpushTest::connection()
 		perror("connect");
 		return RET_ERROR;
 	}
-	printf("connect to server success!/n");		
+	printf("connect to server success!\n");		
 	return RET_SUCCESS;
 }
 
