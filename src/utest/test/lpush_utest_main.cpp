@@ -123,7 +123,7 @@ void thread_wait(void)
 
 int test1(void)
 {
-	signal(SIGPIPE, SIG_IGN);
+	
 	test.connection();
 	
 	//handshake
@@ -156,8 +156,24 @@ int test2(void)
 	return 0;
 }
 
+
+int process_signal()
+{
+// 	struct sigaction sa;
+// 	sa.sa_handler = SIG_IGN;
+// 	sigaction( SIGPIPE, &sa, 0 );
+	
+	
+//	signal(SIGPIPE, SIG_IGN);
+	sigset_t set;
+	sigemptyset(&set);
+	sigaddset(&set, SIGPIPE);
+	sigprocmask(SIG_BLOCK, &set, NULL);		
+}
+
 int main(void)
 {
+	process_signal();	
 	test1();
 
 //	test2();
