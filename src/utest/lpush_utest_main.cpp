@@ -93,7 +93,6 @@ int main(int argc, char **argv)
 	//start thread
 	thread_create();
 	//wait end thread
-	sleep(1);
 	thread_wait();
 	
 	return 0;
