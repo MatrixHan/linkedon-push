@@ -196,13 +196,14 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     LPushChunk lc;
     int jsonLen = message->workContent.size();
     char *buf = new char[message->workContent.size()+5];
-    memset(buf,0,message->workContent.size()+5);
-    buf[0] = LPUSH_FMT_JSON;
-    buf[1] = jsonLen >> 24 & 0xFF;
-    buf[2] = jsonLen >> 16 & 0xFF;
-    buf[3] = jsonLen >> 8 & 0xFF;
-    buf[4] = jsonLen & 0xFF;
-    memcpy(&buf[5],message->workContent.c_str(),message->workContent.size());
+    char *bufp = buf;
+    memset(bufp,0,message->workContent.size()+5);
+    bufp[0] = LPUSH_FMT_JSON;
+    bufp[1] = jsonLen >> 24 & 0xFF;
+    bufp[2] = jsonLen >> 16 & 0xFF;
+    bufp[3] = jsonLen >> 8 & 0xFF;
+    bufp[4] = jsonLen & 0xFF;
+    memcpy(&bufp[5],message->workContent.c_str(),message->workContent.size());
     lc.setData(lh,(unsigned char*)buf);
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {
