@@ -5,5 +5,6 @@ set -x
 
 while [ 1 ]
 do
-	`./build/test`
+	`./build/test1`
+	sleep 2
 done

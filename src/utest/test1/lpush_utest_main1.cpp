@@ -1,5 +1,4 @@
-#include "lpushCommon.h"
-#include "lpushtest.h"
+#include <lpushCommon.h>
 #include <lpushRedis.h>
 #include <lpushJson.h>
 #include <lpushLogger.h>
