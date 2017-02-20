@@ -71,7 +71,7 @@ int LPushThread::cid()
 
 void LPushThread::stop_loop()
 {
-
+    loop = false;
 }
 
 void LPushThread::stop()
