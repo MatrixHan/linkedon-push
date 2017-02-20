@@ -177,9 +177,11 @@ struct LPushChunk
   LPushChunk(){data=NULL;}
   LPushChunk(LPushHeader hd,unsigned char * chunk):header(hd)
   {
+    if(chunk&&hd.datalenght>0){
     data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
     memset(data,0,hd.datalenght);
     memcpy(data,chunk,hd.datalenght);
+    }
   }
   ~LPushChunk()
   {
@@ -188,9 +190,11 @@ struct LPushChunk
   void setData(LPushHeader hd,unsigned char * chunk)
   {
      header = hd;
+     if(chunk&&hd.datalenght>0){
     data = (unsigned char*)malloc(sizeof(unsigned char)*hd.datalenght);
     memset(data,0,hd.datalenght);
     memcpy(data,chunk,hd.datalenght);
+     }
   }
   
   LPushChunk* copy();
