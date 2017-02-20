@@ -7,6 +7,7 @@
 #include <lpushSource.h>
 #include <lpushRecvThread.h>
 #include <lpushConsumThread.h>
+#include <lpushFmt.h>
 #include <lpushJson.h>
 #include <lpushRedis.h>
 namespace lpush{
@@ -14,6 +15,10 @@ namespace lpush{
 #define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*1000*1000LL)
 // if timeout, close the connection.
 #define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*1000*1000LL)
+  
+#define LPT_PAUSED_SEND_TIMEOUT_US (int64_t)(10*1000*1000LL)
+// if timeout, close the connection.
+#define LPT_PAUSED_RECV_TIMEOUT_US (int64_t)(10*1000*1000LL)
   
 #define LP_HREAT_TIMEOUT_US (int64_t)(60)
   
@@ -44,8 +49,8 @@ int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
     before_data_time = getCurrentTime();
-    skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
-    skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
+    skt->set_recv_timeout(LPT_PAUSED_RECV_TIMEOUT_US);
+    skt->set_send_timeout(LPT_PAUSED_SEND_TIMEOUT_US);
    LPushHandshakeMessage lpsm;
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
@@ -63,11 +68,11 @@ int LPushConn::do_cycle()
       lp_error("conn createConnection error");
        return ret;
     }
-    trd =new LPushRecvThread (client,this,350);
+    trd =new LPushRecvThread (client,this,0);
     
     trd->start();
     
-    trd2 = new LPushConsumThread(client,350);
+    trd2 = new LPushConsumThread(client,1000);
     
     trd2->start();
     while(!dispose)
@@ -127,16 +132,15 @@ int LPushConn::createConnection()
 
 
 
-int LPushConn::hreatbeat()
+int LPushConn::hreatbeat(LPushChunk *message)
 {
       int ret = ERROR_SUCCESS;
-      long long now = getCurrentTime();
-      
+      before_data_time = getCurrentTime();
       return ret;
 }
 
 
-int LPushConn::readMessage(LPushChunk *message)
+int LPushConn::readMessage(LPushChunk **message)
 {
     int ret = ERROR_SUCCESS;
     LPushChunk lp;
@@ -145,7 +149,7 @@ int LPushConn::readMessage(LPushChunk *message)
       lp_error("readMessage error");
       return ret;
     }
-    message = lp.copy();
+    *message = lp.copy();
     return ret;
 }
 
@@ -167,6 +171,7 @@ int LPushConn::forwardServer(LPushChunk *message)
       case LPUSH_HEADER_TYPE_REQUEST_SOURCE:
 	break;
       case LPUSH_HEADER_TYPE_HREATBEAT:
+	hreatbeat(message);
 	break;
       case LPUSH_HEADER_TYPE_CLOSE:
 	do_dispose();
@@ -186,8 +191,26 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
 {
     int ret = ERROR_SUCCESS;
     int type = 0;
-    //LPushChunk lp;
-    //lpushProtocol->sendPacket();
+    int time = getCurrentTime();
+    LPushHeader lh("LPUSH",time,LPUSH_CALLBACK_TYPE_PUSH,message->workContent.size()+5);
+    LPushChunk lc;
+    int jsonLen = message->workContent.size();
+    char *buf = new char[message->workContent.size()+5];
+    char *bufp = buf;
+    memset(bufp,0,message->workContent.size()+5);
+    bufp[0] = LPUSH_FMT_JSON;
+    bufp[1] = jsonLen >> 24 & 0xFF;
+    bufp[2] = jsonLen >> 16 & 0xFF;
+    bufp[3] = jsonLen >> 8 & 0xFF;
+    bufp[4] = jsonLen & 0xFF;
+    memcpy(&bufp[5],message->workContent.c_str(),message->workContent.size());
+    lc.setData(lh,(unsigned char*)buf);
+    if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
+    {
+       SafeDelete(buf);
+       return ret;
+    }
+    SafeDelete(buf);
     return ret;
 }
 

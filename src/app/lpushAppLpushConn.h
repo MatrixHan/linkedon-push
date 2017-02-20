@@ -39,10 +39,10 @@ namespace lpush
       
       virtual int createConnection();
       
-      virtual int hreatbeat();
+      virtual int hreatbeat(LPushChunk *message);
       
   public:
-      virtual int readMessage(LPushChunk *message);
+      virtual int readMessage(LPushChunk **message);
       
       virtual int forwardServer(LPushChunk *message);
       

@@ -10,25 +10,28 @@ LPushConsumThread::LPushConsumThread(LPushClient* cli, int timeout):
 client(cli)
 {
     trd = new LPushReusableThread("Consum",this,timeout);
+    can_run = false;
 }
 
 LPushConsumThread::~LPushConsumThread()
 {
+    stop();
     SafeDelete(trd);
 }
 
 int LPushConsumThread::cycle()
 {
       int ret = ERROR_SUCCESS;
-      while(!trd->interrupted()){
+      while(can_run){
 	if(!client->can_loop())
 	{
-	    st_usleep(350*1000);
+	    st_usleep(1000*1000);
 	    continue;
 	}
       if((ret = client->playing())!=ERROR_SUCCESS)
       {
 	  lp_error("client playing work error");
+	  trd->interrupt();
 	  return ret;
       }	
       }
@@ -37,12 +40,13 @@ int LPushConsumThread::cycle()
 
 int LPushConsumThread::start()
 {
+    can_run = true;
     return trd->start();
 }
 
 void LPushConsumThread::stop()
 {
-    trd->interrupt();
+    can_run = false;
 }
 
   

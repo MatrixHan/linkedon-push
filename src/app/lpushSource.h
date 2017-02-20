@@ -18,7 +18,7 @@ class LPushConn;
 
 class LPushWorkerMessage
 {
-private:
+public:
   int workerType;
   std::string workString;
   std::string workContent;
