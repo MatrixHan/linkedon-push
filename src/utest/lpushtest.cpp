@@ -74,10 +74,12 @@ int LpushTest::send_handshake_message()
 	//send create connection msg
 	init_message();
 	datatype = 0x04;
+	datalen = 1;
 	set_packet_header(datatype);
-	stheader.datalen = 0;	
 	
-	send(client_sockfd, buf, datalen + 14, 0);
+	buf[14] = 'c';
+	
+	len = send(client_sockfd, buf, 15, 0);
 	
 
 	
