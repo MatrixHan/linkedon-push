@@ -12,7 +12,8 @@ int test2()
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
 	RedisInitializer();
-	LPushWork::pushWork();
+	LPushWork lpw;
+	lpw.pushWork();
 	RedisClose();
 	CloseLog();
 	return 0;
