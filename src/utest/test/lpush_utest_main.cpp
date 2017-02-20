@@ -19,7 +19,7 @@ void *send_heart(void *)
 	while (1)
 	{		
 		pthread_mutex_lock(&mut);
-		cout << "---send heartbeat begin..." << endl;
+		cout << "**************************************send heartbeat begin*******************************" << endl;
 		char datatype = 0x05;
 		test.init_message();
 		test.datalen = 1;
@@ -28,7 +28,7 @@ void *send_heart(void *)
 		int len = send(test.client_sockfd, test.buf, 15, 0);
 		if (len > 0)
 			cout << "send heartbeat success..." << endl;
-		cout << "---send heartbeat end..." << endl;
+		cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
 		sleep(10);		
@@ -42,7 +42,7 @@ void *thread_recv(void *)
 	while (1)
 	{
 		pthread_mutex_lock(&mut);
-		cout << "thread recv..." << endl;
+		cout << "thread recv........" << endl;
 		test.init_message();
 		if (test.recv_message() > 0)
 		{	
