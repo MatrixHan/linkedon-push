@@ -315,6 +315,7 @@ bool LPushSource::empty()
 
 int LPushSource::cycle_all(std::string queueName)
 {
+    int ret = ERROR_SUCCESS;
     std::vector<std::string> works=redis_client->list(queueName,0,100);
     std::vector<std::string>::iterator itr = works.begin();
     for(;itr!=works.end();++itr)
@@ -332,7 +333,7 @@ int LPushSource::cycle_all(std::string queueName)
 	redis_client->lpop(queueName);
 	
     }
-    
+    return ret;
 }
 
 void LPushSource::destroy(LPushClient* client)
