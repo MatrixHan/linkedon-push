@@ -60,17 +60,24 @@ int LpushTest::send_handshake_message()
 	int len = -1;
 	
 	set_handshake_message();
-	set_packet_header(0x1);
+	char datatype = 0x01;
+	set_packet_header(datatype);
 	
-		
+	//send shake msg	
 	len = send(client_sockfd, buf, datalen+14, 0);
-	//
+	
+	//recv response shake msg
 	init_message();
 	len = recv(client_sockfd, buf, sizeof(buf), 0);
-	char type = buf[9];
+	datatype = buf[9];
+	
+	//send create connection msg
 	init_message();
-	set_packet_header();
-	send(client_sockfd, buf, datalen + 14);
+	datatype = 0x04;
+	set_packet_header(datatype);
+	stheader.datalen = 0;	
+	
+	send(client_sockfd, buf, datalen + 14, 0);
 	
 
 	

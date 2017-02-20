@@ -53,7 +53,7 @@ namespace lpush {
 		LpushTest();
 		~LpushTest();
 
-		int set_packet_header();
+		int set_packet_header(unsigned char datatype);
 		int set_packet_body(const char *data);
 		int packet_data();
 		int connection();
