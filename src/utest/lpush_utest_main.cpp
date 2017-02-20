@@ -17,14 +17,12 @@ pthread_mutex_t mut;
 
 LpushTest test;
 
-
-
 void *send_heart(void *)
 {
 	while (1)
-	{
-		cout << "send heartbeat begin..." << endl;
+	{		
 		pthread_mutex_lock(&mut);
+		cout << "send heartbeat begin..." << endl;
 		char datatype = 0x05;
 		test.init_message();
 		test.datalen = 1;
@@ -50,7 +48,7 @@ void *thread_recv(void *)
 		if (test.recv_message() > 0)
 		{	
 			char datatype =test.buf[9];
-			cout << "datatype: " << datatype << endl;
+			printf("datatype = %0x\n", datatype);
 			if (datatype == 0x07 || datatype == 0x08)
 			{
 				char flags[6] = {'\0'};
@@ -63,10 +61,26 @@ void *thread_recv(void *)
 				memcpy(&k, &(test.buf[10]), 4);
 				k = ntohl(k);
 				cout << "datalen: " << k << endl;
-				string msg;
-				memcpy((void *)msg.c_str(), &(test.buf[14]), k);
-				cout << "recv message: " << msg << endl;				
-			}			
+				char msgtype = test.buf[14];
+				printf("msgtype = %0x\n", msgtype);
+				
+				unsigned int msg_len;
+				memcpy(&msg_len, &(test.buf[15]), 4);
+				msg_len = ntohl(msg_len);
+				cout << "msg_len: " << msg_len << endl;
+				
+				char buff[204800];
+				memset(buff, 0x0, sizeof(buff));
+				memcpy(buff, &(test.buf[19]), k-5);
+				printf("recv message: %s", buff);				
+			}
+			
+// 			test.init_message();
+// 			test.datalen = 1;
+// 			test.buf[14] = 0x01;
+// 			test.set_packet_header(datatype);
+// 			send(test.client_sockfd, test.buf, 15, 0);
+						
 		}
 		pthread_mutex_unlock(&mut);
 		sleep(1);
@@ -123,6 +137,11 @@ int test1(void)
 	thread_create();
 	//wait end thread
 	thread_wait();
+	while (1)
+	{
+		sleep(10);
+		
+	}	
 	return 0;
 }
 
@@ -140,7 +159,8 @@ int test2(void)
 int main(void)
 {
 	test1();
-	test2();
+
+	//test2();
 	return 0;
 }
 

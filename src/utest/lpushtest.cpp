@@ -23,7 +23,6 @@ LpushTest::~LpushTest()
 	
 }
 
-
 int LpushTest::connection()
 {
 	struct sockaddr_in remote_addr;
