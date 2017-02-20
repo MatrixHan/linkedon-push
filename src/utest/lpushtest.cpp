@@ -60,10 +60,18 @@ int LpushTest::send_handshake_message()
 	int len = -1;
 	
 	set_handshake_message();
-	set_packet_header();
+	set_packet_header(0x1);
 	
 		
 	len = send(client_sockfd, buf, datalen+14, 0);
+	//
+	init_message();
+	len = recv(client_sockfd, buf, sizeof(buf), 0);
+	char type = buf[9];
+	init_message();
+	set_packet_header();
+	send(client_sockfd, buf, datalen + 14);
+	
 
 	
 	return RET_SUCCESS;
@@ -92,13 +100,13 @@ int LpushTest::set_handshake_message()
 	memcpy(p + 19, msg.c_str(), msg.size());
 }
 
-int LpushTest::set_packet_header()
+int LpushTest::set_packet_header(unsigned char datatype)
 {	
 	memcpy(&stheader.flag, "LPUSH", 5);
 	time_t timep; 
 	time(&timep);
 	stheader.timestamp = htonl(timep);
-	stheader.datatype = 0x01;
+	stheader.datatype = datatype;
 	stheader.datalen = htonl(datalen);
 		
 	memcpy(p, &stheader.flag, 5);
