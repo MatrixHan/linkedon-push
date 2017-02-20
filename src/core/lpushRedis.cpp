@@ -111,12 +111,12 @@ long long LPushRedisClient::incr()
       return result;
 }
 
-std::vector< std::string > LPushRedisClient::list(std::string key, int page, int pageNo)
+std::vector< std::string > LPushRedisClient::list(std::string key, int _begin, int _end)
 {
     std::vector<std::string> lists;
-    int begin = (page -1)*pageNo;
-    int end  = page*pageNo;
-    if(page == 0 && pageNo == -1)
+    int begin = _begin;
+    int end  = _end;
+    if(_begin == 0 && _end == -1)
     {
       begin = 0;
       end = -1;

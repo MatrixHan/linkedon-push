@@ -35,7 +35,7 @@ public:
   virtual void del(std::string key);
   virtual long long incr();
   virtual bool lPushForList(std::string key,std::string value);
-  virtual std::vector<std::string> list(std::string key,int page,int pageNo);
+  virtual std::vector<std::string> list(std::string key,int _begin, int _end);
   virtual bool lpop(std::string key);
   virtual bool rpop(std::string key);
   virtual bool closeRedis();

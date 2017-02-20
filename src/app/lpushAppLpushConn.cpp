@@ -137,6 +137,7 @@ int LPushConn::hreatbeat(LPushChunk *message)
 {
       int ret = ERROR_SUCCESS;
       before_data_time = getCurrentTime();
+      lp_trace("recv hreatbeat %d",before_data_time);
       return ret;
 }
 
