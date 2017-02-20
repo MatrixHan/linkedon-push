@@ -16,10 +16,11 @@ void *send_heart(void *)
 {
 	while (1)
 	{
-		//pthread_mutex_lock(&mut);
+		pthread_mutex_lock(&mut);
 		char *hearstr = "keep alive";
-		send(test.client_sockfd, hearstr, strlen(hearstr), 0);
-		//pthread_mutex_unlock(&mut);
+		int len = send(test.client_sockfd, hearstr, strlen(hearstr), 0);
+		pthread_mutex_unlock(&mut);
+		cout << "send heartbeat end..." << endl;
 		sleep(60);		
 	}
 	
@@ -68,11 +69,11 @@ void thread_wait(void)
 		printf("");
 	}
 	//wait recv thread
-	if(thread[1] !=0) 
-	{
-		pthread_join(thread[1],NULL);
-		printf("");
-	}
+// 	if(thread[1] !=0) 
+// 	{
+// 		pthread_join(thread[1],NULL);
+// 		printf("");
+// 	}
 }
 
 
@@ -84,11 +85,16 @@ int main(int argc, char **argv)
 	
 	//handshake
 	test.send_handshake_message();
-	test.init_message();
-			
+	test.init_message();			
 	pthread_mutex_init(&mut, NULL);
+	//set socket nonblock
+	int flags = fcntl(test.client_sockfd, F_GETFL, 0);
+	fcntl(test.client_sockfd, F_SETFL, flags|O_NONBLOCK);
+	//start thread
 	thread_create();
+	//wait end thread
+	sleep(1);
+	thread_wait();
 	
-  
 	return 0;
 }
