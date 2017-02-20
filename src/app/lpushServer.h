@@ -65,6 +65,7 @@ private:
     bool signal_gracefully_quit;
     long long startTime;
     long long beforeTime;
+    std::string serverKey;
 public:
   LPushServer();
   virtual ~LPushServer();

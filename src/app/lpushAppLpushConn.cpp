@@ -192,18 +192,19 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     int ret = ERROR_SUCCESS;
     int type = 0;
     int time = getCurrentTime();
-    LPushHeader lh("LPUSH",time,LPUSH_CALLBACK_TYPE_PUSH,message->workContent.size()+5);
+    std::string json = message->toJsonString();
+    LPushHeader lh("LPUSH",time,LPUSH_CALLBACK_TYPE_PUSH,json.size()+5);
     LPushChunk lc;
-    int jsonLen = message->workContent.size();
-    char *buf = new char[message->workContent.size()+5];
+    int jsonLen = json.size();
+    char *buf = new char[json.size()+5];
     char *bufp = buf;
-    memset(bufp,0,message->workContent.size()+5);
+    memset(bufp,0,json.size()+5);
     bufp[0] = LPUSH_FMT_JSON;
     bufp[1] = jsonLen >> 24 & 0xFF;
     bufp[2] = jsonLen >> 16 & 0xFF;
     bufp[3] = jsonLen >> 8 & 0xFF;
     bufp[4] = jsonLen & 0xFF;
-    memcpy(&bufp[5],message->workContent.c_str(),message->workContent.size());
+    memcpy(&bufp[5],json.c_str(),json.size());
     lc.setData(lh,(unsigned char*)buf);
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {

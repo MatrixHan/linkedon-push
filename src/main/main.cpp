@@ -35,6 +35,7 @@ int main(void)
 	run();
 	CloseLog();
 	RedisClose();
+	SafeDelete(server);
 	return 0;
 }
 

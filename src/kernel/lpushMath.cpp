@@ -56,5 +56,16 @@ std::string md5Encoder(std::string src)
     return std::string(mdString);
 }
 
+bool empty(int data)
+{
+    return data <= 0;
+}
+
+bool empty(std::__cxx11::string data)
+{
+    return data.empty();
+}
+
+
   
 }

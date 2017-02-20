@@ -1,5 +1,9 @@
 #include "lpushCommon.h"
 #include "lpushtest.h"
+#include <lpushRedis.h>
+#include <lpushJson.h>
+#include <lpushLogger.h>
+#include <lpush_utest_pushwork.h>
 
 using namespace std;
 using namespace lpush;
@@ -7,10 +11,13 @@ using namespace lpush;
 
 #include <pthread.h>
 
+
 pthread_t thread[2];
 pthread_mutex_t mut;
 
 LpushTest test;
+
+
 
 void *send_heart(void *)
 {
@@ -100,8 +107,9 @@ void thread_wait(void)
 }
 
 
-int main(int argc, char **argv)
+int test1(void)
 {
+	signal(SIGPIPE, SIG_IGN);
 	test.connection();
 	
 	//handshake
@@ -115,6 +123,43 @@ int main(int argc, char **argv)
 	thread_create();
 	//wait end thread
 	thread_wait();
-	
 	return 0;
 }
+
+int test2(void)
+{
+	initConfig();
+	InitLog(DEFAULT_LOG_FILE_NAME);
+	RedisInitializer();
+	LPushWork::pushWork();
+	RedisClose();
+	CloseLog();
+	return 0;
+}
+
+int main(void)
+{
+	test1();
+	test2();
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

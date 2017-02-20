@@ -213,5 +213,23 @@ std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hgetall
       return result;
 }
 
+bool LPushRedisClient::hdel(std::__cxx11::string key, std::__cxx11::string field)
+{
+      reply = (redisReply*)redisCommand(context,"hdel %s %s ",key.c_str(),field.c_str());
+      lp_trace("redis client hdel key %s field %s ",key.c_str(),field.c_str());
+      freeReplyObject(reply);
+      return true;
+}
+
+
+bool LPushRedisClient::expire(std::__cxx11::string key, int time)
+{
+    reply = (redisReply*)redisCommand(context,"expire %s %d",key.c_str(),time);
+    lp_trace("redis client option key %s,expire time is %d",key.c_str(),time);
+    freeReplyObject(reply);
+    return true;
+}
+
+
 
 }

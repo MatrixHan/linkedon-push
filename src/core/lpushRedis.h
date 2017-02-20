@@ -51,6 +51,9 @@ public:
   
   virtual std::map<std::string,std::string> hgetall(std::string key);
   
+  virtual bool hdel(std::string key,std::string field);
+public:
+  virtual bool expire(std::string key,int time);
 };
     
 }
