@@ -1,9 +1,6 @@
 #include "lpushCommon.h"
 #include "lpushtest.h"
-#include <lpushRedis.h>
-#include <lpushJson.h>
-#include <lpushLogger.h>
-#include <lpush_utest_pushwork.h>
+
 
 using namespace std;
 using namespace lpush;
@@ -145,18 +142,6 @@ int test1(void)
 	return 0;
 }
 
-int test2(void)
-{
-	initConfig();
-	InitLog(DEFAULT_LOG_FILE_NAME);
-	RedisInitializer();
-	LPushWork::pushWork();
-	RedisClose();
-	CloseLog();
-	return 0;
-}
-
-
 int process_signal()
 {
 // 	struct sigaction sa;
@@ -175,9 +160,6 @@ int main(void)
 {
 	process_signal();	
 	test1();
-
-//	test2();
-
 	return 0;
 }
 
