@@ -82,7 +82,7 @@ int LPushRecvThread::start()
 
 void LPushRecvThread::stop()
 {
-    trd->stop();
+    trd->interrupt();
 }
 
   
