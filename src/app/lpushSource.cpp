@@ -46,7 +46,9 @@ LPushWorkerMessage::LPushWorkerMessage(std::__cxx11::string jsonStr)
     msgId = json["MsgId"].asString();
     appKey = json["AppKey"].asString();
     appSecret = json["AppSecret"].asString();
+    content = json["Content"].asString();
     userId = json["UserId"].asString();
+    title = json["Title"].asString();
     ext = json["Ext"].asString();
     createTime = json["CreateTime"].asInt();
     expiresTime = json["ExpiresTime"].asInt();
@@ -59,10 +61,59 @@ LPushWorkerMessage::~LPushWorkerMessage()
 
 }
 
+std::__cxx11::string LPushWorkerMessage::toAllString()
+{
+    Json::Value pjson;
+    if(!empty(userId))
+    {
+      pjson["UserId"] = userId;
+    }
+    if(!empty(appKey))
+    {
+      pjson["AppKey"] = appKey;
+    }
+    if(!empty(msgId))
+    {
+      pjson["MsgId"] = msgId;
+    }
+    if(!empty(appSecret))
+    {
+      pjson["AppSecret"] = appSecret;
+    }
+    if(!empty(taskId))
+    {
+      pjson["TaskId"] = taskId;
+    }
+    if(!empty(title))
+    {
+       pjson["Title"] = title;
+    }
+    if(!empty(content))
+    {
+      pjson["Content"] = content;
+    }
+    if(!empty(ext))
+    {
+      pjson["Ext"] = ext;
+    }
+    if(!empty(createTime))
+    {
+      pjson["CreateTime"] = createTime;
+    }
+    if(!empty(expiresTime))
+    {
+      pjson["ExpiresTime"] = expiresTime;
+    }
+    return pjson.toStyledString();
+}
 
 std::__cxx11::string LPushWorkerMessage::toJsonString()
 {
     Json::Value pjson;
+    if(!empty(msgId))
+    {
+      pjson["MsgId"] = msgId;
+    }
     if(!empty(title))
     {
        pjson["Title"] = title;
@@ -89,7 +140,17 @@ std::__cxx11::string LPushWorkerMessage::toJsonString()
 
 LPushWorkerMessage* LPushWorkerMessage::copy()
 {
-    LPushWorkerMessage *result = this;
+    LPushWorkerMessage *result = new LPushWorkerMessage();
+    result->appKey = appKey;
+    result->appSecret = appSecret;
+    result->content = content;
+    result->createTime = createTime;
+    result->expiresTime = expiresTime;
+    result->ext = ext;
+    result->msgId = msgId;
+    result->taskId =taskId;
+    result->userId = userId;
+    result->title = title;
     return result;
 }
 
@@ -261,14 +322,42 @@ int LPushSource::cycle_all(std::string queueName)
 	std::string str = *itr;
 	LPushWorkerMessage lwm(str);
 	LPushClient *client = LPushSource::instance(lwm.userId,lwm.appKey,lwm.appSecret);
-	if(client)
+	if(!client)
 	{
-	   client->push(&lwm);
+	   
+	   redis_client->lpop(queueName);
+	   continue;
 	}
+	client->push(lwm.copy());
+	redis_client->lpop(queueName);
+	
     }
     
 }
 
+void LPushSource::destroy(LPushClient* client)
+{
+    std::string key = client->userId + client->appId +client->screteKey;
+    std::map<std::string,LPushClient*>::iterator itr = clients.find(key);
+    if(itr!=clients.end())
+      {
+	LPushClient *lps = itr->second;
+	itr=clients.erase(itr);
+	SafeDelete(lps);
+      }
+}
+
+void LPushSource::destroyClientAll()
+{
+     std::map<std::string,LPushClient*>::iterator itr= clients.begin();
+    for(;itr!=clients.end();++itr)
+    {
+	LPushClient *lps = itr->second;
+	clients.erase(itr);
+	SafeDelete(lps);
+    }
+    clients.clear();
+}
 
 void LPushSource::destroy(st_netfd_t stfd)
 {

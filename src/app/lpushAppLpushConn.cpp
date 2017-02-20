@@ -39,9 +39,10 @@ LPushConn::~LPushConn()
 {
     SafeDelete(lpushProtocol);
     SafeDelete(skt);
-    SafeDelete(client);
     SafeDelete(trd);
     SafeDelete(trd2);
+    LPushSource::destroy(stfd);
+    LPushSource::destroy(client);
 }
 
 

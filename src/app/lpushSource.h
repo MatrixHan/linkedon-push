@@ -35,6 +35,7 @@ public:
   LPushWorkerMessage(std::string jsonStr);
   virtual ~LPushWorkerMessage();
 public:
+  std::string toAllString();
   std::string toJsonString();
   LPushWorkerMessage* copy();
 };
@@ -67,7 +68,7 @@ public:
 
 class LPushClient
 {
-private:
+public:
   st_netfd_t cstfd;
   std::string appId;
   std::string screteKey;
@@ -109,6 +110,10 @@ public:
   
   static LPushClient * create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn);
   static LPushClient * instance(std::string userId,std::string appId,std::string screteKey);
+  
+  static void destroy(LPushClient *client);
+  
+  static void destroyClientAll();
   
   static int cycle_all(std::string queueName);
   
