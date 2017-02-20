@@ -69,7 +69,7 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
 	  lp_error("readMessage header is error");
 	  return ret;
       }
-      
+      if(lph.datalenght>0){
       if((ret = fast_buffer->grow(skt,lph.datalenght)) != ERROR_SUCCESS)
       {
 	  lp_error("readMessage socket data body is error");
@@ -79,6 +79,10 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
       char *buf = fast_buffer->read_slice(lph.datalenght);
       lpc.setData(lph,(unsigned char*)buf);
       lp_info("lpc data %0X",lpc.data);
+      }else
+      {
+	lpc.setData(lph,NULL);
+      }
       return ret;
 }
 
@@ -119,12 +123,14 @@ int LPushProtocol::createConnection(LPushChunk* message, LPushCreateMessage& pcm
 	  lp_error("lpush create connection data header type not ok!");
 	  return ERROR_SYSTEM_HANDSHAKE;
       }
+      if(message->header.datalenght>0){
       char *buf = new char[message->header.datalenght];
       memset(buf,0,message->header.datalenght);
       memcpy(buf,message->data,message->header.datalenght);
       buf[message->header.datalenght+1]='\0';
       pcm.setStr(std::string(buf));
       delete buf;
+      }
       return ret;
 }
 
