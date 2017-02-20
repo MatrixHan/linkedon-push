@@ -13,6 +13,7 @@ class LPushConsumThread :public ILPushReusableThreadHandler
 private:
   LPushReusableThread *trd;
   LPushClient         *client;
+  bool			can_run;
 public:  
     LPushConsumThread(LPushClient*cli,int timeout);
     virtual ~LPushConsumThread();

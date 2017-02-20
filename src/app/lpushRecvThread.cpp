@@ -55,7 +55,7 @@ int LPushRecvThread::cycle()
 	 continue;
       }
       LPushChunk *lpc;
-      ret = stack->readMessage(lpc);
+      ret = stack->readMessage(&lpc);
       
 	if (ret == ERROR_SUCCESS) {
             ret = handler(lpc);
@@ -82,7 +82,7 @@ int LPushRecvThread::start()
 
 void LPushRecvThread::stop()
 {
-    trd->interrupt();
+    trd->stop();
 }
 
   
