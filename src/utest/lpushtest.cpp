@@ -69,7 +69,10 @@ int LpushTest::send_handshake_message()
 	init_message();
 	len = recv(client_sockfd, buf, sizeof(buf), 0);
 	datatype = buf[9];
-	
+	if (len > 0)
+	{
+		cout << "client handshake success..." << endl;			
+	}
 	//send create connection msg
 	init_message();
 	datatype = 0x04;
@@ -79,6 +82,10 @@ int LpushTest::send_handshake_message()
 	buf[14] = 'c';
 	
 	len = send(client_sockfd, buf, 15, 0);
+	if (len > 0)
+	{
+		cout << "client create connection success..." << endl;
+	}
 	
 
 	
