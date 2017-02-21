@@ -164,6 +164,16 @@ bool LPushRedisClient::rpop(std::__cxx11::string key)
      return true;
 }
 
+int LPushRedisClient::llen(std::__cxx11::string key)
+{
+      int len = 0;
+      reply = (redisReply*)redisCommand(context,"llen %s ",key.c_str());
+     lp_trace("redisClient llen   key %s ",key.c_str());
+      len = reply->integer;
+     freeReplyObject(reply);
+     return len;
+}
+
 
 std::string LPushRedisClient::setForBinary(const char* buf,int blen,const char* value,int vlen)
 {

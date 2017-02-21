@@ -40,6 +40,28 @@ public:
   LPushWorkerMessage* copy();
 };
   
+class LPushAPPKey
+{
+public:
+  std::string appKey;//key=user_appkey_map_[appkey]
+  std::string key;//uid
+  std::string value;//ip:port
+public:
+  LPushAPPKey(std::string appId,std::string uid,std::string ip,int port);
+  virtual ~LPushAPPKey();
+};
+
+class LPushPlatform
+{
+public:
+  std::string platformKey;//key = user_android_map_[appkey]  and key = user_ios_map_[appkey]
+  std::string key;//uid
+  std::string value;//ip:port
+public:
+  LPushPlatform(std::string platform,std::string appId,std::string uid,std::string ip,int port);
+  virtual ~LPushPlatform();
+};
+
 
 class LPushFastQueue
 {

@@ -158,6 +158,70 @@ LPushWorkerMessage* LPushWorkerMessage::copy()
     return result;
 }
 
+LPushAPPKey::LPushAPPKey(std::__cxx11::string appId, std::__cxx11::string uid, std::__cxx11::string ip, int port)
+{
+      appKey = "";
+      appKey.append("user_appkey_map_");
+      appKey.append(appId);
+      key = uid;
+      char buf[20];
+      memset(buf,0,20);
+      sprintf(buf,"%d",port);
+      value = ip+":"+std::string(buf);
+}
+
+LPushAPPKey::~LPushAPPKey()
+{
+
+}
+/**
+ *  OS clientFlag
+  
+#define LPUSH_CLIENT_FLAG_IOS				0x01
+
+#define LPUSH_CLIENT_FLAG_ANDROID			0x02
+
+#define LPUSH_CLIENT_FLAG_WIN_PHONE			0x03
+
+#define LPUSH_CLIENT_FLAG_WIN_PC			0x04
+
+#define LPUSH_CLIENT_FLAG_WEB				0x05
+*/ 
+LPushPlatform::LPushPlatform(std::__cxx11::string platform, std::__cxx11::string appId, std::__cxx11::string uid, std::__cxx11::string ip, int port)
+{
+      platformKey = "";
+      platformKey.append("user_");
+      if(platform.find("1")!=std::string::npos)
+      {
+	 platformKey.append("ios_");
+      }else if(platform.find("2")!=std::string::npos)
+      {
+	platformKey.append("android_");
+      }else if(platform.find("3")!=std::string::npos)
+      {
+	platformKey.append("win_phone_");
+      }else if(platform.find("4")!=std::string::npos)
+      {
+	platformKey.append("win_pc_");
+      }else if(platform.find("5")!=std::string::npos)
+      {
+	platformKey.append("web_");
+      }
+      platformKey.append("map_");
+      platformKey.append(appId);
+      key = uid;
+      char buf[20];
+      memset(buf,0,20);
+      sprintf(buf,"%d",port);
+      value = ip+":"+std::string(buf);
+}
+
+LPushPlatform::~LPushPlatform()
+{
+
+}
+
+
 
 LPushFastQueue::LPushFastQueue()
 {
@@ -182,7 +246,7 @@ int LPushFastQueue::getLength()
 
 int LPushFastQueue::push(LPushWorkerMessage* msg)
 {
-    LPushWorkerMessage *lpwm =msg->copy();
+    LPushWorkerMessage *lpwm =msg;
     queue.push_back(lpwm);
     return 0;
 }
@@ -239,10 +303,12 @@ int LPushClient::playing()
 	   return ret;
 	}
 	if((ret = conn->sendForward(work))!=ERROR_SUCCESS)
-	{
+	{	
+	    SafeDelete(work);
 	    lp_error("source send conn forward error!");
 	    return ret;
 	}
+	SafeDelete(work);
     return ret;
 }
 
@@ -320,7 +386,7 @@ bool LPushSource::empty()
 int LPushSource::cycle_all(std::string queueName)
 {
     int ret = ERROR_SUCCESS;
-    std::vector<std::string> works=redis_client->list(queueName,0,100);
+    std::vector<std::string> works=redis_client->list(queueName,0,1000);
     std::vector<std::string>::iterator itr = works.begin();
     for(;itr!=works.end();++itr)
     {

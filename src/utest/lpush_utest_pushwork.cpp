@@ -8,11 +8,11 @@ namespace lpush {
 
 int LPushWork::pushWork()
 {
-    int ret = 1;
-    for(;ret<1000;ret++)
+    int ret = 10000;
+    for(;ret<13000;ret++)
     {
-      char buf[6];
-      memset(buf,0,6);
+      char buf[20];
+      memset(buf,0,20);
       sprintf(buf,"%d",ret);
     LPushWorkerMessage lwm;
     std::string queuename = "172.16.104.21:9732";
