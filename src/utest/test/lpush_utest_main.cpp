@@ -31,7 +31,7 @@ void *send_heart(void *)
 		cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
-		sleep(10);		
+		sleep(3);		
 	}
 	pthread_exit(NULL);
 	
@@ -46,7 +46,7 @@ void *thread_recv(void *)
 		test.init_message();
 		if (test.recv_message() > 0)
 		{	
-			char datatype =test.buf[9];
+			char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
 			printf("datatype = %0x\n", datatype);
 			if (datatype == 0x07 || datatype == 0x08)
 			{
@@ -82,7 +82,7 @@ void *thread_recv(void *)
 						
 		}
 		pthread_mutex_unlock(&mut);
-		sleep(1);
+		usleep(1000);
 	}	
 	pthread_exit(NULL);	
 }
@@ -177,23 +177,4 @@ int main(int argc, char **argv)
 	test1();
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
