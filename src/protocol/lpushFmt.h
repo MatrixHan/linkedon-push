@@ -31,11 +31,11 @@ public:
   static int decodeFloat(unsigned char *data,float &ret);
   static int decodeJson(unsigned char *data,std::map<std::string,std::string> &ret);
 public:
-  static std::string encodeString(std::string src);
-  static std::string encodeInt(int src);
-  static std::string encodeBool(bool src);
-  static std::string encodeLong(long long src);
-  static std::string encodeFloat(float src);
+  static int encodeString(std::string src,unsigned char **ret,int &tlen);
+  static int encodeInt(int src,unsigned char **ret,int &len);
+  static int encodeBool(bool src,unsigned char **ret,int &len);
+  static int encodeLong(long long src,unsigned char **ret,int &len);
+  static int encodeFloat(float src,unsigned char **ret,int &len);
   static std::string encodeJson(std::map<std::string,std::string> src);
 };
 

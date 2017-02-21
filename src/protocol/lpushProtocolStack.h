@@ -109,6 +109,7 @@ public:
 	virtual int createConnection(LPushChunk *message,LPushCreateMessage &pcm);
 
 	virtual int recvhreatbeat(LPushChunk *message);
+	
 public:
 	virtual int sendHandshake(LPushHandshakeMessage lphm);
 

@@ -13,7 +13,7 @@ int test2()
 	InitLog(DEFAULT_LOG_FILE_NAME);
 	RedisInitializer();
 	LPushWork lpw;
-	lpw.pushWork();
+	lpw.pushWork("10001");
 	RedisClose();
 	CloseLog();
 	return 0;

@@ -157,6 +157,19 @@ int LPushConn::hreatbeat(LPushChunk *message)
       return ret;
 }
 
+int LPushConn::recvPushCallback(LPushChunk* message)
+{
+      int ret = ERROR_SUCCESS;
+      before_data_time = getCurrentTime();
+      std::string taskId;
+      if((ret = LPushFMT::decodeString(message->data,taskId)) != ERROR_SUCCESS)
+      {
+	 lp_error("FMT String decode error %d",ret);
+	 return ret;
+      }
+      redis_client->hset(conf->resultMap,taskId,"1");
+}
+
 
 int LPushConn::readMessage(LPushChunk **message)
 {
@@ -199,6 +212,7 @@ int LPushConn::forwardServer(LPushChunk *message)
       case LPUSH_HEADER_TYPE_TEST_PUSH:
 	break;
       case LPUSH_HEADER_TYPE_PUSH:
+	recvPushCallback(message);
 	break;
       default:
 	break;

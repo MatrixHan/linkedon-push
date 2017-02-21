@@ -117,78 +117,75 @@ int LPushFMT::decodeString(unsigned char* data, std::string& ret)
 
 ///
 
-std::string LPushFMT::encodeBool(bool src)
+int LPushFMT::encodeBool(bool src,unsigned char **ret,int &len)
 {
-    std::string ret;
-    char *buf = (char *)malloc(2);
+    unsigned char *buf = (unsigned char *)malloc(2);
      memset(buf,0,2);
-    *buf++ |= LPUSH_FMT_BOOL;
+     unsigned char *p = buf;
+    *p++ |= LPUSH_FMT_BOOL;
     if(src)
     {
-      
-      *buf++ |= 0x01;
+      *p++ |= 0x01;
     }else
     {
-      *buf++ |= 0x00;
+      *p++ |= 0x00;
     }
-    ret.append(buf);
-    SafeDelete(buf);
-    return ret;
+    len = 2;
+    *ret = buf;
+    return 0;
 }
 
-std::string LPushFMT::encodeFloat(float src)
+int LPushFMT::encodeFloat(float src,unsigned char **ret,int &len)
 {
-    std::string ret;
     int up = (int)src;
     int down = getDecimal(src);
-    char *buf = (char*)malloc(9);
+    unsigned char *buf = (unsigned char*)malloc(9);
      memset(buf,0,9);
-    *buf++ |= LPUSH_FMT_FLOAT;
-    *buf++ |= (up>>24)&0xFF;
-    *buf++ |= (up>>16)&0xFF;
-    *buf++ |= (up>>8)&0xFF;
-    *buf++ |= (up)&0xFF;
-    *buf++ |= (down>>24)&0xFF;
-    *buf++ |= (down>>16)&0xFF;
-    *buf++ |= (down>>8)&0xFF;
-    *buf++ |= (down)&0xFF;
-    ret.append(buf);
-    SafeDelete(buf);
-    return ret;
+     unsigned char *p = buf;
+    *p++ |= LPUSH_FMT_FLOAT;
+    *p++ |= (up>>24)&0xFF;
+    *p++ |= (up>>16)&0xFF;
+    *p++ |= (up>>8)&0xFF;
+    *p++ |= (up)&0xFF;
+    *p++ |= (down>>24)&0xFF;
+    *p++ |= (down>>16)&0xFF;
+    *p++ |= (down>>8)&0xFF;
+    *p++ |= (down)&0xFF;
+    len = 9;
+    *ret = buf;
+    return 0;
 }
 
-std::string LPushFMT::encodeInt(int src)
+int LPushFMT::encodeInt(int src,unsigned char **ret,int &len)
 {
-    std::string ret;
-    
-    char *buf = (char*)malloc(5);
+    unsigned char *buf = (unsigned char*)malloc(5);
      memset(buf,0,5);
-    *buf++ |=LPUSH_FMT_INT;
-    *buf++ |=(src>>24)&0xFF;
-    *buf++ |=(src>>16)&0xFF;
-    *buf++ |=(src>>8)&0xFF;
-    *buf++ |=(src)&0xFF;
-    ret.append(buf);
-    SafeDelete(buf);
-    return ret;
-    
+     unsigned char *p = buf;
+    *p++ |=LPUSH_FMT_INT;
+    *p++ |=(src>>24)&0xFF;
+    *p++ |=(src>>16)&0xFF;
+    *p++ |=(src>>8)&0xFF;
+    *p++ |=(src)&0xFF;
+    len = 5;
+    *ret = buf;
+    return 0;
 }
 
-std::string LPushFMT::encodeString(std::string src)
+int LPushFMT::encodeString(std::string src,unsigned char **ret,int &tlen)
 {
-    std::string ret;
     int len = src.size();
-    char *buf = (char*)malloc(5);
+    unsigned char *buf = (unsigned char*)malloc(5);
      memset(buf,0,5);
-    *buf++ |=LPUSH_FMT_STRING;
-    *buf++ |=(len>>24)&0xFF;
-    *buf++ |=(len>>16)&0xFF;
-    *buf++ |=(len>>8)&0xFF;
-    *buf++ |=(len)&0xFF;
-    ret.append(buf);
-    ret.append(src);
-    SafeDelete(buf);
-    return ret;
+     unsigned char *p = buf;
+    *p++ |=LPUSH_FMT_STRING;
+    *p++ |=(len>>24)&0xFF;
+    *p++ |=(len>>16)&0xFF;
+    *p++ |=(len>>8)&0xFF;
+    *p++ |=(len)&0xFF;
+    memcpy(p++,src.c_str(),src.size());
+    len = 5+src.size();
+    *ret = buf;
+    return 0;
 }
 
 
@@ -204,35 +201,36 @@ std::string LPushFMT::encodeJson(std::map< std::string, std::string > src)
     }
     char *buf = (char*)malloc(5);
     memset(buf,0,5);
+     char *p=buf;
     int len = person.toStyledString().size();
-    *buf++ |= LPUSH_FMT_JSON;
-    *buf++ |=(len>>24)&0xFF;
-    *buf++ |=(len>>16)&0xFF;
-    *buf++ |=(len>>8)&0xFF;
-    *buf++ |=(len)&0xFF;
+    *p++ |= LPUSH_FMT_JSON;
+    *p++ |=(len>>24)&0xFF;
+    *p++ |=(len>>16)&0xFF;
+    *p++ |=(len>>8)&0xFF;
+    *p++ |=(len)&0xFF;
     ret.append(buf);
     ret.append(person.toStyledString());
     SafeDelete(buf);
     return ret;
 }
 
-std::string LPushFMT::encodeLong(long long int src)
+int LPushFMT::encodeLong(long long int src,unsigned char **ret,int &len)
 {
-    std::string ret;
-    char *buf = (char*)malloc(9);
+    unsigned char *buf = (unsigned char*)malloc(9);
      memset(buf,0,9);
-    *buf++ |= LPUSH_FMT_LONG;
-    *buf++ |= (src>>56)&0xFF;
-    *buf++ |= (src>>48)&0xFF;
-    *buf++ |= (src>>40)&0xFF;
-    *buf++ |= (src>>32)&0xFF;
-    *buf++ |= (src>>24)&0xFF;
-    *buf++ |= (src>>16)&0xFF;
-    *buf++ |= (src>>8)&0xFF;
-    *buf++ |= (src)&0xFF;
-    ret.append(buf);
-    SafeDelete(buf);
-    return ret;
+     unsigned char *p = buf;
+    *p++ |= LPUSH_FMT_LONG;
+    *p++ |= (src>>56)&0xFF;
+    *p++ |= (src>>48)&0xFF;
+    *p++ |= (src>>40)&0xFF;
+    *p++ |= (src>>32)&0xFF;
+    *p++ |= (src>>24)&0xFF;
+    *p++ |= (src>>16)&0xFF;
+    *p++ |= (src>>8)&0xFF;
+    *p++ |= (src)&0xFF;
+    len = 9;
+    *ret = buf;
+    return 0;
 }
 
 
