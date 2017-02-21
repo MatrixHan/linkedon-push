@@ -219,6 +219,7 @@ public:
   virtual void setParams(std::map<std::string,std::string> parms);
   virtual bool check();
   virtual std::map<std::string,std::string> tomap();
+  virtual std::map<std::string,std::string> toMongomap();
 };
 
 class LPushHreatbeat

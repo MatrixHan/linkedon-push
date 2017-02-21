@@ -1,6 +1,6 @@
 #include <lpushMongoClient.h>
 #include <lpushLogger.h>
-
+#include <lpushSystemErrorDef.h>
 namespace lpush 
 {
   
@@ -89,6 +89,27 @@ std::vector<std::string> LPushMongodbClient::queryFromCollectionToJson(bson_t *_
       result.clear();
    }
    return result;
+}
+std::vector< std::__cxx11::string > LPushMongodbClient::queryToListJson(std::__cxx11::string db, std::__cxx11::string collectionName, std::map< std::__cxx11::string, std::__cxx11::string > params)
+{
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    std::vector< std::__cxx11::string > result= queryFromCollectionToJson(&cmd,cll);
+     mongoc_collection_destroy (cll);
+    return result;
+}
+
+
+int LPushMongodbClient::insertFromCollectionToJson(std::__cxx11::string db, std::__cxx11::string collectionName, std::map< std::__cxx11::string, std::__cxx11::string > params)
+{
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    if (!mongoc_collection_insert (cll, MONGOC_INSERT_NONE, &cmd, NULL, &error)) {
+	lp_error("%s ",error.message);
+	return ERROR_MONGODB_INSERT;
+      }  
+      mongoc_collection_destroy (cll);
+      return 0;
 }
 
 void LPushMongodbClient::close()
