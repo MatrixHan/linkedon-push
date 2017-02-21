@@ -121,17 +121,26 @@ void thread_wait(void)
 
 
 int test1(void)
-{
-	
-	test.connection();
-	
-	//handshake
-	test.send_handshake_message();
-	test.init_message();			
-	pthread_mutex_init(&mut, NULL);
+{	
+	int ret = test.connection();
+	if (ret == RET_ERROR)
+	{
+		exit(-1);
+	}
 	//set socket nonblock
 	int flags = fcntl(test.client_sockfd, F_GETFL, 0);
 	fcntl(test.client_sockfd, F_SETFL, flags|O_NONBLOCK);
+	
+	//handshake
+	ret = test.send_handshake_message();
+	if (ret == RET_ERROR)
+	{
+		exit(-1);
+	}
+	
+	test.init_message();			
+	pthread_mutex_init(&mut, NULL);
+
 	//start thread
 	thread_create();
 	//wait end thread
@@ -158,8 +167,10 @@ int process_signal()
 	sigprocmask(SIG_BLOCK, &set, NULL);		
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+	test.userId = argv[1];
+	cout << "userId: " << test.userId << endl;
 	process_signal();	
 	test1();
 	return 0;

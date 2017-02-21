@@ -64,15 +64,22 @@ int LpushTest::send_handshake_message()
 	
 	//send shake msg	
 	len = send(client_sockfd, buf, datalen+14, 0);
+	if (len < 0)
+	{
+		cout << "send shake message fail..." << endl;
+		return RET_ERROR;
+	}
 	
 	//recv response shake msg
 	init_message();
 	len = recv(client_sockfd, buf, sizeof(buf), 0);
 	datatype = buf[9];
-	if (len > 0)
+	if (len < 0)
 	{
-		cout << "client handshake success..." << endl;			
+		cout << "client handshake fail..." << endl;
+		return RET_ERROR;
 	}
+	cout << "client handshake success..." << endl;	
 	//send create connection msg
 	init_message();
 	datatype = 0x04;
