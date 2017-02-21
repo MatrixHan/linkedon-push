@@ -139,7 +139,11 @@ int LPushConn::createConnection()
     LPushSource * source = LPushSource::create(stfd);
     
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
-    
+    if((ret=lpushProtocol->sendCreateConnection(lpcm))!=ERROR_SUCCESS)
+    {
+	lp_error("conn sendCreateConnection error %d",ret);
+	return ret;
+    }
     return ret;
 }
 
