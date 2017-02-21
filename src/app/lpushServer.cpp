@@ -389,7 +389,7 @@ int LPushServer::do_cycle()
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
-                lp_trace("cleanup for gracefully terminate.");
+                lp_info("cleanup for gracefully terminate.");
                 return ret;
             }
         
@@ -401,7 +401,7 @@ int LPushServer::do_cycle()
             }
             if((ret = LPushSource::cycle_all(serverKey))!=ERROR_SUCCESS)
 	    {
-	       lp_trace("source cycle all ret %d",ret);
+	       lp_info("source cycle all ret %d",ret);
 	    }
             
             lp_info("server main thread loop");

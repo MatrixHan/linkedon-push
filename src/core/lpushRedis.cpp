@@ -131,11 +131,19 @@ std::vector< std::string > LPushRedisClient::list(std::string key, int _begin, i
     freeReplyObject(reply);
     return lists;
 }
-
+//top
 bool LPushRedisClient::lPushForList(std::string key, std::string value)
 {
      reply = (redisReply*)redisCommand(context,"LPUSH %s %s",key.c_str(),value.c_str());
      lp_trace("redisClient LPUSH key %s value %s",key.c_str(),value.c_str());
+     freeReplyObject(reply);
+     return true;
+}
+//last
+bool LPushRedisClient::rPushForList(std::__cxx11::string key, std::__cxx11::string value)
+{
+     reply = (redisReply*)redisCommand(context,"RPUSH %s %s",key.c_str(),value.c_str());
+     lp_trace("redisClient RPUSH key %s value %s",key.c_str(),value.c_str());
      freeReplyObject(reply);
      return true;
 }

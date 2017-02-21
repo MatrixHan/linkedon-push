@@ -20,6 +20,7 @@ namespace lpush
     long long before_data_time;
     bool dispose;
     std::string  clientKey;
+    std::string  hostname;
   private:
     LPushProtocol *lpushProtocol;
     LPushStSocket *skt;

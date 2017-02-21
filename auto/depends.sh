@@ -116,19 +116,19 @@ MONGO_BUILD="--enable-ssl=no"
         fi
 	
 	#build mongo-client
-	if [[  -f ${OBJS_DIR}/_flag.mongo.cross.build.tmp && -f ${OBJS_DIR}/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a ]];then
-		echo "mongo-client is ok"
-	else
-		echo "build mongo-client"
-		(
-			rm -rf ${OBJS_DIR}/mongo-c-driver-1.5.3 && cd ${OBJS_DIR} &&
-			unzip -q ../3rdparty/mongo-c-driver-1.5.3.zip && cd mongo-c-driver-1.5.3 && chmod +w * &&
-			./configure ${MONGO_BUILD} && make -j4 &&  mkdir -p include  && cp src/mongoc/*.h include &&
-			cd include  && mkdir -p bson yajl && cp ../src/libbson/src/bson/*.h  bson && cp ../src/libbson/src/yajl/*.h yajl &&
-			cd .. && cp src/libbson/.libs/*.a  .libs &&
-			cd ../.. && touch ${OBJS_DIR}/_flag.mongo.cross.build.tmp	
-		)
-	fi
+#	if [[  -f ${OBJS_DIR}/_flag.mongo.cross.build.tmp && -f ${OBJS_DIR}/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a ]];then
+#		echo "mongo-client is ok"
+#	else
+#		echo "build mongo-client"
+#		(
+#			rm -rf ${OBJS_DIR}/mongo-c-driver-1.5.3 && cd ${OBJS_DIR} &&
+#			unzip -q ../3rdparty/mongo-c-driver-1.5.3.zip && cd mongo-c-driver-1.5.3 && chmod +w * &&
+#			./configure ${MONGO_BUILD} && make -j4 &&  mkdir -p include  && cp src/mongoc/*.h include &&
+#			cd include  && mkdir -p bson yajl && cp ../src/libbson/src/bson/*.h  bson && cp ../src/libbson/src/yajl/*.h yajl &&
+#			cd .. && cp src/libbson/.libs/*.a  .libs &&
+#			cd ../.. && touch ${OBJS_DIR}/_flag.mongo.cross.build.tmp	
+#		)
+#	fi
 
 	#buidl redis-client
 	if [[ -f ${OBJS_DIR}/_flag.redis.cross.build.tmp && -f ${OBJS_DIR}/hiredis/libhiredis.a ]];then

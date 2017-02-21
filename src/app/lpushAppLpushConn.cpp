@@ -50,8 +50,8 @@ int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
     before_data_time = getCurrentTime();
-    skt->set_recv_timeout(LPT_PAUSED_RECV_TIMEOUT_US);
-    skt->set_send_timeout(LPT_PAUSED_SEND_TIMEOUT_US);
+    skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
+    skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
    LPushHandshakeMessage lpsm;
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
@@ -121,7 +121,7 @@ int LPushConn::createConnection()
     char buf[6];
     clientKey = lphandshakeMsg->appId + lphandshakeMsg->userId;
     sprintf(buf,"%d",conf->port);
-    std::string  hostname = conf->localhost+":"+std::string(buf);
+    hostname = conf->localhost+":"+std::string(buf);
     redis_client->set(clientKey,hostname);
     
     LPushSource * source = LPushSource::create(stfd);
