@@ -3,6 +3,7 @@
 #include <lpushJson.h>
 #include <lpushLogger.h>
 #include <lpush_utest_pushwork.h>
+#include <lpush_utest_mongo.h>
 
 using namespace std;
 using namespace lpush;
@@ -19,8 +20,15 @@ int test2()
 	return 0;
 }
 
+int test1()
+{
+  LPushUtestMongo lpum;
+  lpum.test1();
+  return 0;
+}
+
 int main(void)
 {
-    test2();
+    test1();
     return 0;
 }

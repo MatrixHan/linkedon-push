@@ -246,6 +246,8 @@ LPushHandshakeMessage::LPushHandshakeMessage(std::map<std::string,std::string> p
     md5Data = parms["md5Data"];
     userId = parms["userId"];
     clientFlag = parms["clientFlag"];
+    identity   = parms["identity"];
+    devices   = parms["devices"];
 }
 
 LPushHandshakeMessage::~LPushHandshakeMessage()
@@ -260,6 +262,8 @@ void LPushHandshakeMessage::setParams(std::map<std::string,std::string> parms)
     md5Data = parms["md5Data"];
     userId = parms["userId"];
     clientFlag = parms["clientFlag"];
+    identity   = parms["identity"];
+    devices   = parms["devices"];
 }
 
 bool LPushHandshakeMessage::check()
@@ -287,6 +291,8 @@ std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::to
     map.insert(std::make_pair("userId",userId));
     map.insert(std::make_pair("clientFlag",clientFlag));
     map.insert(std::make_pair("md5Data",md5Data));
+    map.insert(std::make_pair("identity",identity));
+    map.insert(std::make_pair("devices",devices));
     return map;
 }
 

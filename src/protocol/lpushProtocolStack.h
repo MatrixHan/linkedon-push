@@ -208,6 +208,8 @@ public:
   std::string screteKey;
   std::string userId;
   std::string clientFlag;
+  std::string identity;
+  std::string devices;
   std::string md5Data;
 public:
   LPushHandshakeMessage();
