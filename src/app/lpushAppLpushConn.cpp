@@ -29,6 +29,8 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     dispose = false;
     skt = new LPushStSocket(client_stfd);
     client =NULL;
+    redisApp = NULL;
+    redisPlatform = NULL;
     lpushProtocol = new LPushProtocol(skt);
     trd = NULL;
     trd2 = NULL;
@@ -41,7 +43,11 @@ LPushConn::~LPushConn()
     SafeDelete(skt);
     SafeDelete(trd);
     SafeDelete(trd2);
+    SafeDelete(redisApp);
+    SafeDelete(redisPlatform);
+    if(stfd)
     LPushSource::destroy(stfd);
+    if(client)
     LPushSource::destroy(client);
 }
 
@@ -124,6 +130,12 @@ int LPushConn::createConnection()
     hostname = conf->localhost+":"+std::string(buf);
     redis_client->set(clientKey,hostname);
     
+    redisApp = new LPushAPPKey(lphandshakeMsg->appId,lphandshakeMsg->userId,
+			       conf->localhost,conf->port);
+    redisPlatform = new LPushPlatform(lphandshakeMsg->clientFlag,lphandshakeMsg->appId,
+				      lphandshakeMsg->userId,conf->localhost,conf->port);
+    redis_client->hset(redisApp->appKey,redisApp->key,redisApp->value);
+    redis_client->hset(redisPlatform->platformKey,redisPlatform->key,redisPlatform->value);
     LPushSource * source = LPushSource::create(stfd);
     
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
@@ -159,6 +171,8 @@ void LPushConn::do_dispose()
 {
     dispose = true;
     redis_client->del(clientKey);
+    redis_client->hdel(redisApp->appKey,redisApp->key);
+    redis_client->hdel(redisPlatform->platformKey,redisPlatform->key);
 }
 
 //recv thread use

@@ -14,6 +14,8 @@ namespace lpush
   class LPushWorkerMessage;
   class LPushRecvThread;
   class LPushConsumThread;
+  class LPushAPPKey;
+  class LPushPlatform;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -26,6 +28,9 @@ namespace lpush
     LPushStSocket *skt;
     LPushHandshakeMessage *lphandshakeMsg;
     LPushClient		  *client;
+  private:
+    LPushAPPKey		  *redisApp;
+    LPushPlatform	  *redisPlatform;
   private:
     LPushRecvThread *trd;
     LPushConsumThread *trd2;

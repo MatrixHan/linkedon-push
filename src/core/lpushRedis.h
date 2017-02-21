@@ -34,11 +34,13 @@ public:
   virtual std::string get(std::string key);
   virtual void del(std::string key);
   virtual long long incr();
+public:
   virtual bool lPushForList(std::string key,std::string value);
   virtual bool rPushForList(std::string key,std::string value);
   virtual std::vector<std::string> list(std::string key,int _begin, int _end);
   virtual bool lpop(std::string key);
   virtual bool rpop(std::string key);
+  virtual int  llen(std::string key);
   virtual bool closeRedis();
   
 public:
