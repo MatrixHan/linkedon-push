@@ -46,6 +46,7 @@ LPushConfig* LPushConfig::parse(std::string confName)
       cf->logdir = root["logdir"].asString();
       cf->logfilename= root["logfilename"].asString();
       cf->localhost  = root["localhost"].asString();
+      cf->resultMap = root["resultMap"].asString();
       
       cf->redisConfig->host = root["redis.host"].asString();
       cf->redisConfig->pass = root["redis.pass"].asString();

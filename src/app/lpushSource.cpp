@@ -114,6 +114,10 @@ std::__cxx11::string LPushWorkerMessage::toAllString()
 std::__cxx11::string LPushWorkerMessage::toJsonString()
 {
     Json::Value pjson;
+    if(!empty(taskId))
+    {
+      pjson["TaskId"] = taskId;
+    }
     if(!empty(msgId))
     {
       pjson["MsgId"] = msgId;

@@ -190,7 +190,11 @@ int LPushServer::initializer()
     
     assert(!signalManager);
     signalManager = new LPushSignalManager(this);
-    
+    int port = conf->port;
+    char buf[5];
+    sprintf(buf,"%d",port);
+    serverKey = conf->localhost+":"+std::string(buf);
+    taskKey = "task_list_"+serverKey;
     return ret;
 }
 
@@ -399,7 +403,7 @@ int LPushServer::do_cycle()
             if ((i % 1) == 0) {
                 lp_info("update current time cache.");
             }
-            if((ret = LPushSource::cycle_all(serverKey))!=ERROR_SUCCESS)
+            if((ret = LPushSource::cycle_all(taskKey))!=ERROR_SUCCESS)
 	    {
 	       lp_info("source cycle all ret %d",ret);
 	    }
@@ -417,10 +421,6 @@ int LPushServer::hreatRedis()
     int ret = ERROR_SUCCESS;
     long long nowtime = getCurrentTime();
     if(nowtime-beforeTime>5){
-    int port = conf->port;
-    char buf[5];
-    sprintf(buf,"%d",port);
-    serverKey = conf->localhost+":"+std::string(buf);
     std::string status = LPushSystemStatus::statusToJson(conns.size());
     redis_client->hset("serverList",serverKey,status);
     beforeTime = getCurrentTime();

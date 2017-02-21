@@ -112,7 +112,7 @@ public:
 public:
 	virtual int sendHandshake(LPushHandshakeMessage lphm);
 
-	virtual int sendCreateConnection(LPushChunk *message);
+	virtual int sendCreateConnection(LPushCreateMessage lpcm);
 
 	virtual int sendHreatbeat(LPushChunk *message);
 

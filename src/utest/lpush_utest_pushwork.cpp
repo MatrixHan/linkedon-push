@@ -15,7 +15,7 @@ int LPushWork::pushWork()
       memset(buf,0,20);
       sprintf(buf,"%d",ret);
     LPushWorkerMessage lwm;
-    std::string queuename = "172.16.104.21:9732";
+    std::string queuename = "task_list_172.16.104.21:9732";
     lwm.title = "hello world!";
     lwm.userId=std::string(buf);
     lwm.appKey="LOFFICIEL";

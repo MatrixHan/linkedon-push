@@ -66,6 +66,7 @@ private:
     long long startTime;
     long long beforeTime;
     std::string serverKey;
+    std::string taskKey;
 public:
   LPushServer();
   virtual ~LPushServer();

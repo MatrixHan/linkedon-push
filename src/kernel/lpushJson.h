@@ -28,6 +28,7 @@ struct LPushConfig
   std::string 		logfilename;
   int 			loglevel;
   std::string 		localhost;
+  std::string 		resultMap;
   LPushRedisConfig      *redisConfig;
   LPushConfig();
   ~LPushConfig();
