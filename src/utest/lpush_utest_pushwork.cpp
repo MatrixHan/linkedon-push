@@ -29,4 +29,23 @@ int LPushWork::pushWork()
     }
     return 0;
 }
+
+int LPushWork::pushWork(std::string user)
+{
+   
+    LPushWorkerMessage lwm;
+    std::string queuename = "task_list_172.16.104.21:9732";
+    lwm.title = "hello world!";
+    lwm.userId=user;
+    lwm.appKey="LOFFICIEL";
+    lwm.appSecret="654321";
+    lwm.content="the is test message!";
+    lwm.createTime = getCurrentTime();
+    lwm.expiresTime = 10;
+    lwm.msgId = "123123123";
+    std::string json = lwm.toAllString();
+    redis_client->rPushForList(queuename,json);
+    
+    return 0;
+}
 }

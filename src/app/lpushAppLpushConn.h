@@ -47,6 +47,7 @@ namespace lpush
       
       virtual int hreatbeat(LPushChunk *message);
       
+      virtual int recvPushCallback(LPushChunk *message);
   public:
       virtual int readMessage(LPushChunk **message);
       

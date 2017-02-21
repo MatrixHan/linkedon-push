@@ -109,6 +109,7 @@ public:
 	virtual int createConnection(LPushChunk *message,LPushCreateMessage &pcm);
 
 	virtual int recvhreatbeat(LPushChunk *message);
+	
 public:
 	virtual int sendHandshake(LPushHandshakeMessage lphm);
 
@@ -207,6 +208,8 @@ public:
   std::string screteKey;
   std::string userId;
   std::string clientFlag;
+  std::string identity;
+  std::string devices;
   std::string md5Data;
 public:
   LPushHandshakeMessage();

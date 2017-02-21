@@ -18,6 +18,9 @@ ${PROJECT_SOURCE_DIR}/src/utest
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   
     objs/jsoncpp/include  objs/st  objs/hiredis  
+    objs/mongo-c-driver-1.5.3/include/bson 
+    objs/mongo-c-driver-1.5.3/include/yajl   
+    objs/mongo-c-driver-1.5.3/include 
     src/common src/kernel  src/core   src/protocol  src/app  src/utest )
 set(CompileParent true)
 
@@ -35,6 +38,9 @@ ADD_EXECUTABLE(lpush   ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(lpush dl )
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libbson.a)
+TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libyajl.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
@@ -59,6 +65,9 @@ ADD_EXECUTABLE(test ${SOURCE_TEST_FILES})
 TARGET_LINK_LIBRARIES(test dl )
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
+TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a)
+TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libbson.a)
+TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libyajl.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
@@ -77,6 +86,9 @@ ADD_EXECUTABLE(test1 ${SOURCE_TEST_FILES1})
 TARGET_LINK_LIBRARIES(test1 dl )
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libssl.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/openssl/lib/libcrypto.a)
+TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a)
+TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libbson.a)
+TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs/libyajl.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
