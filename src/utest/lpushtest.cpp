@@ -91,11 +91,16 @@ int LpushTest::send_handshake_message()
 	len = send(client_sockfd, buf, 15, 0);
 	if (len > 0)
 	{
-		cout << "client create connection success..." << endl;
+		cout << "client  send connect msg success..." << endl;
 	}
+	init_message();
+	len = recv(client_sockfd, buf, 15, 0);
 	
-
-	
+	if (len > 0 &&buf[9] == 0x04 && buf[14] == 0x01)
+	{
+		cout << "client  create connection success..." << endl;
+	}
+		
 	return RET_SUCCESS;
 }
 
