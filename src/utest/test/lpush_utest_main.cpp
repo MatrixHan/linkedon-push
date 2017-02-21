@@ -27,7 +27,7 @@ void *send_heart(void *)
 		test.set_packet_header(datatype);
 		int len = send(test.client_sockfd, test.buf, 15, 0);
 		if (len > 0)
-			cout << "send heartbeat success..." << endl;
+			cout << "thread id:[" << pthread_self() << "] send heartbeat success..." << endl;
 		cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
@@ -42,7 +42,7 @@ void *thread_recv(void *)
 	while (1)
 	{
 		pthread_mutex_lock(&mut);
-		cout << "thread recv........" << endl;
+		cout << "thread id:[" << pthread_self() << "] thread recv........" << endl;
 		test.init_message();
 		if (test.recv_message() > 0)
 		{	
@@ -127,9 +127,7 @@ int test1(void)
 	{
 		exit(-1);
 	}
-	//set socket nonblock
-	int flags = fcntl(test.client_sockfd, F_GETFL, 0);
-	fcntl(test.client_sockfd, F_SETFL, flags|O_NONBLOCK);
+
 	
 	//handshake
 	ret = test.send_handshake_message();
@@ -137,6 +135,10 @@ int test1(void)
 	{
 		exit(-1);
 	}
+	
+	//set socket nonblock
+	int flags = fcntl(test.client_sockfd, F_GETFL, 0);
+	fcntl(test.client_sockfd, F_SETFL, flags|O_NONBLOCK);
 	
 	test.init_message();			
 	pthread_mutex_init(&mut, NULL);
