@@ -13,6 +13,8 @@
 
 #include "lpushJson.h"
 #include "lpushMath.h"
+#include "lpushFmt.h"
+#include "lpushUtils.h"
 
 using namespace std;
 using namespace lpush;
