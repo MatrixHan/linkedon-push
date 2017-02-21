@@ -1,5 +1,4 @@
 #include "lpushtest.h"
-#include "lpushUtils.h"
 
 using namespace lpush;
 
@@ -116,6 +115,7 @@ int LpushTest::set_handshake_message()
 	headjson.insert(pair<string ,string>("userId", userId));
 	headjson.insert(pair<string, string>("clientFlag", clientFlag));
 	headjson.insert(pair<string, string>("md5Data", md5Data));
+//	headjson.insert(pair<string, string>("device", device));
 	
 	string msg = LPushConfig::mapToJsonStr(headjson);
 	Trim(msg);

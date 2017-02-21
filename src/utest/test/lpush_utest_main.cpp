@@ -43,9 +43,10 @@ void *thread_recv(void *)
 	{
 		pthread_mutex_lock(&mut);
 		cout << "thread id:[" << pthread_self() << "] thread recv........" << endl;
-		test.init_message();
+		test.init_message();		
 		if (test.recv_message() > 0)
 		{	
+			unsigned char buff[204800];
 			char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
 			printf("datatype = %0x\n", datatype);
 			if (datatype == 0x07 || datatype == 0x08)
@@ -67,19 +68,32 @@ void *thread_recv(void *)
 				memcpy(&msg_len, &(test.buf[15]), 4);
 				msg_len = ntohl(msg_len);
 				cout << "msg_len: " << msg_len << endl;
-				
-				char buff[204800];
+							
 				memset(buff, 0x0, sizeof(buff));
 				memcpy(buff, &(test.buf[19]), k-5);
 				printf("recv message: %s", buff);				
 			}
 			
-// 			test.init_message();
-// 			test.datalen = 1;
-// 			test.buf[14] = 0x01;
-// 			test.set_packet_header(datatype);
-// 			send(test.client_sockfd, test.buf, 15, 0);
-						
+			map<string, string> json_valuemap, msg_mapto_json;			
+			LPushFMT::decodeJson(buff, json_valuemap);
+			string msg = json_valuemap["TaskId"];						
+			//msg_mapto_json.insert(pair<string, string>("TaskId", taskId));
+			//string msg = LPushConfig::mapToJsonStr(msg_mapto_json);
+			//Trim(msg);			
+ 			test.init_message();
+
+			//string msg = LPushFMT::encodeString(taskId);
+			test.buf[14] = 0x01;			
+			test.datalen = msg.size() + 14;
+			unsigned int mslen = htonl(msg.size()); 
+			memcpy(&test.buf[15], &mslen, 4);
+ 			test.set_packet_header(datatype);
+			memcpy(test.buf + 19, msg.c_str(), msg.size());
+ 			int slen = send(test.client_sockfd, test.buf, test.datalen, 0);
+			if (slen < 0)
+			{
+				cout << "send ok recv message failed!" << endl;
+			}						
 		}
 		pthread_mutex_unlock(&mut);
 		usleep(1000);
