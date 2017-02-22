@@ -23,7 +23,7 @@ void LPushUtestMongo::test1()
     mclient->initMongodbClient();
     map<string,string> params;
     params.insert(make_pair("userId","10000"));
-    params.insert(make_pair("appId","LOFFICIEL"));
+    params.insert(make_pair("appKey","LOFFICIEL"));
     vector<string> result = mclient->queryToListJson("test","test",params);
     if(result.size()==0)
     mclient->insertFromCollectionToJson("test","test",lpmap);

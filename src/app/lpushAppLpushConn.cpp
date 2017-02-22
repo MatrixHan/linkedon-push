@@ -10,6 +10,7 @@
 #include <lpushFmt.h>
 #include <lpushJson.h>
 #include <lpushRedis.h>
+#include <lpushMongoClient.h>
 namespace lpush{
   
 #define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*1000*1000LL)
@@ -28,6 +29,7 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     before_data_time = 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
+    mongodbClient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
     client =NULL;
     redisApp = NULL;
     redisPlatform = NULL;
@@ -45,6 +47,8 @@ LPushConn::~LPushConn()
     SafeDelete(trd2);
     SafeDelete(redisApp);
     SafeDelete(redisPlatform);
+    mongodbClient->close();
+    SafeDelete(mongodbClient);
     if(stfd)
     LPushSource::destroy(stfd);
     if(client)
@@ -55,6 +59,7 @@ LPushConn::~LPushConn()
 int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
+    mongodbClient->initMongodbClient();
     before_data_time = getCurrentTime();
     skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
     skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
@@ -134,6 +139,8 @@ int LPushConn::createConnection()
 			       conf->localhost,conf->port);
     redisPlatform = new LPushPlatform(lphandshakeMsg->clientFlag,lphandshakeMsg->appId,
 				      lphandshakeMsg->userId,conf->localhost,conf->port);
+    userInsertMongodb(lphandshakeMsg);
+    
     redis_client->hset(redisApp->appKey,redisApp->key,redisApp->value);
     redis_client->hset(redisPlatform->platformKey,redisPlatform->key,redisPlatform->value);
     LPushSource * source = LPushSource::create(stfd);
@@ -147,6 +154,25 @@ int LPushConn::createConnection()
     return ret;
 }
 
+int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
+{
+    int ret = ERROR_SUCCESS;
+    static std::string prefix = "member_";
+    std::string collectionName = prefix + msg->appId;
+    map<string,string>  lpmap = msg->toMongomap();
+    int time = getCurrentTime();
+    char buf[20];
+    memset(buf,0,20);
+    sprintf(buf,"%d",time);
+    lpmap.insert(make_pair("time",string(buf)));
+    map<string,string> params;
+    params.insert(make_pair("userId","10000"));
+    params.insert(make_pair("appKey","LOFFICIEL"));
+    vector<string> result = mongodbClient->queryToListJson(conf->mongodbConfig->db,collectionName,params);
+    if(result.size()==0)
+    mongodbClient->insertFromCollectionToJson(conf->mongodbConfig->db,collectionName,lpmap);
+    return 0;
+}
 
 
 int LPushConn::hreatbeat(LPushChunk *message)
