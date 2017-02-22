@@ -13,15 +13,15 @@
 #include <lpushMongoClient.h>
 namespace lpush{
   
-#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(180*1000*1000LL)
+#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*1000*1000LL)
 // if timeout, close the connection.
-#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(180*1000*1000LL)
+#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*1000*1000LL)
   
 #define LPT_PAUSED_SEND_TIMEOUT_US (int64_t)(10*1000*1000LL)
 // if timeout, close the connection.
 #define LPT_PAUSED_RECV_TIMEOUT_US (int64_t)(10*1000*1000LL)
   
-#define LP_HREAT_TIMEOUT_US (int64_t)(300)
+#define LP_HREAT_TIMEOUT_US (int64_t)(30)
   
 
 LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
@@ -81,11 +81,11 @@ int LPushConn::do_cycle()
       lp_error("conn createConnection error");
        return ret;
     }
-    trd =new LPushRecvThread(client,this,0);
+    trd =new LPushRecvThread(client,this,350);
     
     trd->start();
     
-    trd2 = new LPushConsumThread(client,1000);
+    trd2 = new LPushConsumThread(client,350);
     
     trd2->start();
     while(!dispose)
@@ -100,6 +100,11 @@ int LPushConn::do_cycle()
     }
     return ret;
 }
+bool LPushConn::is_active()
+{
+    return trd && trd2;
+}
+
 
 int LPushConn::handshake(LPushHandshakeMessage &msk)
 {
@@ -314,7 +319,11 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     bufp[4] = jsonLen & 0xFF;
     memcpy(&bufp[5],json.c_str(),json.size());
     lc.setData(lh,(unsigned char*)buf);
-    if(lpushProtocol)
+    if(!lpushProtocol)
+    {
+      ret = ERROR_OBJECT_NOT_EXIST;
+      return ret;
+    }
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {
        SafeDelete(buf);
