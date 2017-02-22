@@ -47,7 +47,6 @@ LPushConn::~LPushConn()
     SafeDelete(trd2);
     SafeDelete(redisApp);
     SafeDelete(redisPlatform);
-    mongodbClient->close();
     SafeDelete(mongodbClient);
     if(stfd)
     LPushSource::destroy(stfd);
@@ -166,8 +165,8 @@ int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
     sprintf(buf,"%d",time);
     lpmap.insert(make_pair("time",string(buf)));
     map<string,string> params;
-    params.insert(make_pair("userId","10000"));
-    params.insert(make_pair("appKey","LOFFICIEL"));
+    params.insert(make_pair("userId",msg->userId));
+    params.insert(make_pair("appKey",msg->appId));
     vector<string> result = mongodbClient->queryToListJson(conf->mongodbConfig->db,collectionName,params);
     if(result.size()==0)
     mongodbClient->insertFromCollectionToJson(conf->mongodbConfig->db,collectionName,lpmap);
