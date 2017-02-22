@@ -17,7 +17,7 @@ source auto/checkOS.sh
 OBJS_DIR=objs
 CONFIGURE_TOOL="./config"
 OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
-MONGO_BUILD="--enable-ssl=no"
+MONGO_BUILD="--enable-ssl=no --enable-shm-counters=no "
 
 	if [ ! -d ${OBJS_DIR} ];then
 		`mkdir ${OBJS_DIR}`;
