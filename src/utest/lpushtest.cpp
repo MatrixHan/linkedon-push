@@ -6,7 +6,7 @@ LpushTest::LpushTest()
 {
 	userId = "10000";
 	appId = "LOFFICIEL";
-	screteKey = "654321";
+	screteKey = "123456";
 ////	
 	clientFlag = "1";
 	identity = "12121";
