@@ -13,15 +13,15 @@
 #include <lpushMongoClient.h>
 namespace lpush{
   
-#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*1000*1000LL)
+#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(180*1000*1000LL)
 // if timeout, close the connection.
-#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*1000*1000LL)
+#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(180*1000*1000LL)
   
 #define LPT_PAUSED_SEND_TIMEOUT_US (int64_t)(10*1000*1000LL)
 // if timeout, close the connection.
 #define LPT_PAUSED_RECV_TIMEOUT_US (int64_t)(10*1000*1000LL)
   
-#define LP_HREAT_TIMEOUT_US (int64_t)(60)
+#define LP_HREAT_TIMEOUT_US (int64_t)(300)
   
 
 LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)

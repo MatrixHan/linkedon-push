@@ -425,13 +425,14 @@ int LPushSource::cycle_all(std::string queueName)
 	if(!client)
 	{
 	   
-	   redis_client->lpop(queueName);
+// 	   redis_client->lpop(queueName);
 	   continue;
 	}
 	client->push(lwm.copy());
-	redis_client->lpop(queueName);
+// 	redis_client->lpop(queueName);
 	
     }
+    redis_client->ltrim(queueName,1000,-1);
     return ret;
 }
 

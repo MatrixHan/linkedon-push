@@ -49,11 +49,7 @@ int LPushRecvThread::cycle()
     int ret = ERROR_SUCCESS;
     while(!trd->interrupted())
     {
-      if(!can_loop())
-      {
-	 st_usleep(timeout*1000);
-	 continue;
-      }
+        
       LPushChunk *lpc;
       ret = stack->readMessage(&lpc);
       
@@ -71,6 +67,7 @@ int LPushRecvThread::cycle()
             return ret;
         }
         lp_verbose("thread loop recv message. ret=%d", ret);
+	st_usleep(timeout*1000);
     }
     return ret;
 }
