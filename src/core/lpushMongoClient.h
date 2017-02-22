@@ -25,6 +25,8 @@ public:
   void destory_bson(bson_t *b);
   void destory_collection(mongoc_collection_t *cll);
   virtual std::vector<std::string> queryFromCollectionToJson(bson_t *_query,mongoc_collection_t *cll);
+  virtual std::vector<std::string> queryToListJson(std::string db,std::string collectionName,std::map<std::string,std::string> params);
+  virtual int insertFromCollectionToJson(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual void close();
 };
   

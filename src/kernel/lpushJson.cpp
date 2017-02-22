@@ -17,11 +17,13 @@ LPushConfig::LPushConfig()
 {
    port = maxconnect = 0;
    redisConfig = new LPushRedisConfig();
+   mongodbConfig = new LPushMongodbConfig();
 }
 
 LPushConfig::~LPushConfig()
 {
     SafeDelete(redisConfig);
+    SafeDelete(mongodbConfig);
 }
 
 
@@ -52,6 +54,9 @@ LPushConfig* LPushConfig::parse(std::string confName)
       cf->redisConfig->pass = root["redis.pass"].asString();
       cf->redisConfig->port = root["redis.port"].asInt();
       cf->redisConfig->db = root["redis.db"].asInt();
+      
+      cf->mongodbConfig->url = root["mongo.url"].asString();
+      cf->mongodbConfig->db = root["mongo.db"].asString();
       
       return cf;
 }

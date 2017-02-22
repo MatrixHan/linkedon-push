@@ -18,6 +18,12 @@ struct LPushRedisConfig
   int 		db;
 };
 
+struct LPushMongodbConfig
+{
+  std::string url;
+  std::string db;
+};
+
 struct LPushConfig
 {
 
@@ -30,6 +36,7 @@ struct LPushConfig
   std::string 		localhost;
   std::string 		resultMap;
   LPushRedisConfig      *redisConfig;
+  LPushMongodbConfig    *mongodbConfig;
   LPushConfig();
   ~LPushConfig();
   

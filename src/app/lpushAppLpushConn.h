@@ -16,6 +16,7 @@ namespace lpush
   class LPushConsumThread;
   class LPushAPPKey;
   class LPushPlatform;
+  class LPushMongodbClient;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -25,6 +26,7 @@ namespace lpush
     std::string  hostname;
   private:
     LPushProtocol *lpushProtocol;
+    LPushMongodbClient *mongodbClient;
     LPushStSocket *skt;
     LPushHandshakeMessage *lphandshakeMsg;
     LPushClient		  *client;
@@ -48,6 +50,8 @@ namespace lpush
       virtual int hreatbeat(LPushChunk *message);
       
       virtual int recvPushCallback(LPushChunk *message);
+      
+      virtual int userInsertMongodb(LPushHandshakeMessage *msg);
   public:
       virtual int readMessage(LPushChunk **message);
       

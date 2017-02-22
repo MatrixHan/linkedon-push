@@ -296,6 +296,17 @@ std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::to
     return map;
 }
 
+std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::toMongomap()
+{
+      std::map< std::__cxx11::string, std::__cxx11::string > map;
+    map.insert(std::make_pair("appKey",appId));
+    map.insert(std::make_pair("userId",userId));
+    map.insert(std::make_pair("identity",identity));
+    map.insert(std::make_pair("devices",devices));
+    map.insert(std::make_pair("status","1"));
+    return map;
+}
+
 
 LPushHreatbeat::LPushHreatbeat()
 {
