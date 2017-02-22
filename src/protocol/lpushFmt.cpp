@@ -106,6 +106,7 @@ int LPushFMT::decodeString(unsigned char* data, std::string& ret)
     {
 	stringlen = (*buf++ & 0xFF) << 24 | (*buf++ & 0xFF) << 16 | (*buf++ & 0xFF) << 8 | (*buf++ & 0xFF); 
 	stringData = (char*)malloc(stringlen);
+	memset(stringData,0,stringlen);
 	memcpy(stringData,buf,stringlen);
 	buf+=stringlen;
 	stringData[stringlen++] = '\0';
