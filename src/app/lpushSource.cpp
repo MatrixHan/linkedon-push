@@ -59,6 +59,21 @@ LPushWorkerMessage::LPushWorkerMessage(std::__cxx11::string jsonStr)
     }
 }
 
+LPushWorkerMessage::LPushWorkerMessage(std::map< std::__cxx11::string, std::__cxx11::string > params)
+{
+    taskId = params["TaskId"];
+    msgId = params["MsgId"];
+    appKey = params["AppKey"];
+    appSecret = params["AppSecret"];
+    content = params["Content"];
+    userId = params["UserId"];
+    title = params["Title"];
+    ext = params["Ext"];
+    
+    createTime = StringToInt(params["CreateTime"]);
+    expiresTime = StringToInt(params["ExpiresTime"]);
+}
+
 
 LPushWorkerMessage::~LPushWorkerMessage()
 {

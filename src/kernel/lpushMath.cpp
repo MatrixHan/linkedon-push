@@ -66,6 +66,17 @@ bool empty(std::__cxx11::string data)
     return data.empty();
 }
 
+std::string uint8To2Char(uint8_t src)
+{
+    char bufa[2];
+    static char buf[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    bufa[0] = buf[(src>>4) & 0x0f];
+    bufa[1] = buf[src & 0x0f];
+    bufa[2] = '\0';
+    //std::cout << bufa[0] <<":" <<bufa[1] << std::endl;
+    
+    return std::string(bufa);
+}
 
   
 }

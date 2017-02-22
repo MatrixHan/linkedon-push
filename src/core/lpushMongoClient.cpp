@@ -1,8 +1,28 @@
 #include <lpushMongoClient.h>
 #include <lpushLogger.h>
 #include <lpushSystemErrorDef.h>
+#include <lpushMath.h>
+#include <lpushUtils.h>
+#include <lpushJson.h>
 namespace lpush 
 {
+ 
+  LPushMongodbClient *mongodb_client = NULL;
+  
+bool mongoClientInit()
+{
+  if(!mongodb_client){
+    mongodb_client = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
+    mongodb_client->initMongodbClient();
+  }
+}
+
+bool mongoClientClose()
+{
+    mongodb_client->close();
+}
+
+  
   
 LPushMongodbClient::LPushMongodbClient(const char* _uristr):uristr(_uristr)
 {
@@ -106,11 +126,116 @@ int LPushMongodbClient::insertFromCollectionToJson(std::__cxx11::string db, std:
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     if (!mongoc_collection_insert (cll, MONGOC_INSERT_NONE, &cmd, NULL, &error)) {
 	lp_error("%s ",error.message);
+	mongoc_collection_destroy (cll);
 	return ERROR_MONGODB_INSERT;
       }  
       mongoc_collection_destroy (cll);
       return 0;
 }
+
+int LPushMongodbClient::delFromCollectionToJson(std::__cxx11::string db, std::__cxx11::string collectionName, std::string oid)
+{
+    bson_t *cmd = bson_new();
+    bson_oid_t  id;
+    bson_oid_init_from_string(&id,oid.c_str());
+    BSON_APPEND_OID(cmd, "_id", &id);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    if(!mongoc_collection_delete(cll, MONGOC_DELETE_NONE, cmd, NULL, &error))
+    {
+	lp_error("%s",error.message);
+	bson_destroy(cmd);
+	mongoc_collection_destroy (cll);
+	return ERROR_MONGODB_DELETE;
+    }
+    bson_destroy(cmd);
+    mongoc_collection_destroy (cll);
+    return 0;
+}
+
+int LPushMongodbClient::updateFromCollectionToJson(std::__cxx11::string db, std::__cxx11::string collectionName,std::string oid,std::map<std::string,std::string> uparams)
+{
+  
+    bson_oid_t _id;
+    bson_oid_init_from_string(&_id,oid.c_str());
+    bson_t *cmd = bson_new();
+    BSON_APPEND_OID(cmd, "_id", &_id);
+    bson_t updateDoc = LPushMongodbClient::excute(uparams);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    if(!mongoc_collection_update(cll, MONGOC_UPDATE_NONE, cmd,&updateDoc, NULL, &error))
+    {
+	lp_error("%s",error.message);
+	bson_destroy(cmd);
+	mongoc_collection_destroy (cll);
+	return ERROR_MONGODB_UPDATE;
+    }
+    bson_destroy(cmd);
+    mongoc_collection_destroy (cll);
+    return 0;
+}
+bson_oid_t LPushMongodbClient::getOidByJsonStr(std::__cxx11::string json)
+{
+    bson_oid_t ret;
+    bson_iter_t itr;
+    bson_t *data = bson_new_from_json(
+      (const uint8_t*)json.c_str(), json.size(), &error);
+    if(!bson_iter_init_find(&itr,data,"_id"))
+      {
+	  lp_error("bson itr init error %s",error.message);
+	  bson_destroy(data);
+	  return ret;
+      }
+    bson_value_t  s;
+    s = itr.value;
+    if(s.value_type==7)
+    ret = s.value.v_oid;
+    bson_destroy(data);
+    return ret;
+}
+
+std::map< std::__cxx11::string, std::__cxx11::string > LPushMongodbClient::jsonToMap(std::__cxx11::string json)
+{
+    std::map< std::__cxx11::string, std::__cxx11::string > map;
+    bson_iter_t itr;
+    bson_t *data = bson_new_from_json(
+      (const uint8_t*)json.c_str(), json.size(), &error);
+    bson_iter_init(&itr,data);
+    while(bson_iter_next(&itr))
+    {	
+	bson_type_t type=bson_iter_type(&itr);
+       lp_trace("bson itr type  %d",type);
+       if(type == BSON_TYPE_UTF8){
+       const char * key  =bson_iter_key(&itr);
+       const char * value  =bson_iter_utf8(&itr,NULL);
+       map.insert(std::make_pair(std::string(key),std::string(value)));
+	}
+	else if(type == BSON_TYPE_OID)
+	{
+	  const char * key  =bson_iter_key(&itr);
+	  
+	  const bson_oid_t   *ret;
+	 
+	  ret = bson_iter_oid(&itr);
+	  std::string value;
+	  for(int i=0;i<12;i++)
+	  {
+	     std::string rea = uint8To2Char(ret->bytes[i]);
+	     value.append(rea.c_str());
+	  }
+	  std::cout << value <<std::endl;
+	  map.insert(std::make_pair(std::string(key),value));
+	}else if(type == BSON_TYPE_INT32)
+	{
+	    const char * key  =bson_iter_key(&itr);
+	    int32_t val = bson_iter_int32(&itr);
+	    std::string value = IntToString(val);
+	    map.insert(std::make_pair(std::string(key),value));
+	}
+    }
+    
+    return map;
+}
+
+
 
 void LPushMongodbClient::close()
 {	

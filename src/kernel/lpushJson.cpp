@@ -49,6 +49,7 @@ LPushConfig* LPushConfig::parse(std::string confName)
       cf->logfilename= root["logfilename"].asString();
       cf->localhost  = root["localhost"].asString();
       cf->resultMap = root["resultMap"].asString();
+      cf->appKeys = root["lpushkey.db"].asString();
       
       cf->redisConfig->host = root["redis.host"].asString();
       cf->redisConfig->pass = root["redis.pass"].asString();
@@ -82,6 +83,29 @@ int LPushConfig::writeConf(LPushConfig* config)
     return 0;
     
 }
+
+map< string, string > LPushConfig::jsonStrToMap(string str)
+{
+    map< string, string > result;
+    Json::Reader reader;
+    Json::Value  root;
+    Json::Value::Members members;
+      if(!reader.parse(str, root, false))
+      {
+	    return result;
+      }
+    members = root.getMemberNames();
+    Json::Value::Members::iterator itr = members.begin();
+      for(;itr!=members.end();++itr)
+      {
+	  std::string key = *itr;
+	  
+	 std::string str = root[key].asString();
+	  result.insert(std::make_pair(key,str));
+      }
+    return result;
+}
+
 string LPushConfig::mapToJsonStr(map< string, string > params)
 {
     Json::FastWriter writer;

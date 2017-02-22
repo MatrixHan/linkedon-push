@@ -19,7 +19,7 @@ int LPushWork::pushWork()
     lwm.title = "hello world!";
     lwm.userId=std::string(buf);
     lwm.appKey="LOFFICIEL";
-    lwm.appSecret="654321";
+    lwm.appSecret="123456";
     lwm.content="the is test message!";
     lwm.createTime = getCurrentTime();
     lwm.expiresTime = 10;
@@ -38,7 +38,7 @@ int LPushWork::pushWork(std::string user)
     lwm.title = "hello world!";
     lwm.userId=user;
     lwm.appKey="LOFFICIEL";
-    lwm.appSecret="654321";
+    lwm.appSecret="123456";
     lwm.content="the is test message!";
     lwm.createTime = getCurrentTime();
     lwm.expiresTime = 10;

@@ -33,6 +33,7 @@ public:
 public:
   LPushWorkerMessage();
   LPushWorkerMessage(std::string jsonStr);
+  LPushWorkerMessage(std::map<std::string, std::string> params);
   virtual ~LPushWorkerMessage();
 public:
   std::string toAllString();

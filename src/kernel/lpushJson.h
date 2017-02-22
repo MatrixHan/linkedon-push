@@ -24,6 +24,14 @@ struct LPushMongodbConfig
   std::string db;
 };
 
+struct LPushObject
+{
+  //1 int   2 string  
+  int format;
+  int data;
+  std::string str;
+};
+
 struct LPushConfig
 {
 
@@ -35,6 +43,7 @@ struct LPushConfig
   int 			loglevel;
   std::string 		localhost;
   std::string 		resultMap;
+  std::string     	appKeys;
   LPushRedisConfig      *redisConfig;
   LPushMongodbConfig    *mongodbConfig;
   LPushConfig();
@@ -43,6 +52,7 @@ struct LPushConfig
   static LPushConfig* parse(std::string confName);
   static int 	    writeConf(LPushConfig* config);
   
+  static std::map<std::string,std::string> jsonStrToMap(std::string str);
   static std::string mapToJsonStr(std::map<std::string,std::string> params);
 };
 
