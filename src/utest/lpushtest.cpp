@@ -9,6 +9,8 @@ LpushTest::LpushTest()
 	screteKey = "654321";
 ////	
 	clientFlag = "1";
+	identity = "12121";
+	devices = "ac:fd:cc:o3:4u";
 
 	datalen = 0;
 	memset(buf, 0x0, sizeof(buf));
@@ -115,7 +117,8 @@ int LpushTest::set_handshake_message()
 	headjson.insert(pair<string ,string>("userId", userId));
 	headjson.insert(pair<string, string>("clientFlag", clientFlag));
 	headjson.insert(pair<string, string>("md5Data", md5Data));
-//	headjson.insert(pair<string, string>("device", device));
+	headjson.insert(pair<string, string>("identity", identity));
+	headjson.insert(pair<string, string>("devices", devices));	
 	
 	string msg = LPushConfig::mapToJsonStr(headjson);
 	Trim(msg);

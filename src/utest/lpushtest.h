@@ -46,6 +46,8 @@ namespace lpush {
 		string userId;
 		string clientFlag;
 		string md5Data;
+		string devices;
+		string identity;
 		
 		unsigned char *p;
 		unsigned char buf[BUFFER_SIZE];
