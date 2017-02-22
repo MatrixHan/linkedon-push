@@ -160,7 +160,7 @@ int LPushConn::checkUserMessage(LPushHandshakeMessage msg)
      int ret = ERROR_SUCCESS;
      string screteKey = redis_client->hget(conf->appKeys,msg.appId);
      if(screteKey.empty()){
-	  ret = ERROR_USER_SCRETE_NO_EXSIST;
+	  ret = ERROR_USER_SCRETE_NO_EXIST;
 	  lp_error("handshake public key message not found this system %d",ret);
 	  return ret;
      }
@@ -314,6 +314,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     bufp[4] = jsonLen & 0xFF;
     memcpy(&bufp[5],json.c_str(),json.size());
     lc.setData(lh,(unsigned char*)buf);
+    if(lpushProtocol)
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {
        SafeDelete(buf);

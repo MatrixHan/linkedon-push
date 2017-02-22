@@ -17,7 +17,7 @@ int LPushWork::pushWork()
       sprintf(buf,"%d",ret);
     LPushWorkerMessage lwm;
     std::string queuename = "task_list_172.16.104.21:9732";
-    lwm.taskId = "sdfsdafsadfasdf";
+    lwm.taskId = uuidinit();
     lwm.title = "hello world!";
     lwm.userId=std::string(buf);
     lwm.appKey="LOFFICIEL";
@@ -34,15 +34,10 @@ int LPushWork::pushWork()
 
 int LPushWork::pushWork(std::string user)
 {
-    uuid_t uu;
-    uuid_generate(uu);
+   
     LPushWorkerMessage lwm;
-    std::string uuid ;
-    for(int i = 0;i<16 ; i++)
-    {
-       std::string child = uint8To2Char(uu[i]);
-       uuid.append(child.c_str());
-    }
+    std::string uuid = uuidinit();
+    
     std::string queuename = "task_list_172.16.104.21:9732";
     lwm.taskId = uuid;
     lwm.title = "hello world!";
@@ -58,4 +53,18 @@ int LPushWork::pushWork(std::string user)
     
     return 0;
 }
+
+std::__cxx11::string LPushWork::uuidinit()
+{
+    uuid_t uu;
+    uuid_generate(uu);
+    std::string uuid;
+      for(int i = 0;i<16 ; i++)
+    {
+       std::string child = uint8To2Char(uu[i]);
+       uuid.append(child.c_str());
+    }
+    return uuid;
+}
+
 }

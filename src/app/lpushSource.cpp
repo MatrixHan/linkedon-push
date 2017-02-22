@@ -316,10 +316,20 @@ int LPushClient::playing()
 {
     int ret = ERROR_SUCCESS;
 	LPushWorkerMessage *work;
+	if(!source)
+	{
+	  lp_error("source not found!");
+	  return ERROR_OBJECT_NOT_EXIST;
+	}
 	if((ret = source->pop(&work))!=ERROR_SUCCESS)
 	{
 	   lp_error("source pop error");
 	   return ret;
+	}
+	if(!conn)
+	{
+	  lp_error("conn not found!");
+	  return ERROR_OBJECT_NOT_EXIST;
 	}
 	if((ret = conn->sendForward(work))!=ERROR_SUCCESS)
 	{	

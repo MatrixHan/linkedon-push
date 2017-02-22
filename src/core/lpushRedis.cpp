@@ -164,6 +164,23 @@ bool LPushRedisClient::rpop(std::__cxx11::string key)
      return true;
 }
 
+bool LPushRedisClient::lrem(std::__cxx11::string key,int count, std::__cxx11::string value)
+{
+     reply = (redisReply*)redisCommand(context,"lrem %s %d %s",key.c_str(),count,value.c_str());
+     lp_trace("redisClient lrem %d  key %s ",count,key.c_str());
+     freeReplyObject(reply);
+     return true;
+}
+
+bool LPushRedisClient::ltrim(std::__cxx11::string key, int begin, int end)
+{
+       reply = (redisReply*)redisCommand(context,"ltrim %s %d %d",key.c_str(),begin,end);
+     lp_trace("redisClient ltrim key %s  begin %d  end %d ",key.c_str(),begin,end);
+     freeReplyObject(reply);
+     return true;
+}
+
+
 int LPushRedisClient::llen(std::__cxx11::string key)
 {
       int len = 0;

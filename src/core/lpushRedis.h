@@ -40,6 +40,9 @@ public:
   virtual std::vector<std::string> list(std::string key,int _begin, int _end);
   virtual bool lpop(std::string key);
   virtual bool rpop(std::string key);
+  
+  virtual bool lrem(std::string key,int count,std::string value);
+  virtual bool ltrim(std::string key,int begin,int end);
   virtual int  llen(std::string key);
   virtual bool closeRedis();
   

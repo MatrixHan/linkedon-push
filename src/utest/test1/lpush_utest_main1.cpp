@@ -13,7 +13,7 @@ int test2()
 	
 	RedisInitializer();
 	LPushWork lpw;
-	lpw.pushWork("10001");
+	lpw.pushWork();
 	RedisClose();
 	return 0;
 }

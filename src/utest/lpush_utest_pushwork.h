@@ -8,6 +8,8 @@ class LPushWork{
 public:
 int pushWork();
 int pushWork(std::string user);
+
+std::string uuidinit();
   
 };
 
