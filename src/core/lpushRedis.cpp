@@ -199,9 +199,11 @@ bool LPushRedisClient::hset(std::__cxx11::string key, std::__cxx11::string field
 }
 
 std::__cxx11::string LPushRedisClient::hget(std::__cxx11::string key, std::__cxx11::string field)
-{
+{	
+      std::string result;
       reply = (redisReply*)redisCommand(context,"hget %s %s ",key.c_str(),field.c_str());
-      std::string result = std::string(reply->str);
+      if(reply->str)
+      result = std::string(reply->str);
       lp_trace("redis client hget key %s field %s value %s",key.c_str(),field.c_str(),reply->str);
       freeReplyObject(reply);
       return result;

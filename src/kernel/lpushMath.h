@@ -18,4 +18,8 @@ namespace lpush
   extern bool empty(std::string data);
   
   extern bool empty(int data);
+  
+  extern std::string uint8To2Char(uint8_t src);
+  
+  
 }

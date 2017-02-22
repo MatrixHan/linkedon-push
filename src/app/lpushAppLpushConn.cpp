@@ -29,7 +29,6 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     before_data_time = 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
-    mongodbClient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
     client =NULL;
     redisApp = NULL;
     redisPlatform = NULL;
@@ -47,7 +46,6 @@ LPushConn::~LPushConn()
     SafeDelete(trd2);
     SafeDelete(redisApp);
     SafeDelete(redisPlatform);
-    SafeDelete(mongodbClient);
     if(stfd)
     LPushSource::destroy(stfd);
     if(client)
@@ -58,7 +56,6 @@ LPushConn::~LPushConn()
 int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
-    mongodbClient->initMongodbClient();
     before_data_time = getCurrentTime();
     skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
     skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
@@ -69,6 +66,11 @@ int LPushConn::do_cycle()
        return ret;
     }
     lphandshakeMsg = &lpsm;
+    if((ret = checkUserMessage(lpsm)) != ERROR_SUCCESS)
+    {
+	lp_error("lpush user identity match error %d",ret);
+	return ret;
+    }
     if((ret = lpushProtocol->sendHandshake(lpsm))!=ERROR_SUCCESS)
     {
 	lp_error("lpush send handshake error");
@@ -127,13 +129,12 @@ int LPushConn::createConnection()
 	lp_error("conn createConnection error %d",ret);
 	return ret;
     }
-    
     char buf[6];
     clientKey = lphandshakeMsg->appId + lphandshakeMsg->userId;
     sprintf(buf,"%d",conf->port);
     hostname = conf->localhost+":"+std::string(buf);
     redis_client->set(clientKey,hostname);
-    
+    redis_client->expire(clientKey,60);
     redisApp = new LPushAPPKey(lphandshakeMsg->appId,lphandshakeMsg->userId,
 			       conf->localhost,conf->port);
     redisPlatform = new LPushPlatform(lphandshakeMsg->clientFlag,lphandshakeMsg->appId,
@@ -150,8 +151,28 @@ int LPushConn::createConnection()
 	lp_error("conn sendCreateConnection error %d",ret);
 	return ret;
     }
+    selectMongoHistoryWork();
     return ret;
 }
+
+int LPushConn::checkUserMessage(LPushHandshakeMessage msg)
+{
+     int ret = ERROR_SUCCESS;
+     string screteKey = redis_client->hget(conf->appKeys,msg.appId);
+     if(screteKey.empty()){
+	  ret = ERROR_USER_SCRETE_NO_EXSIST;
+	  lp_error("handshake public key message not found this system %d",ret);
+	  return ret;
+     }
+     if(screteKey.find(msg.screteKey.c_str())==string::npos)
+     {
+	  ret = ERROR_USER_SCRETE_MISMATCH;
+	  lp_error("handshake screte key message mismatch this system %d",ret);
+	  return ret;
+     }
+     return ret;
+}
+
 
 int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
 {
@@ -167,11 +188,36 @@ int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
     map<string,string> params;
     params.insert(make_pair("userId",msg->userId));
     params.insert(make_pair("appKey",msg->appId));
-    vector<string> result = mongodbClient->queryToListJson(conf->mongodbConfig->db,collectionName,params);
+    vector<string> result = mongodb_client->queryToListJson(conf->mongodbConfig->db,collectionName,params);
     if(result.size()==0)
-    mongodbClient->insertFromCollectionToJson(conf->mongodbConfig->db,collectionName,lpmap);
+    mongodb_client->insertFromCollectionToJson(conf->mongodbConfig->db,collectionName,lpmap);
     return 0;
 }
+
+int LPushConn::selectMongoHistoryWork()
+{
+    static std::string prefix = "task_";
+    std::string collectionName = prefix + lphandshakeMsg->appId;
+    map<string,string> params;
+    params.insert(make_pair("userId",lphandshakeMsg->userId));
+    params.insert(make_pair("appKey",lphandshakeMsg->appId));
+    vector<string> result = mongodb_client->queryToListJson(conf->mongodbConfig->db,
+							   collectionName,params);
+    if(result.size()>0)
+    {
+       vector<string>::iterator itr = result.begin();
+        for(;itr!=result.end();++itr)
+        {
+	      string json = *itr;
+	      map<string,string> entity = mongodb_client->jsonToMap(json);
+	      LPushWorkerMessage lpwm(entity);
+	      client->push(lpwm.copy());
+	      mongodb_client->delFromCollectionToJson(conf->mongodbConfig->db,
+						     collectionName,entity["_id"]);
+	}
+    }
+}
+
 
 
 int LPushConn::hreatbeat(LPushChunk *message)
@@ -179,6 +225,8 @@ int LPushConn::hreatbeat(LPushChunk *message)
       int ret = ERROR_SUCCESS;
       before_data_time = getCurrentTime();
       lp_trace("recv hreatbeat %d",before_data_time);
+      //redis_client->set(clientKey,hostname);
+      redis_client->expire(clientKey,60);
       return ret;
 }
 

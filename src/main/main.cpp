@@ -5,6 +5,7 @@
 #include <lpushServer.h>
 #include <lpushSystemErrorDef.h>
 #include <lpushRedis.h>
+#include <lpushMongoClient.h>
 using namespace std;
 using namespace lpush;
 
@@ -26,7 +27,7 @@ int main(void)
 	initConfig();
 	InitLog(DEFAULT_LOG_FILE_NAME);
 	RedisInitializer();
-	
+	mongoClientInit();
 	if ((ret = server->initializer()) != ERROR_SUCCESS)
 	{
 	  return ret;
@@ -35,6 +36,7 @@ int main(void)
 	run();
 	CloseLog();
 	RedisClose();
+	mongoClientClose();
 	SafeDelete(server);
 	return 0;
 }
