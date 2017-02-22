@@ -47,6 +47,7 @@ void *thread_recv(void *)
 		int recv_len = test.recv_message();
 		if (recv_len > 0)
 		{	
+			cout << "userId: " << test.userId << endl;
 			unsigned char buff[204800];
 			char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
 			printf("datatype = %0x\n", datatype);
@@ -93,12 +94,12 @@ void *thread_recv(void *)
  			int slen = send(test.client_sockfd, test.buf, test.datalen+14, 0);
 			if (slen > 0)
 			{
-				cout << "send ok recv message success..." << slen << endl;
+				cout << test.userId << " send ok recv message success..." << slen << endl;
 			}
-			else
-			{
-				cout << "send recv failed ..." << endl;
-			}
+// 			else
+// 			{
+// 				cout << "send recv failed ..." << endl;
+// 			}
 			
 		}
 		else
