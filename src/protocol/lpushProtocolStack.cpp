@@ -45,9 +45,14 @@ int LPushProtocol::readHeader(ILPushProtocolReaderWriter* skt,LPushHeader& lph)
     unsigned char dataType = (unsigned char)fast_buffer->read_1byte();
     buf = (unsigned char*)fast_buffer->read_slice(4);
     int dataLen = *buf++<<24 | *buf++<<16 | *buf++<<8 | *buf++;
-    if(dataLen<=0||dataLen > LPUSH_HANDSHAKE_DATA_MAX)
+    if(dataLen<=0)
     {
       ret = ERROR_DATA_EMPTY;
+      return ret;
+    }
+    if(dataLen > LPUSH_HANDSHAKE_DATA_MAX)
+    {
+      ret = ERROR_DATA_MAX;
       return ret;
     }
     LPushHeader ph(LPushFlag,(int)timestamp,dataType,(int)dataLen);

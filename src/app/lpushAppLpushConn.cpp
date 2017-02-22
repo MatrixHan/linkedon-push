@@ -81,7 +81,7 @@ int LPushConn::do_cycle()
       lp_error("conn createConnection error");
        return ret;
     }
-    trd =new LPushRecvThread (client,this,0);
+    trd =new LPushRecvThread(client,this,0);
     
     trd->start();
     
@@ -235,9 +235,10 @@ int LPushConn::recvPushCallback(LPushChunk* message)
       int ret = ERROR_SUCCESS;
       before_data_time = getCurrentTime();
       std::string taskId;
-      if((ret = LPushFMT::decodeString(message->data,taskId)) != ERROR_SUCCESS)
+      if(LPushFMT::decodeString(message->data,taskId) <= 0)
       {
 	 lp_error("FMT String decode error %d",ret);
+	 ret = -2;
 	 return ret;
       }
       redis_client->hset(conf->resultMap,taskId,"1");

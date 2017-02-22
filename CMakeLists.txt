@@ -72,7 +72,7 @@ TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
-TARGET_LINK_LIBRARIES(test -ldl -lpthread -lrt)
+TARGET_LINK_LIBRARIES(test -ldl -lpthread -lrt -luuid)
 
 set(SOURCE_TEST_FILES1 src/utest/test1/lpush_utest_main1.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_TEST_FILES1)
@@ -92,6 +92,6 @@ TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.lib
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
-TARGET_LINK_LIBRARIES(test1 -ldl -lpthread -lrt)
+TARGET_LINK_LIBRARIES(test1 -ldl -lpthread -lrt -luuid)
 
 ENDIF(TESTOPEN)

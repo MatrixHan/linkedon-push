@@ -14,6 +14,7 @@
 
 #define ERROR_USER_SCRETE_NO_EXSIST			208
 #define ERROR_USER_SCRETE_MISMATCH			209
+#define ERROR_DATA_MAX					210
 
 #define ERROR_SOCKET_CREATE                 		1000
 #define ERROR_SOCKET_SETREUSE               		1001
