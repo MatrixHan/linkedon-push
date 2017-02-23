@@ -72,6 +72,11 @@ int LPushSignalManager::start()
     sa.sa_flags = 0;
     sigaction(SIGHUP, &sa, NULL);
     
+     sa.sa_handler = LPushSignalManager::signal_catcher;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGPIPE, &sa, NULL);
+    
     sa.sa_handler = LPushSignalManager::signal_catcher;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
