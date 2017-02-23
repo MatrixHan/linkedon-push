@@ -143,8 +143,18 @@ MONGO_BUILD="--enable-ssl=no --enable-shm-counters=no "
 		)
 	fi
 
-
-
+	#build libuuid
+	if [[ -f ${OBJS_DIR}/_flag.uuid.cross.build.tmp && -f ${OBJS_DIR}/libuuid-1.0.3/lib/libuuid.a ]];then
+		echo "uuid is ok"
+	else
+		echo "build redis-client"
+		(
+			rm -rf ${OBJS_DIR}/libuuid-1.0.3 && cd ${OBJS_DIR} &&
+			unzip -q ../3rdparty/libuuid-1.0.3.zip && cd libuuid-1.0.3 && chmod +w * &&
+			./configure && make -j4 && mkdir -p include  && cp *.h  include  && mkdir -p lib &&
+			cp .libs/libuuid.a lib && cd ../.. && touch ${OBJS_DIR}/_flag.uuid.cross.build.tmp		
+		)
+	fi
 
 
 

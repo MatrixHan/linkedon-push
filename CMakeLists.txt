@@ -18,6 +18,7 @@ ${PROJECT_SOURCE_DIR}/src/utest
 INCLUDE_DIRECTORIES(objs 
     objs/hp  objs/openssl/include   
     objs/jsoncpp/include  objs/st  objs/hiredis  
+    objs/libuuid-1.0.3/include 
     objs/mongo-c-driver-1.5.3/include/bson 
     objs/mongo-c-driver-1.5.3/include/yajl   
     objs/mongo-c-driver-1.5.3/include 
@@ -71,8 +72,8 @@ TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.libs
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
-#TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
-TARGET_LINK_LIBRARIES(test -ldl -lpthread  -luuid)
+TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
+TARGET_LINK_LIBRARIES(test -ldl -lpthread)
 
 set(SOURCE_TEST_FILES1 src/utest/test1/lpush_utest_main1.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_TEST_FILES1)
@@ -92,6 +93,7 @@ TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/mongo-c-driver-1.5.3/.lib
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
-TARGET_LINK_LIBRARIES(test1 -ldl -lpthread  -luuid)
+TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
+TARGET_LINK_LIBRARIES(test1 -ldl -lpthread)
 
 ENDIF(TESTOPEN)
