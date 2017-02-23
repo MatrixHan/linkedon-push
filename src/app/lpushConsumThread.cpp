@@ -23,6 +23,11 @@ int LPushConsumThread::cycle()
 {
       int ret = ERROR_SUCCESS;
       while(can_run){
+	if(!client)
+	{
+	   ret = ERROR_OBJECT_NOT_EXIST;
+	   break;
+	}
 	if(!client->can_loop())
 	{
 	    st_usleep(2*1000);

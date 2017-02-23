@@ -151,6 +151,15 @@ int LPushConn::createConnection()
     
     redis_client->hset(redisApp->appKey,redisApp->key,redisApp->value);
     redis_client->hset(redisPlatform->platformKey,redisPlatform->key,redisPlatform->value);
+    
+    LPushClient *clia = LPushSource::instance(lphandshakeMsg->userId,
+				   lphandshakeMsg->appId,lphandshakeMsg->screteKey);
+    if(clia)
+    {
+	ret = ERROR_USER_IS_EXIST;
+	lp_warn("already user conn! %d",ret);
+	return ret;
+    }
     LPushSource * source = LPushSource::create(stfd);
     
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
