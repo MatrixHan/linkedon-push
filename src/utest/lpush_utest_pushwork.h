@@ -6,7 +6,7 @@ namespace lpush {
 
 class LPushWork{
 public:
-int pushWork();
+int pushWork(int loopNum);
 int pushWork(std::string user);
 
 std::string uuidinit();

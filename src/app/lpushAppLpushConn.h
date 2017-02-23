@@ -20,6 +20,7 @@ namespace lpush
   {
   private:
     long long before_data_time;
+    long long hreat_data_time;
     bool dispose;
     std::string  clientKey;
     std::string  hostname;
@@ -40,6 +41,8 @@ namespace lpush
       
   public:
       virtual int do_cycle();
+      
+      virtual bool is_active();
   public:
       virtual int handshake(LPushHandshakeMessage &msk);
       

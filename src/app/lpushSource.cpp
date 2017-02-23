@@ -333,6 +333,7 @@ int LPushClient::playing()
 	}
 	if((ret = conn->sendForward(work))!=ERROR_SUCCESS)
 	{	
+	    conn->do_dispose();
 	    SafeDelete(work);
 	    lp_error("source send conn forward error!");
 	    return ret;

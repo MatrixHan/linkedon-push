@@ -13,20 +13,22 @@
 #include <lpushMongoClient.h>
 namespace lpush{
   
-#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(180*1000*1000LL)
+#define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(30*1000*1000LL)
 // if timeout, close the connection.
-#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(180*1000*1000LL)
+#define LP_PAUSED_RECV_TIMEOUT_US (int64_t)(30*1000*1000LL)
   
 #define LPT_PAUSED_SEND_TIMEOUT_US (int64_t)(10*1000*1000LL)
 // if timeout, close the connection.
 #define LPT_PAUSED_RECV_TIMEOUT_US (int64_t)(10*1000*1000LL)
   
-#define LP_HREAT_TIMEOUT_US (int64_t)(300)
+#define LP_HREAT_TIMEOUT_US (int64_t)(60*1000*1000LL)
+  
+#define LP_HREAT_TIMEOUT_US_MIN (int64_t)(10*1000LL)
   
 
 LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
 {
-    before_data_time = 0;
+    before_data_time =hreat_data_time= 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
     client =NULL;
@@ -56,7 +58,7 @@ LPushConn::~LPushConn()
 int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
-    before_data_time = getCurrentTime();
+    before_data_time =hreat_data_time= st_utime();
     skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
     skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
    LPushHandshakeMessage lpsm;
@@ -81,17 +83,18 @@ int LPushConn::do_cycle()
       lp_error("conn createConnection error");
        return ret;
     }
-    trd =new LPushRecvThread(client,this,0);
+    trd =new LPushRecvThread(client,this,350);
     
     trd->start();
     
-    trd2 = new LPushConsumThread(client,1000);
+    trd2 = new LPushConsumThread(client,350);
     
     trd2->start();
     while(!dispose)
     {
-	long long now = getCurrentTime();
-	if(now-before_data_time > LP_HREAT_TIMEOUT_US)
+ 	long long now = st_utime();
+	long long internal = now - before_data_time;
+	if(internal > LP_HREAT_TIMEOUT_US )
 	{
 	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
 	   break;
@@ -100,6 +103,11 @@ int LPushConn::do_cycle()
     }
     return ret;
 }
+bool LPushConn::is_active()
+{
+    return trd && trd2;
+}
+
 
 int LPushConn::handshake(LPushHandshakeMessage &msk)
 {
@@ -223,7 +231,14 @@ int LPushConn::selectMongoHistoryWork()
 int LPushConn::hreatbeat(LPushChunk *message)
 {
       int ret = ERROR_SUCCESS;
-      before_data_time = getCurrentTime();
+      before_data_time = st_utime();
+      long long internal = before_data_time - hreat_data_time;
+      if(internal < LP_HREAT_TIMEOUT_US_MIN || internal > LP_HREAT_TIMEOUT_US)
+      {
+	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
+	   return ret;
+      }	
+      hreat_data_time  = before_data_time;
       lp_trace("recv hreatbeat %d",before_data_time);
       //redis_client->set(clientKey,hostname);
       redis_client->expire(clientKey,60);
@@ -233,7 +248,6 @@ int LPushConn::hreatbeat(LPushChunk *message)
 int LPushConn::recvPushCallback(LPushChunk* message)
 {
       int ret = ERROR_SUCCESS;
-      before_data_time = getCurrentTime();
       std::string taskId;
       if(LPushFMT::decodeString(message->data,taskId) <= 0)
       {
@@ -242,6 +256,7 @@ int LPushConn::recvPushCallback(LPushChunk* message)
 	 return ret;
       }
       redis_client->hset(conf->resultMap,taskId,"1");
+      return ret;
 }
 
 
@@ -249,6 +264,12 @@ int LPushConn::readMessage(LPushChunk **message)
 {
     int ret = ERROR_SUCCESS;
     LPushChunk lp;
+    if(!lpushProtocol)
+    {
+       ret = ERROR_OBJECT_NOT_EXIST;
+        lp_error("lpushProtocol not exist error");
+       return ret;
+    }
     if((ret = lpushProtocol->readMessage(skt,lp))!=ERROR_SUCCESS)
     {
       lp_error("readMessage error");
@@ -278,7 +299,7 @@ int LPushConn::forwardServer(LPushChunk *message)
       case LPUSH_HEADER_TYPE_REQUEST_SOURCE:
 	break;
       case LPUSH_HEADER_TYPE_HREATBEAT:
-	hreatbeat(message);
+	ret = hreatbeat(message);
 	break;
       case LPUSH_HEADER_TYPE_CLOSE:
 	do_dispose();
@@ -286,12 +307,11 @@ int LPushConn::forwardServer(LPushChunk *message)
       case LPUSH_HEADER_TYPE_TEST_PUSH:
 	break;
       case LPUSH_HEADER_TYPE_PUSH:
-	recvPushCallback(message);
+	ret = recvPushCallback(message);
 	break;
       default:
 	break;
     }
-    before_data_time = getCurrentTime();
     return ret;
 }
 //consum thread use
@@ -314,7 +334,11 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     bufp[4] = jsonLen & 0xFF;
     memcpy(&bufp[5],json.c_str(),json.size());
     lc.setData(lh,(unsigned char*)buf);
-    if(lpushProtocol)
+    if(!lpushProtocol)
+    {
+      ret = ERROR_OBJECT_NOT_EXIST;
+      return ret;
+    }
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {
        SafeDelete(buf);
