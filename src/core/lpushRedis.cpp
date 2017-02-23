@@ -140,7 +140,7 @@ bool LPushRedisClient::lPushForList(std::string key, std::string value)
      return true;
 }
 //last
-bool LPushRedisClient::rPushForList(std::__cxx11::string key, std::__cxx11::string value)
+bool LPushRedisClient::rPushForList(std::string key, std::string value)
 {
      reply = (redisReply*)redisCommand(context,"RPUSH %s %s",key.c_str(),value.c_str());
      lp_trace("redisClient RPUSH key %s value %s",key.c_str(),value.c_str());
@@ -148,7 +148,7 @@ bool LPushRedisClient::rPushForList(std::__cxx11::string key, std::__cxx11::stri
      return true;
 }
 
-bool LPushRedisClient::lpop(std::__cxx11::string key)
+bool LPushRedisClient::lpop(std::string key)
 {
       reply = (redisReply*)redisCommand(context,"lpop %s ",key.c_str());
      lp_trace("redisClient lpop beging top  key %s  ",key.c_str());
@@ -156,7 +156,7 @@ bool LPushRedisClient::lpop(std::__cxx11::string key)
      return true;
 }
 
-bool LPushRedisClient::rpop(std::__cxx11::string key)
+bool LPushRedisClient::rpop(std::string key)
 {
       reply = (redisReply*)redisCommand(context,"rpop %s ",key.c_str());
      lp_trace("redisClient rpop beging last  key %s ",key.c_str());
@@ -164,7 +164,7 @@ bool LPushRedisClient::rpop(std::__cxx11::string key)
      return true;
 }
 
-bool LPushRedisClient::lrem(std::__cxx11::string key,int count, std::__cxx11::string value)
+bool LPushRedisClient::lrem(std::string key,int count, std::string value)
 {
      reply = (redisReply*)redisCommand(context,"lrem %s %d %s",key.c_str(),count,value.c_str());
      lp_trace("redisClient lrem %d  key %s ",count,key.c_str());
@@ -172,7 +172,7 @@ bool LPushRedisClient::lrem(std::__cxx11::string key,int count, std::__cxx11::st
      return true;
 }
 
-bool LPushRedisClient::ltrim(std::__cxx11::string key, int begin, int end)
+bool LPushRedisClient::ltrim(std::string key, int begin, int end)
 {
        reply = (redisReply*)redisCommand(context,"ltrim %s %d %d",key.c_str(),begin,end);
      lp_trace("redisClient ltrim key %s  begin %d  end %d ",key.c_str(),begin,end);
@@ -181,7 +181,7 @@ bool LPushRedisClient::ltrim(std::__cxx11::string key, int begin, int end)
 }
 
 
-int LPushRedisClient::llen(std::__cxx11::string key)
+int LPushRedisClient::llen(std::string key)
 {
       int len = 0;
       reply = (redisReply*)redisCommand(context,"llen %s ",key.c_str());
@@ -207,7 +207,7 @@ void LPushRedisClient::setTimeout(int seconds, int naseconds)
 }
 
 
-bool LPushRedisClient::hset(std::__cxx11::string key, std::__cxx11::string field, std::__cxx11::string value)
+bool LPushRedisClient::hset(std::string key, std::string field, std::string value)
 {
       reply = (redisReply*)redisCommand(context,"hset %s %s %s",key.c_str(),field.c_str(),value.c_str());
       lp_trace("redis client hset key %s field %s ",key.c_str(),field.c_str());
@@ -215,7 +215,7 @@ bool LPushRedisClient::hset(std::__cxx11::string key, std::__cxx11::string field
       return true;
 }
 
-std::__cxx11::string LPushRedisClient::hget(std::__cxx11::string key, std::__cxx11::string field)
+std::string LPushRedisClient::hget(std::string key, std::string field)
 {	
       std::string result;
       reply = (redisReply*)redisCommand(context,"hget %s %s ",key.c_str(),field.c_str());
@@ -226,7 +226,7 @@ std::__cxx11::string LPushRedisClient::hget(std::__cxx11::string key, std::__cxx
       return result;
 }
 
-bool LPushRedisClient::hsetnx(std::__cxx11::string key, std::__cxx11::string field, std::__cxx11::string value)
+bool LPushRedisClient::hsetnx(std::string key, std::string field, std::string value)
 {
       reply = (redisReply*)redisCommand(context,"hsetnx %s %s %s",key.c_str(),field.c_str(),value.c_str());
       lp_trace("redis client hsetnx key %s field %s ",key.c_str(),field.c_str());
@@ -234,7 +234,7 @@ bool LPushRedisClient::hsetnx(std::__cxx11::string key, std::__cxx11::string fie
       return true;
 }
 
-std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hgetall(std::__cxx11::string key)
+std::map< std::string, std::string > LPushRedisClient::hgetall(std::string key)
 {
       std::map<std::string,std::string > result;
       reply = (redisReply*)redisCommand(context,"hgetall %s",key.c_str());
@@ -250,7 +250,7 @@ std::map< std::__cxx11::string, std::__cxx11::string > LPushRedisClient::hgetall
       return result;
 }
 
-bool LPushRedisClient::hdel(std::__cxx11::string key, std::__cxx11::string field)
+bool LPushRedisClient::hdel(std::string key, std::string field)
 {
       reply = (redisReply*)redisCommand(context,"hdel %s %s ",key.c_str(),field.c_str());
       lp_trace("redis client hdel key %s field %s ",key.c_str(),field.c_str());
@@ -259,7 +259,7 @@ bool LPushRedisClient::hdel(std::__cxx11::string key, std::__cxx11::string field
 }
 
 
-bool LPushRedisClient::expire(std::__cxx11::string key, int time)
+bool LPushRedisClient::expire(std::string key, int time)
 {
     reply = (redisReply*)redisCommand(context,"expire %s %d",key.c_str(),time);
     lp_trace("redis client option key %s,expire time is %d",key.c_str(),time);
