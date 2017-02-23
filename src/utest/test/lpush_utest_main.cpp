@@ -31,7 +31,7 @@ void *send_heart(void *)
 		//cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
-		sleep(1);		
+		sleep(10);		
 	}
 	pthread_exit(NULL);
 	
@@ -107,7 +107,7 @@ void *thread_recv(void *)
 // 			perror("recv");
 // 		}
 		pthread_mutex_unlock(&mut);
-		usleep(5*1000);
+		usleep(50*1000);
 	}	
 	pthread_exit(NULL);	
 }
