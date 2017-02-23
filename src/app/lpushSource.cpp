@@ -37,7 +37,7 @@ LPushWorkerMessage::LPushWorkerMessage()
     createTime = 0;
     expiresTime = 0;
 }
-LPushWorkerMessage::LPushWorkerMessage(std::__cxx11::string jsonStr)
+LPushWorkerMessage::LPushWorkerMessage(std::string jsonStr)
 {
     Json::Value json;
     Json::Reader reader;
@@ -59,7 +59,7 @@ LPushWorkerMessage::LPushWorkerMessage(std::__cxx11::string jsonStr)
     }
 }
 
-LPushWorkerMessage::LPushWorkerMessage(std::map< std::__cxx11::string, std::__cxx11::string > params)
+LPushWorkerMessage::LPushWorkerMessage(std::map< std::string, std::string > params)
 {
     taskId = params["TaskId"];
     msgId = params["MsgId"];
@@ -80,7 +80,7 @@ LPushWorkerMessage::~LPushWorkerMessage()
 
 }
 
-std::__cxx11::string LPushWorkerMessage::toAllString()
+std::string LPushWorkerMessage::toAllString()
 {
     Json::Value pjson;
     if(!empty(userId))
@@ -126,7 +126,7 @@ std::__cxx11::string LPushWorkerMessage::toAllString()
     return pjson.toStyledString();
 }
 
-std::__cxx11::string LPushWorkerMessage::toJsonString()
+std::string LPushWorkerMessage::toJsonString()
 {
     Json::Value pjson;
     if(!empty(taskId))
@@ -177,7 +177,7 @@ LPushWorkerMessage* LPushWorkerMessage::copy()
     return result;
 }
 
-LPushAPPKey::LPushAPPKey(std::__cxx11::string appId, std::__cxx11::string uid, std::__cxx11::string ip, int port)
+LPushAPPKey::LPushAPPKey(std::string appId, std::string uid, std::string ip, int port)
 {
       appKey = "";
       appKey.append("user_appkey_map_");
@@ -206,7 +206,7 @@ LPushAPPKey::~LPushAPPKey()
 
 #define LPUSH_CLIENT_FLAG_WEB				0x05
 */ 
-LPushPlatform::LPushPlatform(std::__cxx11::string platform, std::__cxx11::string appId, std::__cxx11::string uid, std::__cxx11::string ip, int port)
+LPushPlatform::LPushPlatform(std::string platform, std::string appId, std::string uid, std::string ip, int port)
 {
       platformKey = "";
       platformKey.append("user_");
