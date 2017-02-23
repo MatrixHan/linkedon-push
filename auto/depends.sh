@@ -17,7 +17,8 @@ source auto/checkOS.sh
 OBJS_DIR=objs
 CONFIGURE_TOOL="./config"
 OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
-MONGO_BUILD="--enable-ssl=no --enable-shm-counters=no "
+CONFIGURE_MOG="./configure"
+MONGO_BUILD="--enable-shm-counters=no --disable-automatic-init-and-cleanup  --enable-static --disable-shared"
 
 	if [ ! -d ${OBJS_DIR} ];then
 		`mkdir ${OBJS_DIR}`;
@@ -123,7 +124,7 @@ MONGO_BUILD="--enable-ssl=no --enable-shm-counters=no "
 		(
 			rm -rf ${OBJS_DIR}/mongo-c-driver-1.5.3 && cd ${OBJS_DIR} &&
 			unzip -q ../3rdparty/mongo-c-driver-1.5.3.zip && cd mongo-c-driver-1.5.3 && chmod +w * &&
-			./configure ${MONGO_BUILD} && make -j4 &&  mkdir -p include  && cp src/mongoc/*.h include &&
+			${CONFIGURE_MOG} --with-ssl=../openssl ${MONGO_BUILD} && make -j4 &&  mkdir -p include  && cp src/mongoc/*.h include &&
 			cd include  && mkdir -p bson yajl && cp ../src/libbson/src/bson/*.h  bson && cp ../src/libbson/src/yajl/*.h yajl &&
 			cd .. && cp src/libbson/.libs/*.a  .libs &&
 			cd ../.. && touch ${OBJS_DIR}/_flag.mongo.cross.build.tmp	
