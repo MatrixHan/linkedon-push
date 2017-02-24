@@ -38,6 +38,7 @@ struct LPushConfig
   std::string 		ip;
   int 			port;
   int 			maxconnect;
+  int 			isdaemon;
   std::string 		logdir;
   std::string 		logfilename;
   int 			loglevel;

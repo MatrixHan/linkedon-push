@@ -42,6 +42,7 @@ LPushConfig* LPushConfig::parse(std::string confName)
       LPushConfig * cf = new LPushConfig();
       
       cf->maxconnect = root["maxconnect"].asInt();
+      cf->isdaemon = root["isdaemon"].asInt();
       cf->port   = root["port"].asInt();
       cf->loglevel= root["loglevel"].asInt();
       cf->ip     = root["ip"].asString();

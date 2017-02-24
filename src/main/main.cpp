@@ -32,7 +32,8 @@ int main(void)
 	{
 	  return ret;
 	}
-	//start_daemon();
+	if(conf->isdaemon==1)
+	start_daemon();
 	run();
 	CloseLog();
 	RedisClose();
