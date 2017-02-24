@@ -1,6 +1,6 @@
 #pragma once
 #include <lpushCommon.h>
-#include <uuid.h>
+#include <uuid/uuid.h>
 
 namespace lpush {
 

@@ -48,7 +48,7 @@ void *thread_recv(void *)
 		if (recv_len > 0)
 		{	
 			cout << "userId: " << test.userId << endl;
-			unsigned char buff[204800];
+			unsigned char buff[1024];
 			char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
 			printf("datatype = %0x\n", datatype);
 			if (datatype == 0x07 || datatype == 0x08)
@@ -78,23 +78,37 @@ void *thread_recv(void *)
 
 			map<string, string> json_valuemap, msg_mapto_json;			
 			LPushFMT::decodeJson(test.buf+14, json_valuemap);
-			string msg = json_valuemap["TaskId"];						
+			string taskId = json_valuemap["TaskId"];
+			string msg = json_valuemap["MsgId"];
+			
 			//msg_mapto_json.insert(pair<string, string>("TaskId", taskId));
 			//string msg = LPushConfig::mapToJsonStr(msg_mapto_json);
 			//Trim(msg);			
- 			test.init_message();
 
 			//string msg = LPushFMT::encodeString(taskId);
 			test.buf[14] = 0x01;			
- 			test.datalen = msg.size() + 5;
-			unsigned int mslen = htonl(msg.size()); 
+ 			
+			unsigned int mslen = htonl(taskId.size()); 
 			memcpy(&test.buf[15], &mslen, 4);
- 			test.set_packet_header(datatype);
-			memcpy(test.buf + 19, msg.c_str(), msg.size());
+ 			
+			memcpy(test.buf + 19, taskId.c_str(), taskId.size());
+			
+			int buflen = 19 + taskId.size();
+			
+			test.buf[buflen] = 0x01;
+			mslen = htonl(msg.size());
+			memcpy(&test.buf[buflen+1], &mslen, 4);
+			memcpy(&test.buf[buflen+5], msg.c_str(), msg.size());
+			
+			test.datalen = taskId.size() + 5 + msg.size() + 5;
+			test.set_packet_header(datatype);
  			int slen = send(test.client_sockfd, test.buf, test.datalen+14, 0);
 			if (slen > 0)
 			{
 				cout << test.userId << " send ok recv message success..." << slen << endl;
+// 				for (int i=0;  i<test.datalen; i++)
+// 					printf("i =%d %0x\n", i, test.buf[14+i]);
+// 				cout << endl;
 			}
 // 			else
 // 			{
