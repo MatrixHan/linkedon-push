@@ -18,7 +18,7 @@ OBJS_DIR=objs
 CONFIGURE_TOOL="./config"
 OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
 CONFIGURE_MOG="./configure"
-MONGO_BUILD="--enable-ssl=yes  --enable-shm-counters=no --disable-automatic-init-and-cleanup  --enable-static --disable-shared"
+MONGO_BUILD="--enable-shm-counters=no --disable-automatic-init-and-cleanup  --enable-static --disable-shared"
 
 	if [ ! -d ${OBJS_DIR} ];then
 		`mkdir ${OBJS_DIR}`;
@@ -59,7 +59,7 @@ MONGO_BUILD="--enable-ssl=yes  --enable-shm-counters=no --disable-automatic-init
                     rm -rf ${OBJS_DIR}/openssl-1.0.1f && cd ${OBJS_DIR} &&
                     unzip -q ../3rdparty/openssl-1.0.1f.zip && cd openssl-1.0.1f &&
                     $CONFIGURE_TOOL --prefix=`pwd`/_release -no-shared $OPENSSL_HOTFIX &&
-                    make && make install_sw && make install &&
+                    make && make install_sw && 
                     cd .. && rm -rf openssl && ln -sf openssl-1.0.1f/_release openssl &&
                     cd .. && touch ${OBJS_DIR}/_flag.ssl.cross.build.tmp
                 )
@@ -120,7 +120,7 @@ MONGO_BUILD="--enable-ssl=yes  --enable-shm-counters=no --disable-automatic-init
 	if [[  -f ${OBJS_DIR}/_flag.mongo.cross.build.tmp && -f ${OBJS_DIR}/mongo-c-driver-1.5.3/.libs/libmongoc-priv.a ]];then
 		echo "mongo-client is ok"
 	else
-		echo "build mongo-client"
+		echo "build mongo-client   depends yum install pkg-config openssl-devel cyrus-sasl-devel"
 		(
 			rm -rf ${OBJS_DIR}/mongo-c-driver-1.5.3 && cd ${OBJS_DIR} &&
 			unzip -q ../3rdparty/mongo-c-driver-1.5.3.zip && cd mongo-c-driver-1.5.3 && chmod +w * &&
