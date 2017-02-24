@@ -78,7 +78,9 @@ void *thread_recv(void *)
 
 			map<string, string> json_valuemap, msg_mapto_json;			
 			LPushFMT::decodeJson(test.buf+14, json_valuemap);
-			string msg = json_valuemap["TaskId"];						
+			string taskId = json_valuemap["TaskId"];
+			string msg = json_valuemap["MsgId"];
+			
 			//msg_mapto_json.insert(pair<string, string>("TaskId", taskId));
 			//string msg = LPushConfig::mapToJsonStr(msg_mapto_json);
 			//Trim(msg);			
@@ -86,11 +88,21 @@ void *thread_recv(void *)
 
 			//string msg = LPushFMT::encodeString(taskId);
 			test.buf[14] = 0x01;			
- 			test.datalen = msg.size() + 5;
-			unsigned int mslen = htonl(msg.size()); 
+ 			
+			unsigned int mslen = htonl(taskId.size()); 
 			memcpy(&test.buf[15], &mslen, 4);
- 			test.set_packet_header(datatype);
-			memcpy(test.buf + 19, msg.c_str(), msg.size());
+ 			
+			memcpy(test.buf + 19, taskId.c_str(), taskId.size());
+			
+			int buflen = 19 + msg.size();
+			
+			test.buf[buflen] = 0x01;
+			mslen = htonl(msg.size());
+			memcpy(&(test.buf[buflen+1]), &mslen, 4);
+			memcpy(&(test.buf[buflen+5]), msg.c_str(), msg.size());
+			
+			test.datalen = taskId.size() + 5 + msg.size() + 5;
+			test.set_packet_header(datatype);
  			int slen = send(test.client_sockfd, test.buf, test.datalen+14, 0);
 			if (slen > 0)
 			{
