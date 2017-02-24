@@ -21,5 +21,7 @@ namespace lpush
   
   extern std::string uint8To2Char(uint8_t src);
   
+  extern bool isIntergeStr(std::string src);
+  
   
 }

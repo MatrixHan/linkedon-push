@@ -64,23 +64,23 @@ int LPushConn::do_cycle()
    LPushHandshakeMessage lpsm;
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
-	lp_error("conn handshake error");
-       return ret;
+	lp_warn("conn handshake error");
+	return ret;
     }
     lphandshakeMsg = &lpsm;
     if((ret = checkUserMessage(lpsm)) != ERROR_SUCCESS)
     {
-	lp_error("lpush user identity match error %d",ret);
+	lp_warn("lpush user identity match error %d",ret);
 	return ret;
     }
     if((ret = lpushProtocol->sendHandshake(lpsm))!=ERROR_SUCCESS)
     {
-	lp_error("lpush send handshake error");
+	lp_warn("lpush send handshake error");
 	return ret;
     }
     if((ret = createConnection()) != ERROR_SUCCESS)
     {
-      lp_error("conn createConnection error");
+      lp_warn("conn createConnection error");
        return ret;
     }
     trd =new LPushRecvThread(client,this,350);
@@ -115,7 +115,7 @@ int LPushConn::handshake(LPushHandshakeMessage &msk)
      LPushChunk lpc;
     if((ret = lpushProtocol->readMessage(skt,lpc))!=ERROR_SUCCESS)
     {
-	lp_error("conn readMessage error");
+	lp_warn("conn readMessage error");
 	return ret;
     }
     
@@ -129,12 +129,12 @@ int LPushConn::createConnection()
      LPushChunk lpc;
     if((ret = lpushProtocol->readMessage(skt,lpc))!=ERROR_SUCCESS)
     {
-	lp_error("conn readMessage error");
+	lp_warn("conn readMessage error");
 	return ret;
     }
     if((ret = lpushProtocol->createConnection(&lpc,lpcm))!=ERROR_SUCCESS)
     {
-	lp_error("conn createConnection error %d",ret);
+	lp_warn("conn createConnection error %d",ret);
 	return ret;
     }
     char buf[6];
@@ -165,7 +165,7 @@ int LPushConn::createConnection()
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
     if((ret=lpushProtocol->sendCreateConnection(lpcm))!=ERROR_SUCCESS)
     {
-	lp_error("conn sendCreateConnection error %d",ret);
+	lp_warn("conn sendCreateConnection error %d",ret);
 	return ret;
     }
     selectMongoHistoryWork();
@@ -178,13 +178,13 @@ int LPushConn::checkUserMessage(LPushHandshakeMessage msg)
      string screteKey = redis_client->hget(conf->appKeys,msg.appId);
      if(screteKey.empty()){
 	  ret = ERROR_USER_SCRETE_NO_EXIST;
-	  lp_error("handshake public key message not found this system %d",ret);
+	  lp_warn("handshake public key message not found this system %d",ret);
 	  return ret;
      }
      if(screteKey.find(msg.screteKey.c_str())==string::npos)
      {
 	  ret = ERROR_USER_SCRETE_MISMATCH;
-	  lp_error("handshake screte key message mismatch this system %d",ret);
+	  lp_warn("handshake screte key message mismatch this system %d",ret);
 	  return ret;
      }
      return ret;
@@ -194,7 +194,7 @@ int LPushConn::checkUserMessage(LPushHandshakeMessage msg)
 int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
 {
     int ret = ERROR_SUCCESS;
-    static std::string prefix = "member_";
+    static std::string prefix = "MEMBER_";
     std::string collectionName = prefix + msg->appId;
     map<string,string>  lpmap = msg->toMongomap();
     int time = getCurrentTime();
@@ -213,7 +213,7 @@ int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
 
 int LPushConn::selectMongoHistoryWork()
 {
-    static std::string prefix = "task_";
+    static std::string prefix = "TASK_";
     std::string collectionName = prefix + lphandshakeMsg->appId;
     map<string,string> params;
     params.insert(make_pair("userId",lphandshakeMsg->userId));
@@ -257,14 +257,30 @@ int LPushConn::hreatbeat(LPushChunk *message)
 int LPushConn::recvPushCallback(LPushChunk* message)
 {
       int ret = ERROR_SUCCESS;
-      std::string taskId;
-      if(LPushFMT::decodeString(message->data,taskId) <= 0)
+      int result = 0;
+      std::string taskId,msgId;
+      unsigned char * buf = message->data;
+      if((result = LPushFMT::decodeString(buf,taskId)) <= 0)
       {
-	 lp_error("FMT String decode error %d",ret);
+	 lp_warn("FMT String decode error %d",ret);
 	 ret = -2;
 	 return ret;
       }
-      redis_client->hset(conf->resultMap,taskId,"1");
+      buf += result;
+       if(LPushFMT::decodeString(buf,msgId) <= 0)
+      {
+	 lp_warn("FMT String decode error %d",ret);
+	 ret = -2;
+	 return ret;
+      }
+      if(msgId.empty()||taskId.empty())
+      {
+	 ret = ERROR_OBJECT_NOT_EXIST;
+	 lp_warn("recv result list message match error");
+	 return ret;
+      }
+      std::string  resultList = conf->resultList+ msgId; 
+      redis_client->lPushForList(resultList,taskId);
       return ret;
 }
 
@@ -276,12 +292,12 @@ int LPushConn::readMessage(LPushChunk **message)
     if(!lpushProtocol)
     {
        ret = ERROR_OBJECT_NOT_EXIST;
-        lp_error("lpushProtocol not exist error");
+        lp_warn("lpushProtocol not exist error");
        return ret;
     }
     if((ret = lpushProtocol->readMessage(skt,lp))!=ERROR_SUCCESS)
     {
-      lp_error("readMessage error");
+      lp_warn("readMessage error");
       return ret;
     }
     *message = lp.copy();

@@ -42,8 +42,10 @@ struct LPushConfig
   std::string 		logfilename;
   int 			loglevel;
   std::string 		localhost;
-  std::string 		resultMap;
+  std::string 		resultList;
   std::string     	appKeys;
+  std::string 		serverList;
+  std::string 		task_prefix;
   LPushRedisConfig      *redisConfig;
   LPushMongodbConfig    *mongodbConfig;
   LPushConfig();

@@ -3,7 +3,7 @@
 #include <lpushRedis.h>
 #include <lpushMath.h>
 #include <lpushUtils.h>
-
+#include <lpushJson.h>
 
 namespace lpush {
 
@@ -16,7 +16,7 @@ int LPushWork::pushWork(int loopNum)
       memset(buf,0,20);
       sprintf(buf,"%d",ret);
     LPushWorkerMessage lwm;
-    std::string queuename = "task_list_172.16.104.21:9732";
+    std::string queuename = conf->task_prefix+"172.16.104.21:9732";
     lwm.taskId = uuidinit();
     lwm.title = "hello world!";
     lwm.userId=std::string(buf);
@@ -38,7 +38,7 @@ int LPushWork::pushWork(std::string user)
     LPushWorkerMessage lwm;
     std::string uuid = uuidinit();
     
-    std::string queuename = "task_list_172.16.104.21:9732";
+    std::string queuename = conf->task_prefix+"172.16.104.21:9732";
     lwm.taskId = uuid;
     lwm.title = "hello world!";
     lwm.userId=user;

@@ -199,7 +199,7 @@ int LPushServer::initializer()
     char buf[5];
     sprintf(buf,"%d",port);
     serverKey = conf->localhost+":"+std::string(buf);
-    taskKey = "task_list_"+serverKey;
+    taskKey = conf->task_prefix+serverKey;
     return ret;
 }
 
@@ -249,7 +249,7 @@ void LPushServer::dispose()
 {
     close_listeners();
     close_conns();
-    redis_client->hdel("serverList",serverKey);
+    redis_client->hdel(conf->serverList,serverKey);
 }
 
 void LPushServer::close_listeners()
@@ -427,7 +427,7 @@ int LPushServer::hreatRedis()
     long long nowtime = getCurrentTime();
     if(nowtime-beforeTime>5){
     std::string status = LPushSystemStatus::statusToJson(conns.size());
-    redis_client->hset("serverList",serverKey,status);
+    redis_client->hset(conf->serverList,serverKey,status);
     beforeTime = getCurrentTime();
     }
     return ret;

@@ -96,12 +96,12 @@ int LPushProtocol::handshake(LPushChunk* message,LPushHandshakeMessage &msk)
       int ret = ERROR_SUCCESS;
       if((message->header.dataType&0x0F)!=LPUSH_HEADER_TYPE_HANDSHAKE)
       {
-	  lp_error("lpush handshake data header type not ok!");
+	  lp_warn("lpush handshake data header type not ok!");
 	  return ERROR_SYSTEM_HANDSHAKE;
       }
       if(LPushFMT::isType(message->data)!=LPUSH_FMT_JSON)
       {
-	  lp_error("lpush handshake data must be json data");
+	  lp_warn("lpush handshake data must be json data");
 	  return ERROR_SYSTEM_HANDSHAKE;
       }
       
@@ -109,7 +109,7 @@ int LPushProtocol::handshake(LPushChunk* message,LPushHandshakeMessage &msk)
       int len = LPushFMT::decodeJson(message->data,parms);
       if(len!=message->header.datalenght)
       {
-	    lp_error("lpush handshake data length error");
+	    lp_warn("lpush handshake data length error");
 	    return ERROR_SYSTEM_HANDSHAKE;
       }
       msk.setParams(parms);
@@ -125,7 +125,7 @@ int LPushProtocol::createConnection(LPushChunk* message, LPushCreateMessage& pcm
       int ret = ERROR_SUCCESS;
        if((message->header.dataType&0x0F)!=LPUSH_HEADER_TYPE_CREATE_CONNECTION)
       {
-	  lp_error("lpush create connection data header type not ok!");
+	  lp_warn("lpush create connection data header type not ok!");
 	  return ERROR_SYSTEM_HANDSHAKE;
       }
       if(message->header.datalenght>0){
@@ -145,7 +145,7 @@ int LPushProtocol::recvhreatbeat(LPushChunk* message)
       int ret = ERROR_SUCCESS;
       if((message->header.dataType&0x0F)!=LPUSH_HEADER_TYPE_HREATBEAT)
       {
-	  lp_error("lpush hreatbeat data header type not ok!");
+	  lp_warn("lpush hreatbeat data header type not ok!");
 	  return ERROR_SYSTEM_HANDSHAKE;
       }
       return ret;
@@ -275,15 +275,19 @@ bool LPushHandshakeMessage::check()
 {
      std::string md5Src    = userId + appId + screteKey;
      std::string md5Temple = md5Encoder(md5Src);
-     
+     if(!isIntergeStr(userId))
+      {
+	  lp_warn("handshake userId  type is not match");
+	  return false;
+      }
      if(md5Data.length()!=md5Temple.length())
      {
-       lp_error("handshake Authorization error");
+       lp_warn("handshake Authorization error");
        return false;
     }
      if(md5Data.find(md5Temple.c_str())==std::string::npos)
      {
-       lp_error("handshake Authorization error");
+       lp_warn("handshake Authorization error");
        return false;
     }
      return true;

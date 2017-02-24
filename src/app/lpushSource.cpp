@@ -180,7 +180,7 @@ LPushWorkerMessage* LPushWorkerMessage::copy()
 LPushAPPKey::LPushAPPKey(std::string appId, std::string uid, std::string ip, int port)
 {
       appKey = "";
-      appKey.append("user_appkey_map_");
+      appKey.append("USER_APPKEY_MAP_");
       appKey.append(appId);
       key = uid;
       char buf[20];
@@ -209,24 +209,24 @@ LPushAPPKey::~LPushAPPKey()
 LPushPlatform::LPushPlatform(std::string platform, std::string appId, std::string uid, std::string ip, int port)
 {
       platformKey = "";
-      platformKey.append("user_");
+      platformKey.append("USER_");
       if(platform.find("1")!=std::string::npos)
       {
-	 platformKey.append("ios_");
+	 platformKey.append("IOS_");
       }else if(platform.find("2")!=std::string::npos)
       {
-	platformKey.append("android_");
+	platformKey.append("ANDROID_");
       }else if(platform.find("3")!=std::string::npos)
       {
-	platformKey.append("win_phone_");
+	platformKey.append("WIN_PHONE_");
       }else if(platform.find("4")!=std::string::npos)
       {
-	platformKey.append("win_pc_");
+	platformKey.append("WIN_PC_");
       }else if(platform.find("5")!=std::string::npos)
       {
-	platformKey.append("web_");
+	platformKey.append("WEB_");
       }
-      platformKey.append("map_");
+      platformKey.append("MAP_");
       platformKey.append(appId);
       key = uid;
       char buf[20];

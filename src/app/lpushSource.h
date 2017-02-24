@@ -44,7 +44,7 @@ public:
 class LPushAPPKey
 {
 public:
-  std::string appKey;//key=user_appkey_map_[appkey]
+  std::string appKey;//key=USER_APPKEY_MAP_[appkey]
   std::string key;//uid
   std::string value;//ip:port
 public:
@@ -55,7 +55,7 @@ public:
 class LPushPlatform
 {
 public:
-  std::string platformKey;//key = user_android_map_[appkey]  and key = user_ios_map_[appkey]
+  std::string platformKey;//key = USER_ANDROID_MAP_[appkey]  and key = USER_IOS_MAP_[appkey]
   std::string key;//uid
   std::string value;//ip:port
 public:

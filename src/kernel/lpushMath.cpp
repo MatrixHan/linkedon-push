@@ -78,5 +78,27 @@ std::string uint8To2Char(uint8_t src)
     return std::string(bufa);
 }
 
+bool isIntergeStr(std::string src)
+{
+    static char buf[16] = {'0','1','2','3','4','5','6','7','8','9'};
+    const char *a = src.c_str();
+    int len = src.length();
+    int plen = 0;
+    for(int i=0;i<src.size();i++)
+    {
+	for(int j=0;j<10;j++)
+	{
+	    if(a[i]==buf[j])
+	    {
+	        plen++;
+	    }
+	}
+    }
+    if(len == plen)
+	return true;
+    else
+	return false;
+}
+
   
 }
