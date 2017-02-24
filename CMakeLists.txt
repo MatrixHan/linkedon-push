@@ -50,10 +50,10 @@ TARGET_LINK_LIBRARIES(lpush -ldl -lpthread )
 ENDIF(CompileParent)
 
 
-set(TESTOPEN true)
 
-IF(TESTOPEN)
+set(TEST_PUSH true)
 
+IF(TEST_PUSH)
 set(SOURCE_TEST_FILES src/utest/test/lpush_utest_main.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_TEST_FILES)
 AUX_SOURCE_DIRECTORY(src/kernel SOURCE_TEST_FILES)
@@ -74,7 +74,11 @@ TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
 TARGET_LINK_LIBRARIES(test -ldl -lpthread)
+ENDIF(TEST_PUSH)
 
+set(TESTOPEN false)
+
+IF(TESTOPEN)
 set(SOURCE_TEST_FILES1 src/utest/test1/lpush_utest_main1.cpp )
 AUX_SOURCE_DIRECTORY(src/common SOURCE_TEST_FILES1)
 AUX_SOURCE_DIRECTORY(src/kernel SOURCE_TEST_FILES1)
