@@ -59,7 +59,7 @@ MONGO_BUILD="--enable-ssl=yes  --enable-shm-counters=no --disable-automatic-init
                     rm -rf ${OBJS_DIR}/openssl-1.0.1f && cd ${OBJS_DIR} &&
                     unzip -q ../3rdparty/openssl-1.0.1f.zip && cd openssl-1.0.1f &&
                     $CONFIGURE_TOOL --prefix=`pwd`/_release -no-shared $OPENSSL_HOTFIX &&
-                    make && make install_sw &&
+                    make && make install_sw && make install &&
                     cd .. && rm -rf openssl && ln -sf openssl-1.0.1f/_release openssl &&
                     cd .. && touch ${OBJS_DIR}/_flag.ssl.cross.build.tmp
                 )
