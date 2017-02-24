@@ -18,7 +18,7 @@ OBJS_DIR=objs
 CONFIGURE_TOOL="./config"
 OPENSSL_HOTFIX="-DOPENSSL_NO_HEARTBEATS"
 CONFIGURE_MOG="./configure"
-MONGO_BUILD="--enable-shm-counters=no --disable-automatic-init-and-cleanup  --enable-static --disable-shared"
+MONGO_BUILD="--enable-ssl=yes  --enable-shm-counters=no --disable-automatic-init-and-cleanup  --enable-static --disable-shared"
 
 	if [ ! -d ${OBJS_DIR} ];then
 		`mkdir ${OBJS_DIR}`;
