@@ -54,7 +54,7 @@ int LPushWork::pushWork(std::string user)
     return 0;
 }
 
-std::__cxx11::string LPushWork::uuidinit()
+std::string LPushWork::uuidinit()
 {
     uuid_t uu;
     uuid_generate(uu);

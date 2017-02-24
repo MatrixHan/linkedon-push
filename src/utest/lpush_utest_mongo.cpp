@@ -20,21 +20,21 @@ void LPushUtestMongo::test1()
     memset(buf,0,20);
     sprintf(buf,"%d",time);
     lpmap.insert(make_pair("time",string(buf)));
-    LPushMongodbClient *mclient = new LPushMongodbClient("mongodb://127.0.0.1/?appname=client-example");
+    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
     mclient->initMongodbClient();
     map<string,string> params;
     params.insert(make_pair("userId","10000"));
     params.insert(make_pair("appKey","LOFFICIEL"));
-    vector<string> result = mclient->queryToListJson("test","test",params);
+    vector<string> result = mclient->queryToListJson(conf->mongodbConfig->db,"test",params);
     vector<string>::iterator itr = result.begin();
     for(;itr!=result.end();++itr)
     {
         string resultJson = *itr;
 	map<string,string> entity = mclient->jsonToMap(resultJson);
-	mclient->delFromCollectionToJson("test","test",entity["_id"]);
+	mclient->delFromCollectionToJson(conf->mongodbConfig->db,"test",entity["_id"]);
     }
     if(result.size()==0)
-    mclient->insertFromCollectionToJson("test","test",lpmap);
+    mclient->insertFromCollectionToJson(conf->mongodbConfig->db,"test",lpmap);
     map<string,string>  cpmap = lphm.toMongomap();
     cpmap["status"]="0";
     cpmap.insert(make_pair("time",string(buf)));

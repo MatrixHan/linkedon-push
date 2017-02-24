@@ -19,7 +19,7 @@
 
 #define ERROR_OBJECT_NOT_EXIST				211
 #define ERROR_NOT_ACTIVE				212
-
+#define ERROR_USER_IS_EXIST				213
 
 #define ERROR_SOCKET_CREATE                 		1000
 #define ERROR_SOCKET_SETREUSE               		1001

@@ -29,7 +29,7 @@ int main(void)
 {
     initConfig();
     InitLog(DEFAULT_LOG_FILE_NAME);
-    test2();
+    test1();
     CloseLog();
     return 0;
 }

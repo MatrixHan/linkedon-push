@@ -288,9 +288,9 @@ bool LPushHandshakeMessage::check()
     }
      return true;
 }
-std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::tomap()
+std::map< std::string, std::string > LPushHandshakeMessage::tomap()
 {
-    std::map< std::__cxx11::string, std::__cxx11::string > map;
+    std::map< std::string, std::string > map;
     map.insert(std::make_pair("appId",appId));
     map.insert(std::make_pair("screteKey",screteKey));
     map.insert(std::make_pair("userId",userId));
@@ -301,9 +301,9 @@ std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::to
     return map;
 }
 
-std::map< std::__cxx11::string, std::__cxx11::string > LPushHandshakeMessage::toMongomap()
+std::map< std::string, std::string > LPushHandshakeMessage::toMongomap()
 {
-      std::map< std::__cxx11::string, std::__cxx11::string > map;
+      std::map< std::string, std::string > map;
     map.insert(std::make_pair("appKey",appId));
     map.insert(std::make_pair("userId",userId));
     map.insert(std::make_pair("identity",identity));
@@ -334,7 +334,7 @@ LPushCreateMessage::LPushCreateMessage()
 }
 
 
-LPushCreateMessage::LPushCreateMessage(std::__cxx11::string cs)
+LPushCreateMessage::LPushCreateMessage(std::string cs)
 {
     createString = cs;
 }
@@ -343,7 +343,7 @@ LPushCreateMessage::~LPushCreateMessage()
 {
 
 }
-void LPushCreateMessage::setStr(std::__cxx11::string cs)
+void LPushCreateMessage::setStr(std::string cs)
 {
     createString = cs;
 }

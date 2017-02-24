@@ -110,17 +110,17 @@ std::vector<std::string> LPushMongodbClient::queryFromCollectionToJson(bson_t *_
    }
    return result;
 }
-std::vector< std::__cxx11::string > LPushMongodbClient::queryToListJson(std::__cxx11::string db, std::__cxx11::string collectionName, std::map< std::__cxx11::string, std::__cxx11::string > params)
+std::vector< std::string > LPushMongodbClient::queryToListJson(std::string db, std::string collectionName, std::map< std::string, std::string > params)
 {
     bson_t cmd = LPushMongodbClient::excute(params);
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
-    std::vector< std::__cxx11::string > result= queryFromCollectionToJson(&cmd,cll);
+    std::vector< std::string > result= queryFromCollectionToJson(&cmd,cll);
      mongoc_collection_destroy (cll);
     return result;
 }
 
 
-int LPushMongodbClient::insertFromCollectionToJson(std::__cxx11::string db, std::__cxx11::string collectionName, std::map< std::__cxx11::string, std::__cxx11::string > params)
+int LPushMongodbClient::insertFromCollectionToJson(std::string db, std::string collectionName, std::map< std::string, std::string > params)
 {
     bson_t cmd = LPushMongodbClient::excute(params);
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
@@ -133,7 +133,7 @@ int LPushMongodbClient::insertFromCollectionToJson(std::__cxx11::string db, std:
       return 0;
 }
 
-int LPushMongodbClient::delFromCollectionToJson(std::__cxx11::string db, std::__cxx11::string collectionName, std::string oid)
+int LPushMongodbClient::delFromCollectionToJson(std::string db, std::string collectionName, std::string oid)
 {
     bson_t *cmd = bson_new();
     bson_oid_t  id;
@@ -152,7 +152,7 @@ int LPushMongodbClient::delFromCollectionToJson(std::__cxx11::string db, std::__
     return 0;
 }
 
-int LPushMongodbClient::updateFromCollectionToJson(std::__cxx11::string db, std::__cxx11::string collectionName,std::string oid,std::map<std::string,std::string> uparams)
+int LPushMongodbClient::updateFromCollectionToJson(std::string db, std::string collectionName,std::string oid,std::map<std::string,std::string> uparams)
 {
   
     bson_oid_t _id;
@@ -172,7 +172,7 @@ int LPushMongodbClient::updateFromCollectionToJson(std::__cxx11::string db, std:
     mongoc_collection_destroy (cll);
     return 0;
 }
-bson_oid_t LPushMongodbClient::getOidByJsonStr(std::__cxx11::string json)
+bson_oid_t LPushMongodbClient::getOidByJsonStr(std::string json)
 {
     bson_oid_t ret;
     bson_iter_t itr;
@@ -192,9 +192,9 @@ bson_oid_t LPushMongodbClient::getOidByJsonStr(std::__cxx11::string json)
     return ret;
 }
 
-std::map< std::__cxx11::string, std::__cxx11::string > LPushMongodbClient::jsonToMap(std::__cxx11::string json)
+std::map< std::string, std::string > LPushMongodbClient::jsonToMap(std::string json)
 {
-    std::map< std::__cxx11::string, std::__cxx11::string > map;
+    std::map< std::string, std::string > map;
     bson_iter_t itr;
     bson_t *data = bson_new_from_json(
       (const uint8_t*)json.c_str(), json.size(), &error);

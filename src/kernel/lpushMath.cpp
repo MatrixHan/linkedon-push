@@ -61,7 +61,7 @@ bool empty(int data)
     return data <= 0;
 }
 
-bool empty(std::__cxx11::string data)
+bool empty(std::string data)
 {
     return data.empty();
 }
