@@ -13,19 +13,22 @@ LPushServer *server = new LPushServer();
 
 
 static int errfd = STDERR_FILENO;
+static std::string confFile;
+static std::string logFile;
 static void start_daemon(void);
 int run();
-int main(void)
+static void parse_arguments(int argc, char *argv[]);
+int main(int argc, char *argv[])
 {
-  
+	parse_arguments(argc,argv);
 	int ret = ERROR_SUCCESS;
-	if (!checkProDir())
+	initConfig(confFile);
+	InitLog(DEFAULT_LOG_FILE_NAME);
+	if (!checkProDir()&&confFile.empty())
 	{
 	   lp_trace("place move project root direct!\n");
 	   return 0;
 	}	
-	initConfig();
-	InitLog(DEFAULT_LOG_FILE_NAME);
 	RedisInitializer();
 	mongoClientInit();
 	if ((ret = server->initializer()) != ERROR_SUCCESS)
@@ -38,8 +41,22 @@ int main(void)
 	CloseLog();
 	RedisClose();
 	mongoClientClose();
-	SafeDelete(server);
 	return 0;
+}
+static void parse_arguments(int argc, char *argv[])
+{
+    extern char *optarg;
+    int opt;
+    while((opt = getopt(argc, argv, "c:")) != EOF)
+    {
+      switch (opt) 
+      {
+	case 'c':
+	  //printf("%s\n",optarg);
+	  confFile = std::string(optarg);
+	  break;
+      }
+    }
 }
 
 static void start_daemon(void)

@@ -16,9 +16,10 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <pwd.h>
-#include <st.h>
-
 #include <assert.h>
+#include <getopt.h>
+
+#include <st.h>
 
 #include <iostream>
 #include <sstream>

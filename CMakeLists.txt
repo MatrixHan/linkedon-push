@@ -76,7 +76,7 @@ TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.
 TARGET_LINK_LIBRARIES(test -ldl -lpthread)
 ENDIF(TEST_PUSH)
 
-set(TESTOPEN false)
+set(TESTOPEN true)
 
 IF(TESTOPEN)
 set(SOURCE_TEST_FILES1 src/utest/test1/lpush_utest_main1.cpp )
@@ -101,3 +101,10 @@ TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid
 TARGET_LINK_LIBRARIES(test1 -ldl -lpthread)
 
 ENDIF(TESTOPEN)
+
+set(LPUSH_FILES build/lpush  auto/start.sh conf/lpush.conf)
+
+install(FILES ${LPUSH_FILES}  DESTINATION bin
+  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_WRITE
+  WORLD_WRITE WORLD_READ
+  )

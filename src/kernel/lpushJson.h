@@ -9,7 +9,7 @@ namespace lpush
 class LPushConfig;
   
 extern LPushConfig * conf;
-int initConfig();
+int initConfig(std::string file);
 struct LPushRedisConfig
 {
   std::string host;
@@ -47,6 +47,8 @@ struct LPushConfig
   std::string     	appKeys;
   std::string 		serverList;
   std::string 		task_prefix;
+  std::string 		project_dir;
+  std::string 		pid_file;
   LPushRedisConfig      *redisConfig;
   LPushMongodbConfig    *mongodbConfig;
   LPushConfig();

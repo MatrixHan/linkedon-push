@@ -19,6 +19,7 @@ bool mongoClientInit()
 
 bool mongoClientClose()
 {
+  if(mongodb_client)
     mongodb_client->close();
 }
 
@@ -26,7 +27,10 @@ bool mongoClientClose()
   
 LPushMongodbClient::LPushMongodbClient(const char* _uristr):uristr(_uristr)
 {
-
+    cursor = NULL;
+    cursor = NULL;
+    doc    = NULL;
+    uristr = NULL;
 }
 
 LPushMongodbClient::~LPushMongodbClient()
@@ -239,8 +243,10 @@ std::map< std::string, std::string > LPushMongodbClient::jsonToMap(std::string j
 
 void LPushMongodbClient::close()
 {	
+      if(cursor)
       mongoc_cursor_destroy (cursor);
     
+      if(client)
       mongoc_client_destroy (client);
 
       mongoc_cleanup ();

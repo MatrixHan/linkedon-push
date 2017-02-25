@@ -1,5 +1,5 @@
 #include <lpushUtils.h>
-
+#include <lpushJson.h>
 
 namespace lpush 
 {
@@ -50,7 +50,12 @@ namespace lpush
 
   bool checkProDir()
   {
-    std::string proSuffix = LPUSH_PROJECT_NAME;
+    
+    std::string proSuffix = conf->project_dir;
+    if(proSuffix.empty())
+    {
+      proSuffix = LPUSH_PROJECT_NAME;
+    }
     std::string currentDir = getCurrentDirect();
     int currentNameSize = currentDir.size();
     int proNameSize = proSuffix.size();
