@@ -44,7 +44,7 @@ public:
 class LPushAPPKey
 {
 public:
-  std::string appKey;//key=USER_APPKEY_MAP_[appkey]
+  std::string appKey;//key=USER_APPKEY_SET_[appkey]
   std::string key;//uid
   std::string value;//ip:port
 public:

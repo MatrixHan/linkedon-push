@@ -180,7 +180,7 @@ LPushWorkerMessage* LPushWorkerMessage::copy()
 LPushAPPKey::LPushAPPKey(std::string appId, std::string uid, std::string ip, int port)
 {
       appKey = "";
-      appKey.append("USER_APPKEY_MAP_");
+      appKey.append("USER_APPKEY_ZSET_");
       appKey.append(appId);
       key = uid;
       char buf[20];
@@ -226,7 +226,7 @@ LPushPlatform::LPushPlatform(std::string platform, std::string appId, std::strin
       {
 	platformKey.append("WEB_");
       }
-      platformKey.append("MAP_");
+      platformKey.append("ZSET_");
       platformKey.append(appId);
       key = uid;
       char buf[20];

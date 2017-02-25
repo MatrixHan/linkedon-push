@@ -148,9 +148,10 @@ int LPushConn::createConnection()
     redisPlatform = new LPushPlatform(lphandshakeMsg->clientFlag,lphandshakeMsg->appId,
 				      lphandshakeMsg->userId,conf->localhost,conf->port);
     userInsertMongodb(lphandshakeMsg);
-    
-    redis_client->hset(redisApp->appKey,redisApp->key,redisApp->value);
-    redis_client->hset(redisPlatform->platformKey,redisPlatform->key,redisPlatform->value);
+    long long time = st_utime();
+    redis_client->zadd(redisApp->appKey,time/1000L,redisApp->key);
+    redis_client->zadd(redisPlatform->platformKey,time/1000L,redisPlatform->key);
+  
     
     LPushClient *clia = LPushSource::instance(lphandshakeMsg->userId,
 				   lphandshakeMsg->appId,lphandshakeMsg->screteKey);
@@ -249,7 +250,8 @@ int LPushConn::hreatbeat(LPushChunk *message)
       }	
       hreat_data_time  = before_data_time;
       lp_trace("recv hreatbeat %d",before_data_time);
-      //redis_client->set(clientKey,hostname);
+      redis_client->zadd(redisApp->appKey,hreat_data_time/1000L,redisApp->key);
+      redis_client->zadd(redisPlatform->platformKey,hreat_data_time/1000L,redisPlatform->key);
       redis_client->expire(clientKey,60);
       return ret;
 }
@@ -308,8 +310,8 @@ void LPushConn::do_dispose()
 {
     dispose = true;
     redis_client->del(clientKey);
-    redis_client->hdel(redisApp->appKey,redisApp->key);
-    redis_client->hdel(redisPlatform->platformKey,redisPlatform->key);
+    redis_client->zrem(redisApp->appKey,redisApp->key);
+    redis_client->zrem(redisPlatform->platformKey,redisPlatform->key);
 }
 
 //recv thread use
