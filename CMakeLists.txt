@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.6)
 project(linkedon-push CXX)
 
+message("THIS PROJECT DEPENDS LIBRARIES gcc gcc-c++  patch cmake unzip libssl-dev libsasl2-dev")
+
+
+
 set(CXX_FLAGS -g -Wall)
 set(CMAKE_CXX_COMPILE "g++")
 add_compile_options(-std=c++11)
@@ -46,7 +50,7 @@ TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
-TARGET_LINK_LIBRARIES(lpush -ldl -lpthread )
+TARGET_LINK_LIBRARIES(lpush -ldl -lpthread -lsasl2)
 ENDIF(CompileParent)
 
 
@@ -98,7 +102,7 @@ TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
-TARGET_LINK_LIBRARIES(test1 -ldl -lpthread)
+TARGET_LINK_LIBRARIES(test1 -ldl -lpthread -lsasl2)
 
 ENDIF(TESTOPEN)
 
