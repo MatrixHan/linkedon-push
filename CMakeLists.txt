@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 project(linkedon-push CXX)
 
-message("THIS PROJECT DEPENDS LIBRARIES gcc gcc-c++  patch cmake unzip libssl-dev libsasl2-dev")
-
+message("THIS PROJECT DEPENDS LIBRARIES gcc gcc-c++  patch cmake unzip ")
+message("Debian sudo apt-get install pkg-config libssl-dev libsasl2-dev")
+message("RedHat yum install pkg-config openssl-devel cyrus-sasl-devel")
 
 
 set(CXX_FLAGS -g -Wall)
@@ -77,7 +78,7 @@ TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
-TARGET_LINK_LIBRARIES(test -ldl -lpthread)
+TARGET_LINK_LIBRARIES(test -ldl -lpthread -lsasl2)
 ENDIF(TEST_PUSH)
 
 set(TESTOPEN true)
