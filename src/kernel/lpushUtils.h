@@ -2,6 +2,7 @@
 
 #include <lpushCommon.h>
 #include <lpushLogger.h>
+#include <string>
 #define BUFLEN 255   
 
 namespace lpush 
@@ -47,6 +48,11 @@ namespace lpush
   inline int StringToInt(const std::string &str)
   {
       return atoi(str.c_str());
+  }
+  
+  inline long long StringToLong(const std::string &str)
+  {
+      return std::stoll(str);
   }
   
   inline float StringToFloat(const std::string &str)

@@ -54,8 +54,8 @@ LPushWorkerMessage::LPushWorkerMessage(std::string jsonStr)
     userId = json["UserId"].asString();
     title = json["Title"].asString();
     ext = json["Ext"].asString();
-    createTime = json["CreateTime"].asInt();
-    expiresTime = json["ExpiresTime"].asInt();
+    createTime = json["CreateTime"].asInt64();
+    expiresTime = json["ExpiresTime"].asInt64();
     }
 }
 
@@ -70,8 +70,8 @@ LPushWorkerMessage::LPushWorkerMessage(std::map< std::string, std::string > para
     title = params["Title"];
     ext = params["Ext"];
     
-    createTime = StringToInt(params["CreateTime"]);
-    expiresTime = StringToInt(params["ExpiresTime"]);
+    createTime = StringToLong(params["CreateTime"]);
+    expiresTime = StringToLong(params["ExpiresTime"]);
 }
 
 
@@ -416,6 +416,7 @@ bool LPushSource::empty()
 int LPushSource::cycle_all(std::string queueName)
 {
     int ret = ERROR_SUCCESS;
+    int index = 0;
     std::vector<std::string> works=redis_client->list(queueName,0,1000);
     std::vector<std::string>::iterator itr = works.begin();
     for(;itr!=works.end();++itr)
@@ -423,6 +424,7 @@ int LPushSource::cycle_all(std::string queueName)
 	std::string str = *itr;
 	LPushWorkerMessage lwm(str);
 	LPushClient *client = LPushSource::instance(lwm.userId,lwm.appKey,lwm.appSecret);
+	index++;
 	if(!client)
 	{
 	   
@@ -433,7 +435,7 @@ int LPushSource::cycle_all(std::string queueName)
 // 	redis_client->lpop(queueName);
 	
     }
-    redis_client->ltrim(queueName,1000,-1);
+    redis_client->ltrim(queueName,index,-1);
     return ret;
 }
 
