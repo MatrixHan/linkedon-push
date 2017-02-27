@@ -40,11 +40,11 @@ int LPushWork::pushWork(std::string user)
     
     std::string queuename = conf->task_prefix+"106.3.138.173:9732";
     lwm.taskId = uuid;
-    lwm.title = "hello world!";
+    lwm.title = "你好阿!";
     lwm.userId=user;
-    lwm.appKey="LOFFICIEL";
-    lwm.appSecret="123456";
-    lwm.content="the is test message!";
+    lwm.appKey="48947381";
+    lwm.appSecret="83EB8022CEF82135EA5AE3D627D18026";
+    lwm.content="这是一个测试的文档！";
     lwm.createTime = getCurrentTime();
     lwm.expiresTime = 10;
     lwm.msgId = "123123123";
