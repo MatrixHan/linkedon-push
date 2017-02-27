@@ -49,6 +49,8 @@ namespace lpush {
 		string devices;
 		string identity;
 		
+		string conn_ip;
+		
 		unsigned char *p;
 		unsigned char buf[BUFFER_SIZE];
 		push_header stheader;

@@ -4,13 +4,15 @@ using namespace lpush;
 
 LpushTest::LpushTest()
 {
-	userId = "10000";
+	userId = "10001";
 	appId = "48947381";
 	screteKey = "83EB8022CEF82135EA5AE3D627D18026";
 ////	
 	clientFlag = "1";
 	identity = "12121";
 	devices = "ac:fd:cc:o3:4u";
+	
+	conn_ip = "106.3.138.173";
 
 	datalen = 0;
 	memset(buf, 0x0, sizeof(buf));
@@ -29,7 +31,7 @@ int LpushTest::connection()
 	struct sockaddr_in remote_addr;
 	memset(&remote_addr, 0x0, sizeof(remote_addr));
 	remote_addr.sin_family = AF_INET;
-	remote_addr.sin_addr.s_addr = inet_addr("106.3.138.173"); //106.3.138.173 | 172.16.104.21  port  9732
+	remote_addr.sin_addr.s_addr = inet_addr(conn_ip.c_str()); //106.3.138.173 | 172.16.104.21  port  9732
 	remote_addr.sin_port = htons(9732);
 	
 	if ((client_sockfd = socket(PF_INET, SOCK_STREAM, 0))< 0)
@@ -123,7 +125,7 @@ int LpushTest::set_handshake_message()
 	headjson.insert(pair<string, string>("devices", devices));	
 	
 	string msg = LPushConfig::mapToJsonStr(headjson);
-	Trim(msg);
+	Trim(msg);	
 	
 	datalen = msg.size() + 5;
 	unsigned int jsonlen = htonl(msg.size());
