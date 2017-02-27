@@ -260,7 +260,7 @@ bool LPushRedisClient::hdel(std::string key, std::string field)
 
 bool LPushRedisClient::zadd(std::string key, long long index, std::string value)
 {
-      reply = (redisReply*)redisCommand(context,"zadd  %lld %d %s ",key.c_str(),index,value.c_str());
+      reply = (redisReply*)redisCommand(context,"zadd  %s %lld %s ",key.c_str(),index,value.c_str());
       lp_trace("redis client zadd key %s index %lld value %s ",key.c_str(),index,value.c_str());
       freeReplyObject(reply);
       return true;
@@ -317,9 +317,9 @@ std::map< long long, std::string > LPushRedisClient::zrangeWithscores(std::strin
       reply = (redisReply*)redisCommand(context,"zrange %s %d %d withscores",key.c_str(),begin,end);
       if (reply->type == REDIS_REPLY_ARRAY) {
         for (int j = 0; j < reply->elements; j+=2) {
-            lp_trace("index) %lld  value) %s\n", reply->element[j]->integer, reply->element[j+1]->str);
-	    result.insert(std::make_pair(reply->element[j]->integer,
-					 std::string(reply->element[j+1]->str)));
+            lp_trace("index) %lld  value) %s\n", reply->element[j+1]->integer, reply->element[j]->str);
+	    result.insert(std::make_pair(reply->element[j+1]->integer,
+					 std::string(reply->element[j]->str)));
         }
     }
       freeReplyObject(reply);
