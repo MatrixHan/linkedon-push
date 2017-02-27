@@ -9,6 +9,8 @@ public:
 int pushWork(int loopNum);
 int pushWork(std::string user);
 
+void testJson();
+
 std::string uuidinit();
   
 };

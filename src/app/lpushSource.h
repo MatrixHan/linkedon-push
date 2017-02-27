@@ -28,8 +28,8 @@ public:
   std::string 		title;
   std::string 		content;
   std::string 		ext;
-  int 			createTime;
-  int 			expiresTime;
+  int64_t 			createTime;
+  int64_t 			expiresTime;
 public:
   LPushWorkerMessage();
   LPushWorkerMessage(std::string jsonStr);
