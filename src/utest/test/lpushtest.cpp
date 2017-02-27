@@ -5,8 +5,8 @@ using namespace lpush;
 LpushTest::LpushTest()
 {
 	userId = "10000";
-	appId = "LOFFICIEL";
-	screteKey = "123456";
+	appId = "48947381";
+	screteKey = "83EB8022CEF82135EA5AE3D627D18026";
 ////	
 	clientFlag = "1";
 	identity = "12121";
