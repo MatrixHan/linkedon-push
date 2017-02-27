@@ -65,15 +65,17 @@ int LPushConn::do_cycle()
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
 	lp_warn("conn handshake error");
+	lpushProtocol->sendHandshake(0);
 	return ret;
     }
     lphandshakeMsg = &lpsm;
     if((ret = checkUserMessage(lpsm)) != ERROR_SUCCESS)
     {
 	lp_warn("lpush user identity match error %d",ret);
+	lpushProtocol->sendHandshake(0);
 	return ret;
     }
-    if((ret = lpushProtocol->sendHandshake(lpsm))!=ERROR_SUCCESS)
+    if((ret = lpushProtocol->sendHandshake(1))!=ERROR_SUCCESS)
     {
 	lp_warn("lpush send handshake error");
 	return ret;

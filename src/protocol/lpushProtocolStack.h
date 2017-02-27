@@ -111,8 +111,11 @@ public:
 	virtual int recvhreatbeat(LPushChunk *message);
 	
 public:
-	virtual int sendHandshake(LPushHandshakeMessage lphm);
+	//virtual int sendHandshake(LPushHandshakeMessage lphm);
+  
 
+	virtual int sendHandshake(bool issuccess);
+	
 	virtual int sendCreateConnection(LPushCreateMessage lpcm);
 
 	virtual int sendHreatbeat(LPushChunk *message);
@@ -200,6 +203,20 @@ struct LPushChunk
   
   LPushChunk* copy();
 };
+
+/**
+ * message data struct
+ *         1byte              4byte       messagelen(byte)
+ ***********************************************************
+ * 			*		*		   *	
+ *        type		*  message len	*  message body	   *
+ * 			*		*		   *
+ * *********************************************************
+ *   type  =  0x06 (Json)
+ *   message len = Json len
+ *   message  body=Json 
+ *   
+ */
 
 class LPushHandshakeMessage
 {

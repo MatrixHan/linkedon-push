@@ -14,6 +14,7 @@ int test2()
 	RedisInitializer();
 	LPushWork lpw;
 	lpw.pushWork("10001");
+	//lpw.testJson();
 	RedisClose();
 	return 0;
 }

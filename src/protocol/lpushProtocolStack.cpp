@@ -150,7 +150,7 @@ int LPushProtocol::recvhreatbeat(LPushChunk* message)
       }
       return ret;
 }
-
+/*
 int LPushProtocol::sendHandshake(LPushHandshakeMessage lphm)
 {	
     int ret = ERROR_SUCCESS;
@@ -177,7 +177,24 @@ int LPushProtocol::sendHandshake(LPushHandshakeMessage lphm)
     }
     SafeDelete(message);
     return ret;
+}*/
+
+int LPushProtocol::sendHandshake(bool issuccess)
+{
+    int ret = ERROR_SUCCESS;
+    int time = (int)getCurrentTime();
+    LPushHeader lp("LPUSH",time,LPUSH_CALLBACK_TYPE_HANDSHAKE,1);
+    unsigned char buf = 0x01;
+    LPushChunk* message=new LPushChunk(lp,(unsigned char*)&buf);
+    if((ret=sendPacket(message))!=ERROR_SUCCESS)
+    {
+	lp_error("send packet error");
+	SafeDelete(message);
+	return ret;
+    }
+    SafeDelete(message);
 }
+
 
 int LPushProtocol::sendCreateConnection(LPushCreateMessage lpcm)
 {

@@ -4,6 +4,9 @@
 #include <lpushMath.h>
 #include <lpushUtils.h>
 #include <lpushJson.h>
+#include <lpushProtocolStack.h>
+
+using namespace std;
 
 namespace lpush {
 
@@ -49,6 +52,7 @@ int LPushWork::pushWork(std::string user)
     lwm.expiresTime = 10;
     lwm.msgId = "123123123";
     std::string json = lwm.toAllString();
+    cout << json <<endl;
     redis_client->rPushForList(queuename,json);
     
     return 0;
@@ -66,5 +70,25 @@ std::string LPushWork::uuidinit()
     }
     return uuid;
 }
+
+void LPushWork::testJson()
+{
+   map<string,string> params;
+   params.insert(make_pair("appId","48947381"));
+   params.insert(make_pair("screteKey","83EB8022CEF82135EA5AE3D627D18026"));
+   params.insert(make_pair("userId","10001"));
+   string src;
+   src.append("10001");
+   src.append("48947381");
+   src.append("83EB8022CEF82135EA5AE3D627D18026");
+   string md5 = md5Encoder(src);
+   params.insert(make_pair("md5Data",md5));
+   params.insert(make_pair("clientFlag","1"));
+   params.insert(make_pair("identity",uuidinit()));
+   params.insert(make_pair("devices","3d:u2:pc:21:f2"));
+   string  str = LPushConfig::mapToJsonStr(params);
+   cout << str <<endl;
+}
+
 
 }
