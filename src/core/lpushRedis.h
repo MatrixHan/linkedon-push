@@ -59,6 +59,26 @@ public:
   
   virtual bool hdel(std::string key,std::string field);
 public:
+  virtual bool zadd(std::string key,long long index,std::string value);
+  
+  virtual bool zaddList(std::string key,std::map<long long,std::string> values);
+  
+  virtual long long zcard(std::string key);
+  
+  virtual std::vector<std::string> zrange(std::string key,int begin,int end);
+  
+  virtual std::map<long long ,std::string> zrangeWithscores(std::string key,int begin,int end);
+  //获取该值多下标
+  virtual int zrank(std::string key,std::string value);
+  //拿begin 到 end分数
+  virtual long long zcount(std::string key,int begin,int end);
+  //delete  value  in set
+  virtual bool zrem(std::string key,std::string value);
+  //delete values in set
+  virtual bool zremList(std::string key,std::vector<std::string> values);
+  //获取指定分数的直
+  virtual long long zscore(std::string key,std::string value);
+public:
   virtual bool expire(std::string key,int time);
 };
     

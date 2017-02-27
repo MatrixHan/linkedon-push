@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #set -x
-for((i=10000;i<13000;i++))
+for((i=15000;i<20000;i++))
 do
     echo "start $i..."
     ./test $i &    

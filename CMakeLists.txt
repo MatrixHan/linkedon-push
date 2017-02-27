@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.6)
 project(linkedon-push CXX)
 
+message("THIS PROJECT DEPENDS LIBRARIES gcc gcc-c++  patch cmake unzip ")
+message("Debian sudo apt-get install pkg-config libssl-dev libsasl2-dev")
+message("RedHat yum install pkg-config openssl-devel cyrus-sasl-devel")
+
+
 set(CXX_FLAGS -g -Wall)
 set(CMAKE_CXX_COMPILE "g++")
 add_compile_options(-std=c++11)
@@ -46,7 +51,7 @@ TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 #TARGET_LINK_LIBRARIES(lpush ${PROJECT_SOURCE_DIR}/objs/hp/libhttp_parser.a)
-TARGET_LINK_LIBRARIES(lpush -ldl -lpthread )
+TARGET_LINK_LIBRARIES(lpush -ldl -lpthread -lsasl2)
 ENDIF(CompileParent)
 
 
@@ -73,10 +78,10 @@ TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 TARGET_LINK_LIBRARIES(test ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
-TARGET_LINK_LIBRARIES(test -ldl -lpthread)
+TARGET_LINK_LIBRARIES(test -ldl -lpthread -lsasl2)
 ENDIF(TEST_PUSH)
 
-set(TESTOPEN false)
+set(TESTOPEN true)
 
 IF(TESTOPEN)
 set(SOURCE_TEST_FILES1 src/utest/test1/lpush_utest_main1.cpp )
@@ -98,6 +103,13 @@ TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/hiredis/libhiredis.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/jsoncpp/lib/libjsoncpp.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/st/libst.a)
 TARGET_LINK_LIBRARIES(test1 ${PROJECT_SOURCE_DIR}/objs/libuuid-1.0.3/lib/libuuid.a)
-TARGET_LINK_LIBRARIES(test1 -ldl -lpthread)
+TARGET_LINK_LIBRARIES(test1 -ldl -lpthread -lsasl2)
 
 ENDIF(TESTOPEN)
+
+set(LPUSH_FILES build/lpush  auto/start.sh conf/lpush.conf)
+
+install(FILES ${LPUSH_FILES}  DESTINATION bin
+  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_WRITE
+  WORLD_WRITE WORLD_READ
+  )

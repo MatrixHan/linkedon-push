@@ -453,7 +453,11 @@ int LPushServer::acquire_pid_file()
     
     int fd;
     
-    std::string pid_file = std::string(DEFAULT_PID_FILE_NAME);
+    std::string pid_file = conf->pid_file;
+    if(pid_file.empty())
+    {
+       pid_file = std::string(DEFAULT_PID_FILE_NAME);
+    }
     
     // open pid file
     if ((fd = ::open(pid_file.c_str(), O_WRONLY | O_CREAT, mode)) < 0) {

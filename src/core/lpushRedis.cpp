@@ -258,6 +258,117 @@ bool LPushRedisClient::hdel(std::string key, std::string field)
       return true;
 }
 
+bool LPushRedisClient::zadd(std::string key, long long index, std::string value)
+{
+      reply = (redisReply*)redisCommand(context,"zadd  %lld %d %s ",key.c_str(),index,value.c_str());
+      lp_trace("redis client zadd key %s index %lld value %s ",key.c_str(),index,value.c_str());
+      freeReplyObject(reply);
+      return true;
+}
+
+bool LPushRedisClient::zaddList(std::string key, std::map< long long, std::string > values)
+{
+     std::map< long long, std::string >::iterator itr = values.begin();
+     for(;itr!=values.end();++itr)
+      {
+          zadd(key,itr->first,itr->second);
+      }
+      return true;
+}
+
+long long LPushRedisClient::zcard(std::string key)
+{
+      long long ret=0;
+      reply = (redisReply*)redisCommand(context,"zcard  %s  ",key.c_str());
+      ret = reply->integer;
+      lp_trace("redis client zcard key %s num %d ",key.c_str(),ret);
+      freeReplyObject(reply);
+      return ret;
+}		
+
+long long LPushRedisClient::zcount(std::string key, int begin, int end)
+{
+      long long ret=0;
+      reply = (redisReply*)redisCommand(context,"zcount  %s %d %d  ",key.c_str(),begin,end);
+      ret = reply->integer;
+      lp_trace("redis client zcount key %s begin %d end %d num %lld ",key.c_str(),begin,end,ret);
+      freeReplyObject(reply);
+      return ret;
+}
+
+std::vector< std::string > LPushRedisClient::zrange(std::string key, int begin, int end)
+{
+    std::vector<std::string> lists;
+    
+    reply = (redisReply*)redisCommand(context,"zrange %s %d %d",key.c_str(),begin,end);
+    if (reply->type == REDIS_REPLY_ARRAY) {
+        for (int j = 0; j < reply->elements; j++) {
+            lp_trace("%u) %s\n", j, reply->element[j]->str);
+	    lists.push_back(std::string(reply->element[j]->str));
+        }
+    }
+    freeReplyObject(reply);
+    return lists;
+}
+
+std::map< long long, std::string > LPushRedisClient::zrangeWithscores(std::string key, int begin, int end)
+{
+    std::map<long long,std::string > result;
+      reply = (redisReply*)redisCommand(context,"zrange %s %d %d withscores",key.c_str(),begin,end);
+      if (reply->type == REDIS_REPLY_ARRAY) {
+        for (int j = 0; j < reply->elements; j+=2) {
+            lp_trace("index) %lld  value) %s\n", reply->element[j]->integer, reply->element[j+1]->str);
+	    result.insert(std::make_pair(reply->element[j]->integer,
+					 std::string(reply->element[j+1]->str)));
+        }
+    }
+      freeReplyObject(reply);
+      
+      return result;
+}
+
+int LPushRedisClient::zrank(std::string key, std::string value)
+{
+      int ret=0;
+      reply = (redisReply*)redisCommand(context,"zrank  %s %s",key.c_str(),value.c_str());
+      ret = reply->integer;
+      lp_trace("redis client zrank key %s value %s  index %d ",key.c_str(),value.c_str(),ret);
+      freeReplyObject(reply);
+      return ret;
+}
+
+
+bool LPushRedisClient::zrem(std::string key, std::string value)
+{
+      reply = (redisReply*)redisCommand(context,"zrem  %s  %s ",key.c_str(),value.c_str());
+      lp_trace("redis client zrem key %s  value %s ",key.c_str(),value.c_str());
+      freeReplyObject(reply);
+      return true;
+}
+
+bool LPushRedisClient::zremList(std::string key, std::vector< std::string > values)
+{
+      std::vector< std::string >::iterator itr = values.begin();
+      for(;itr!=values.end();++itr)
+      {
+	 std::string v = *itr;
+	 zrem(key,v);
+      }
+      return true;
+}
+
+long long LPushRedisClient::zscore(std::string key, std::string value)
+{
+      long long ret=0;
+      reply = (redisReply*)redisCommand(context,"zscore  %s %s",key.c_str(),value.c_str());
+      ret = reply->integer;
+      lp_trace("redis client zscore key %s value %s  score %lld ",key.c_str(),value.c_str(),ret);
+      freeReplyObject(reply);
+      return ret;
+}
+
+
+
 
 bool LPushRedisClient::expire(std::string key, int time)
 {

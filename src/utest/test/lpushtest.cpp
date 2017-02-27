@@ -51,7 +51,9 @@ int LpushTest::init_message()
 {
 	memset(buf, 0x0, sizeof(buf));
 	p = buf;
-	datalen = 0;	
+	datalen = 0;
+
+	return 0;
 }
 
 
@@ -128,6 +130,8 @@ int LpushTest::set_handshake_message()
 	memcpy(p + 15, &jsonlen, 4);
 	
 	memcpy(p + 19, msg.c_str(), msg.size());
+	
+	return 0;
 }
 
 int LpushTest::set_packet_header(unsigned char datatype)
@@ -146,18 +150,24 @@ int LpushTest::set_packet_header(unsigned char datatype)
 	memcpy(p, &(stheader.datatype), 1);
 	p += 1;
 	memcpy(p, &(stheader.datalen), 4);
+	
+	return 0;
 }
 
 int LpushTest::set_packet_body(const char *data)
 {
 	memcpy(p, data, strlen(data));
 	p += strlen(data);
+	
+	return 0;
 }
 
 int LpushTest::recv_message()
 {
 	datalen = recv(client_sockfd, buf, sizeof(buf), 0);
 	return datalen;
+	
+	return 0;
 }
 
 
