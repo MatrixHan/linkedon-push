@@ -5,8 +5,8 @@ using namespace lpush;
 LpushTest::LpushTest()
 {
 	userId = "10000";
-	appId = "LOFFICIEL";
-	screteKey = "123456";
+	appId = "48947381";
+	screteKey = "83EB8022CEF82135EA5AE3D627D18026";
 ////	
 	clientFlag = "1";
 	identity = "12121";
@@ -29,7 +29,7 @@ int LpushTest::connection()
 	struct sockaddr_in remote_addr;
 	memset(&remote_addr, 0x0, sizeof(remote_addr));
 	remote_addr.sin_family = AF_INET;
-	remote_addr.sin_addr.s_addr = inet_addr("106.3.138.173");
+	remote_addr.sin_addr.s_addr = inet_addr("106.3.138.173"); //106.3.138.173 | 172.16.104.21  port  9732
 	remote_addr.sin_port = htons(9732);
 	
 	if ((client_sockfd = socket(PF_INET, SOCK_STREAM, 0))< 0)
@@ -51,7 +51,9 @@ int LpushTest::init_message()
 {
 	memset(buf, 0x0, sizeof(buf));
 	p = buf;
-	datalen = 0;	
+	datalen = 0;
+
+	return 0;
 }
 
 
@@ -128,6 +130,8 @@ int LpushTest::set_handshake_message()
 	memcpy(p + 15, &jsonlen, 4);
 	
 	memcpy(p + 19, msg.c_str(), msg.size());
+	
+	return 0;
 }
 
 int LpushTest::set_packet_header(unsigned char datatype)
@@ -146,18 +150,24 @@ int LpushTest::set_packet_header(unsigned char datatype)
 	memcpy(p, &(stheader.datatype), 1);
 	p += 1;
 	memcpy(p, &(stheader.datalen), 4);
+	
+	return 0;
 }
 
 int LpushTest::set_packet_body(const char *data)
 {
 	memcpy(p, data, strlen(data));
 	p += strlen(data);
+	
+	return 0;
 }
 
 int LpushTest::recv_message()
 {
 	datalen = recv(client_sockfd, buf, sizeof(buf), 0);
 	return datalen;
+	
+	return 0;
 }
 
 
