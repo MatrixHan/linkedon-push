@@ -70,7 +70,7 @@ int LPushConn::do_cycle()
 	lpushProtocol->sendHandshake(0x00);
 	return ret;
     }
-    lphandshakeMsg = &lpsm;
+    lphandshakeMsg = new LPushHandshakeMessage(lpsm.tomap());
     if((ret = checkUserMessage(lpsm)) != ERROR_SUCCESS)
     {
 	lp_warn("lpush user identity match error %d",ret);

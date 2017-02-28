@@ -250,7 +250,17 @@ LPushFastQueue::LPushFastQueue()
 
 LPushFastQueue::~LPushFastQueue()
 {
-
+     if(getLength()>0)
+     {
+       std::vector<LPushWorkerMessage*>::iterator itr = queue.begin();
+       for(;itr!=queue.end();)
+       {
+	  LPushWorkerMessage *lpwm;
+	  lpwm = *itr;
+	  itr=queue.erase(itr);
+	  SafeDelete(lpwm);
+      }
+     }
 }
 
 void LPushFastQueue::setLength(int size)
