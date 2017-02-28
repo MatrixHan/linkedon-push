@@ -155,7 +155,7 @@ int64_t LPushMongodbClient::count(std::string db, std::string collectionName, st
     int64_t result=0;
     bson_t cmd = LPushMongodbClient::excute(params);
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
-    result = mongoc_collection_count(cll,MONGOC_QUERY_NONE,&cmd,0,0,0,NULL,&error);
+    result = mongoc_collection_count(cll,MONGOC_QUERY_NONE,&cmd,0,0,NULL,&error);
     mongoc_collection_destroy (cll);
     return result;
 }
