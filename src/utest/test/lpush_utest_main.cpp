@@ -90,7 +90,8 @@ void *thread_recv(void *)
 			unsigned char buff[1024];
 			unsigned int k = 0;
 			while (recv_len > 0) {
-				cout << "userId: " << test.userId << endl;
+				cout << "userId: " << test.userId << endl;				
+				//print message				
 				char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
 				printf("datatype = %0x\n", datatype);
 				if (datatype == 0x07 || datatype == 0x08)
@@ -116,7 +117,9 @@ void *thread_recv(void *)
 					memcpy(buff, &(test.buf[19]), k-5);
 					printf("recv message: %s", buff);				
 				}
-
+				
+				//
+				
 				map<string, string> json_valuemap, msg_mapto_json;			
 				LPushFMT::decodeJson(test.buf+14, json_valuemap);
 				string taskId = json_valuemap["TaskId"];
