@@ -220,8 +220,8 @@ int LPushConn::selectMongoHistoryWork()
     static std::string prefix = "TASK_PULL_";
     std::string collectionName = prefix + lphandshakeMsg->appId;
     map<string,string> params;
-    params.insert(make_pair("userId",lphandshakeMsg->userId));
-    params.insert(make_pair("appKey",lphandshakeMsg->appId));
+    params.insert(make_pair("UserId",lphandshakeMsg->userId));
+    params.insert(make_pair("AppKey",lphandshakeMsg->appId));
     int64_t num =  mongodb_client->count(conf->mongodbConfig->db,
 							   collectionName,params);
     if(num<1000){
@@ -379,6 +379,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     int type = 0;
     int time = getCurrentTime();
     std::string json = message->toJsonString();
+    lp_trace("%d %s",json.size(),json.c_str());
     LPushHeader lh("LPUSH",time,LPUSH_CALLBACK_TYPE_PUSH,json.size()+5);
     LPushChunk lc;
     int jsonLen = json.size();

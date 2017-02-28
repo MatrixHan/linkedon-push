@@ -52,6 +52,7 @@ namespace lpush
   
   inline long long StringToLong(const std::string &str)
   {
+      assert(!str.empty());
       return std::stoll(str);
   }
   

@@ -22,7 +22,8 @@ int test2()
 int test1()
 {
   LPushUtestMongo lpum;
-  lpum.test1();
+  //lpum.test1();
+  lpum.test2();
   return 0;
 }
 
@@ -30,7 +31,7 @@ int main(void)
 {
     initConfig("");
     InitLog(DEFAULT_LOG_FILE_NAME);
-    test2();
+    test1();
     CloseLog();
     return 0;
 }

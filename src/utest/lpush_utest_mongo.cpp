@@ -42,3 +42,20 @@ void LPushUtestMongo::test1()
    
     delete mclient;
 }
+
+void LPushUtestMongo::test2()
+{
+    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
+    mclient->initMongodbClient();
+    map<string,string> params;
+    params.insert(make_pair("UserId","10001"));
+    params.insert(make_pair("AppKey","48947381"));
+    int64_t ret = mclient->count("push","TASK_PULL_48947381",params);
+    vector<string> result = mclient->queryToListJson(conf->mongodbConfig->db,"TASK_PULL_48947381",params);
+    map<string,string> params1;
+    params1.insert(make_pair("userId","10000"));
+    params1.insert(make_pair("appKey","48947381"));
+    vector<string> result1 = mclient->queryToListJson(conf->mongodbConfig->db,"MEMBER_48947381",params1);
+    delete mclient;
+}
+

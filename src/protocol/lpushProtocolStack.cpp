@@ -193,6 +193,7 @@ int LPushProtocol::sendHandshake(unsigned char issuccess)
 	return ret;
     }
     SafeDelete(message);
+    return ret;
 }
 
 
