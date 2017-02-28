@@ -65,19 +65,19 @@ int LPushProtocol::readMessage(ILPushProtocolReaderWriter* skt,LPushChunk& lpc)
       int ret = ERROR_SUCCESS;
       if((ret = fast_buffer->grow(skt,14)) != ERROR_SUCCESS)
       {
-	  lp_error("readMessage socket read header is error");
+	  lp_error("readMessage socket read header is error! ret %d",ret);
 	  return ret;
       }
       LPushHeader lph;
       if((ret = readHeader(skt,lph)) != ERROR_SUCCESS)
       {
-	  lp_error("readMessage header is error");
+	  lp_error("readMessage header is error! ret %d",ret);
 	  return ret;
       }
       if(lph.datalenght>0){
       if((ret = fast_buffer->grow(skt,lph.datalenght)) != ERROR_SUCCESS)
       {
-	  lp_error("readMessage socket data body is error");
+	  lp_error("readMessage socket data body is error! ret=%d",ret);
 	  return ret;
       }
       
