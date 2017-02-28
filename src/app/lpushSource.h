@@ -128,13 +128,13 @@ private:
   LPushSource();
   virtual ~LPushSource();
 public:
-  static LPushSource * create(st_netfd_t stfd);
+  static int create(st_netfd_t stfd,LPushSource **source1);
   static LPushSource * instance(st_netfd_t stfd);
   
   static LPushClient * create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn);
   static LPushClient * instance(std::string userId,std::string appId,std::string screteKey);
   
-  static void destroy(LPushClient *client);
+  static void destroy(std::string key);
   
   static void destroyClientAll();
   

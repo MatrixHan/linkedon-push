@@ -134,7 +134,7 @@ int LPushProtocol::createConnection(LPushChunk* message, LPushCreateMessage& pcm
       memcpy(buf,message->data,message->header.datalenght);
       buf[message->header.datalenght+1]='\0';
       pcm.setStr(std::string(buf));
-      delete buf;
+      SafeDelete(buf);
       }
       return ret;
 }

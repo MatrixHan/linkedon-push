@@ -52,8 +52,12 @@ LPushConn::~LPushConn()
     SafeDelete(redisPlatform);
     if(stfd)
     LPushSource::destroy(stfd);
-    if(client)
-    LPushSource::destroy(client);
+    if(client){
+    std::string key = client->userId+client->appId+client->screteKey;
+    LPushSource::destroy(key);
+    SafeDelete(client);
+    }
+    
 }
 
 
@@ -156,18 +160,21 @@ int LPushConn::createConnection()
     redis_client->zadd(redisApp->appKey,time/1000L,redisApp->key);
     redis_client->zadd(redisPlatform->platformKey,time/1000L,redisPlatform->key);
   
-    
-    LPushClient *clia = LPushSource::instance(lphandshakeMsg->userId,
-				   lphandshakeMsg->appId,lphandshakeMsg->screteKey);
-    if(clia)
+
+    if(LPushSource::instance(lphandshakeMsg->userId,
+				   lphandshakeMsg->appId,lphandshakeMsg->screteKey))
     {
 	ret = ERROR_USER_IS_EXIST;
 	lp_warn("already user conn! %d",ret);
 	lpushProtocol->sendCreateConnection(0x02);
 	return ret;
     }
-    LPushSource * source = LPushSource::create(stfd);
-    
+    LPushSource * source =NULL;
+    if((ret=LPushSource::create(stfd,&source))!=ERROR_SUCCESS)
+    {
+	ret = ERROR_CREATE_SOURCE;
+	return ret;
+    }
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
     if((ret=lpushProtocol->sendCreateConnection(0x01))!=ERROR_SUCCESS)
     {

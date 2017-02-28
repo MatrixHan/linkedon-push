@@ -325,7 +325,7 @@ LPushClient::~LPushClient()
 int LPushClient::playing()
 {
     int ret = ERROR_SUCCESS;
-	LPushWorkerMessage *work;
+	LPushWorkerMessage *work=NULL;
 	if(!source)
 	{
 	  lp_error("source not found!");
@@ -339,6 +339,7 @@ int LPushClient::playing()
 	if(!conn)
 	{
 	  lp_error("conn not found!");
+	  SafeDelete(work);
 	  return ERROR_OBJECT_NOT_EXIST;
 	}
 	if((ret = conn->sendForward(work))!=ERROR_SUCCESS)
@@ -381,22 +382,24 @@ LPushSource::~LPushSource()
    SafeDelete(queue);
 }
 
-LPushSource* LPushSource::create(st_netfd_t stfd)
+int LPushSource::create(st_netfd_t stfd,LPushSource **source1)
 {
       LPushSource * lps = new LPushSource();
       sources.insert(std::make_pair(stfd,lps));
-      return lps;
+      *source1 = lps;
+      return 0;
 }
 
 LPushSource* LPushSource::instance(st_netfd_t stfd)
 {
+      LPushSource* res=NULL;
       std::map<st_netfd_t,LPushSource*>::iterator itr = sources.find(stfd);
       if(itr!=sources.end())
       {
-	return (LPushSource*)itr->second;
+	res = itr->second;
       }
       
-      return NULL;
+      return res;
 }
 
 LPushClient* LPushSource::create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn)
@@ -449,16 +452,15 @@ int LPushSource::cycle_all(std::string queueName)
     return ret;
 }
 
-void LPushSource::destroy(LPushClient* client)
+void LPushSource::destroy(std::string key)
 {
-    std::string key = client->userId + client->appId +client->screteKey;
+    
     std::map<std::string,LPushClient*>::iterator itr = clients.find(key);
     if(itr!=clients.end())
       {
-	LPushClient *lps = itr->second;
-	itr=clients.erase(itr);
-	SafeDelete(lps);
+	clients.erase(itr);
       }
+    
 }
 
 void LPushSource::destroyClientAll()
