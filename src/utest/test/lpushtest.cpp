@@ -16,8 +16,8 @@ LpushTest::LpushTest()
 
 	datalen = 0;
 	memset(buf, 0x0, sizeof(buf));
-
-	p = buf;	
+	
+	pp = buf;	
 }
 
 LpushTest::~LpushTest()
@@ -52,7 +52,7 @@ int LpushTest::connection()
 int LpushTest::init_message()
 {
 	memset(buf, 0x0, sizeof(buf));
-	p = buf;
+	pp = buf;
 	datalen = 0;
 
 	return 0;
@@ -65,7 +65,7 @@ int LpushTest::send_handshake_message()
 	
 	set_handshake_message();
 	char datatype = 0x01;
-	set_packet_header(datatype);
+	set_packet_header(datatype, buf);
 	
 	//send shake msg	
 	len = send(client_sockfd, buf, datalen+14, 0);
@@ -89,7 +89,7 @@ int LpushTest::send_handshake_message()
 	init_message();
 	datatype = 0x04;
 	datalen = 1;
-	set_packet_header(datatype);
+	set_packet_header(datatype, buf);
 	
 	buf[14] = 'c';
 	
@@ -111,7 +111,7 @@ int LpushTest::send_handshake_message()
 
 int LpushTest::set_handshake_message()
 {
-	p[14] = 0x06;
+	pp[14] = 0x06;
 
 	string md5keystr = userId + appId + screteKey;
 	md5Data = getmd5str(md5keystr);
@@ -129,14 +129,14 @@ int LpushTest::set_handshake_message()
 	
 	datalen = msg.size() + 5;
 	unsigned int jsonlen = htonl(msg.size());
-	memcpy(p + 15, &jsonlen, 4);
+	memcpy(pp + 15, &jsonlen, 4);
 	
-	memcpy(p + 19, msg.c_str(), msg.size());
+	memcpy(pp + 19, msg.c_str(), msg.size());
 	
 	return 0;
 }
 
-int LpushTest::set_packet_header(unsigned char datatype)
+int LpushTest::set_packet_header(unsigned char datatype, unsigned char *buff)
 {	
 	memcpy(&stheader.flag, "LPUSH", 5);
 	time_t timep; 
@@ -144,7 +144,7 @@ int LpushTest::set_packet_header(unsigned char datatype)
 	stheader.timestamp = htonl(timep);
 	stheader.datatype = datatype;
 	stheader.datalen = htonl(datalen);
-		
+	unsigned char *p = buff;	
 	memcpy(p, &stheader.flag, 5);
 	p += 5;
 	memcpy(p, &(stheader.timestamp), 4);
@@ -158,8 +158,8 @@ int LpushTest::set_packet_header(unsigned char datatype)
 
 int LpushTest::set_packet_body(const char *data)
 {
-	memcpy(p, data, strlen(data));
-	p += strlen(data);
+	memcpy(pp, data, strlen(data));
+	pp += strlen(data);
 	
 	return 0;
 }

@@ -24,10 +24,12 @@ void *send_heart(void *)
 		test.init_message();
 		test.datalen = 1;
 		test.buf[14] = 0x01;
-		test.set_packet_header(datatype);
+		test.set_packet_header(datatype, test.buf);
 		int len = send(test.client_sockfd, test.buf, 15, 0);
 		if (len > 0)
 			cout << "thread id:[" << pthread_self() << "] send heartbeat success..." << len << endl;
+		else
+			cout << "thread id:[" << pthread_self() << "] send heartbeat failed..." << len << endl;
 		//cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
@@ -43,82 +45,99 @@ void *thread_recv(void *)
 		pthread_mutex_lock(&mut);
 		//cout << "thread id:[" << pthread_self() << "] thread recv........" << endl;
 		test.init_message();
-		int recv_len = test.recv_message();
-		if (recv_len > 0)
+		int recv_len = test.recv_message();		
+		if (recv_len > 0)			
 		{	
-			cout << "userId: " << test.userId << endl;
+			cout << "recv_len: " << recv_len << endl;
+			int tmp_len = recv_len;
+			unsigned int msg_len = 0;
 			unsigned char buff[1024];
-			char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
-			printf("datatype = %0x\n", datatype);
-			if (datatype == 0x07 || datatype == 0x08)
-			{
-				char flags[6] = {'\0'};
-				memcpy(flags, test.buf, 5);
-				cout << "flags: " << flags << endl;
-				unsigned int k;
-				memcpy(&k, &(test.buf[5]), 4);
-				k = ntohl(k);
-				cout << "time: " << k << endl;
-				memcpy(&k, &(test.buf[10]), 4);
-				k = ntohl(k);
-				cout << "datalen: " << k << endl;
-				char msgtype = test.buf[14];
-				printf("msgtype = %0x\n", msgtype);
+			unsigned int k = 0;
+			while (recv_len > 0) {
+				cout << "userId: " << test.userId << endl;
+				char datatype =test.buf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
+				printf("datatype = %0x\n", datatype);
+				if (datatype == 0x07 || datatype == 0x08)
+				{
+					char flags[6] = {'\0'};
+					memcpy(flags, test.buf, 5);
+					cout << "flags: " << flags << endl;
+					
+					memcpy(&k, &(test.buf[5]), 4);
+					k = ntohl(k);
+					cout << "time: " << k << endl;
+					memcpy(&k, &(test.buf[10]), 4);
+					k = ntohl(k);
+					cout << "datalen: " << k << endl;
+					char msgtype = test.buf[14];
+					printf("msgtype = %0x\n", msgtype);
+										
+					memcpy(&msg_len, &(test.buf[15]), 4);
+					msg_len = ntohl(msg_len);
+					cout << "msg_len: " << msg_len << endl;
+								
+					memset(buff, 0x0, sizeof(buff));
+					memcpy(buff, &(test.buf[19]), k-5);
+					printf("recv message: %s", buff);				
+				}
+
+				map<string, string> json_valuemap, msg_mapto_json;			
+				LPushFMT::decodeJson(test.buf+14, json_valuemap);
+				string taskId = json_valuemap["TaskId"];
+				string msg = json_valuemap["MsgId"];
 				
-				unsigned int msg_len;
-				memcpy(&msg_len, &(test.buf[15]), 4);
-				msg_len = ntohl(msg_len);
-				cout << "msg_len: " << msg_len << endl;
-							
+				//msg_mapto_json.insert(pair<string, string>("TaskId", taskId));
+				//string msg = LPushConfig::mapToJsonStr(msg_mapto_json);
+				//Trim(msg);			
+
+				//string msg = LPushFMT::encodeString(taskId);
 				memset(buff, 0x0, sizeof(buff));
-				memcpy(buff, &(test.buf[19]), k-5);
-				printf("recv message: %s", buff);				
-			}
-
-			map<string, string> json_valuemap, msg_mapto_json;			
-			LPushFMT::decodeJson(test.buf+14, json_valuemap);
-			string taskId = json_valuemap["TaskId"];
-			string msg = json_valuemap["MsgId"];
-			
-			//msg_mapto_json.insert(pair<string, string>("TaskId", taskId));
-			//string msg = LPushConfig::mapToJsonStr(msg_mapto_json);
-			//Trim(msg);			
-
-			//string msg = LPushFMT::encodeString(taskId);
-			test.buf[14] = 0x01;			
- 			
-			unsigned int mslen = htonl(taskId.size()); 
-			memcpy(&test.buf[15], &mslen, 4);
- 			
-			memcpy(test.buf + 19, taskId.c_str(), taskId.size());
-			
-			int buflen = 19 + taskId.size();
-			
-			test.buf[buflen] = 0x01;
-			mslen = htonl(msg.size());
-			memcpy(&test.buf[buflen+1], &mslen, 4);
-			memcpy(&test.buf[buflen+5], msg.c_str(), msg.size());
-			
-			test.datalen = taskId.size() + 5 + msg.size() + 5;
-			test.set_packet_header(datatype);
- 			int slen = send(test.client_sockfd, test.buf, test.datalen+14, 0);
-			if (slen > 0)
-			{
-				cout << test.userId << " send ok recv message success..." << slen << endl;
-// 				for (int i=0;  i<test.datalen; i++)
-// 					printf("i =%d %0x\n", i, test.buf[14+i]);
-// 				cout << endl;
-			}
-// 			else
-// 			{
-// 				cout << "send recv failed ..." << endl;
-// 			}
-			
+				
+				buff[14] = 0x01;			
+				
+				unsigned int mslen = htonl(taskId.size()); 
+				memcpy(&buff[15], &mslen, 4);
+				
+				memcpy(buff + 19, taskId.c_str(), taskId.size());
+				
+				int buflen = 19 + taskId.size();
+				
+				buff[buflen] = 0x01;
+				mslen = htonl(msg.size());
+				
+				
+				memcpy(&buff[buflen+1], &mslen, 4);
+				memcpy(&buff[buflen+5], msg.c_str(), msg.size());
+				
+				test.datalen = taskId.size() + 5 + msg.size() + 5;
+				test.set_packet_header(datatype, buff);
+				int slen = send(test.client_sockfd, buff, test.datalen+14, 0);
+				if (slen > 0)
+				{
+					cout << test.userId << " send ok recv message success..." << slen << endl;
+// 					for (int i=0;  i<buflen; i++) {
+// 						printf("i =%d %0x\n", i, buff[i]);
+// 						cout << endl;
+// 					}	
+				}
+	 			else
+	// 			{
+					break;
+	// 				cout << "send recv failed ..." << endl;
+	// 			}
+				recv_len = recv_len - k- 14;
+				if (recv_len)
+					memmove(test.buf, test.buf + k + 14, recv_len);
+				else
+					break;
+			}	
+				
 		}
-// 		else
-// 		{				
-// 			perror("recv");
-// 		}
+//  	else
+//  	{				
+//  		perror("recv");
+//  	}
+
 		pthread_mutex_unlock(&mut);
 		usleep(50*1000);
 	}	

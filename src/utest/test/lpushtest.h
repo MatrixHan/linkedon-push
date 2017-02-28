@@ -51,7 +51,7 @@ namespace lpush {
 		
 		string conn_ip;
 		
-		unsigned char *p;
+		unsigned char *pp;
 		unsigned char buf[BUFFER_SIZE];
 		push_header stheader;
 		map<string, string> headjson;
@@ -59,7 +59,7 @@ namespace lpush {
 		LpushTest();
 		~LpushTest();
 
-		int set_packet_header(unsigned char datatype);
+		int set_packet_header(unsigned char datatype, unsigned char *);
 		int set_packet_body(const char *data);
 		int packet_data();
 		int connection();
