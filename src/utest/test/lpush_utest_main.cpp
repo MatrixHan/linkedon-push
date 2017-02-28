@@ -33,8 +33,7 @@ void *send_heart(void *)
 		
 		sleep(10);		
 	}
-	pthread_exit(NULL);
-	
+	pthread_exit(NULL);	
 }
 
 void *thread_recv(void *)
@@ -210,8 +209,12 @@ int process_signal()
 
 int main(int argc, char **argv)
 {
-	test.userId = argv[1];
+	if (argc > 1)
+		test.userId = argv[1];
+	if (argc > 2)
+		test.conn_ip = argv[2];
 	cout << "userId: " << test.userId << endl;
+	cout << "connection ip: " << test.conn_ip << endl;
 	process_signal();	
 	test1();
 	return 0;
