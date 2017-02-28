@@ -123,6 +123,43 @@ std::vector< std::string > LPushMongodbClient::queryToListJson(std::string db, s
     return result;
 }
 
+std::vector< std::string > 
+LPushMongodbClient::queryToListJsonLimit
+(std::string db, std::string collectionName,std::map< std::string, std::string > params, int page, int pageSize)
+{
+    std::vector< std::string > result;
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    char *str;
+   cursor = mongoc_collection_find(cll,
+				    MONGOC_QUERY_NONE,(page-1)*pageSize,pageSize,0,&cmd,NULL,
+				    NULL); /* read prefs, NULL for default */
+
+   while (mongoc_cursor_next (cursor, &doc)) {
+      str = bson_as_json (doc, NULL);
+      lp_info("mongos result %s",str);
+      result.push_back(std::string(str));
+      bson_free (str);
+    }
+
+   if (mongoc_cursor_error (cursor, &error)) {
+      fprintf (stderr, "Cursor Failure: %s\n", error.message);
+      result.clear();
+     }
+    mongoc_collection_destroy (cll);
+    return result;
+}
+
+int64_t LPushMongodbClient::count(std::string db, std::string collectionName, std::map< std::string, std::string > params)
+{
+    int64_t result=0;
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    result = mongoc_collection_count(cll,MONGOC_QUERY_NONE,&cmd,0,0,0,NULL,&error);
+    mongoc_collection_destroy (cll);
+    return result;
+}
+
 
 int LPushMongodbClient::insertFromCollectionToJson(std::string db, std::string collectionName, std::map< std::string, std::string > params)
 {

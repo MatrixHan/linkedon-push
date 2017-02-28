@@ -179,12 +179,12 @@ int LPushProtocol::sendHandshake(LPushHandshakeMessage lphm)
     return ret;
 }*/
 
-int LPushProtocol::sendHandshake(bool issuccess)
+int LPushProtocol::sendHandshake(unsigned char issuccess)
 {
     int ret = ERROR_SUCCESS;
     int time = (int)getCurrentTime();
     LPushHeader lp("LPUSH",time,LPUSH_CALLBACK_TYPE_HANDSHAKE,1);
-    unsigned char buf = 0x01;
+    unsigned char buf = issuccess;
     LPushChunk* message=new LPushChunk(lp,(unsigned char*)&buf);
     if((ret=sendPacket(message))!=ERROR_SUCCESS)
     {
@@ -196,12 +196,12 @@ int LPushProtocol::sendHandshake(bool issuccess)
 }
 
 
-int LPushProtocol::sendCreateConnection(LPushCreateMessage lpcm)
+int LPushProtocol::sendCreateConnection(unsigned char issuccess)
 {
     int ret = ERROR_SUCCESS;
     int time = (int)getCurrentTime();
     LPushHeader lp("LPUSH",time,LPUSH_CALLBACK_TYPE_CONNECTION_IS_OK,1);
-    unsigned char buf = 0x01;
+    unsigned char buf = issuccess;
     LPushChunk* message=new LPushChunk(lp,(unsigned char*)&buf);
     if((ret=sendPacket(message))!=ERROR_SUCCESS)
     {
