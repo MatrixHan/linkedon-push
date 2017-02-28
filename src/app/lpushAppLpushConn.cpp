@@ -31,6 +31,7 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
     before_data_time =hreat_data_time= 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
+    lphandshakeMsg = NULL;
     client =NULL;
     redisApp = NULL;
     redisPlatform = NULL;
@@ -46,6 +47,7 @@ LPushConn::~LPushConn()
     SafeDelete(skt);
     SafeDelete(trd);
     SafeDelete(trd2);
+    SafeDelete(lphandshakeMsg);
     SafeDelete(redisApp);
     SafeDelete(redisPlatform);
     if(stfd)
@@ -396,6 +398,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     if(!lpushProtocol)
     {
       ret = ERROR_OBJECT_NOT_EXIST;
+       SafeDelete(buf);
       return ret;
     }
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
