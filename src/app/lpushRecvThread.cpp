@@ -53,7 +53,7 @@ int LPushRecvThread::cycle()
       {
 	 ret = ERROR_NOT_ACTIVE;
       }
-      LPushChunk *lpc;
+      LPushChunk *lpc=NULL;
       ret = stack->readMessage(&lpc);
       
 	if (ret == ERROR_SUCCESS) {
@@ -62,7 +62,7 @@ int LPushRecvThread::cycle()
         }
        if (ret != ERROR_SUCCESS) {
            
-    
+	    SafeDelete(lpc);
             // we use no timeout to recv, should never got any error.
             trd->interrupt();
 	    

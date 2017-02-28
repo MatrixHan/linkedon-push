@@ -32,7 +32,7 @@ int LpushTest::connection()
 	memset(&remote_addr, 0x0, sizeof(remote_addr));
 	remote_addr.sin_family = AF_INET;
 	remote_addr.sin_addr.s_addr = inet_addr(conn_ip.c_str()); //106.3.138.173 | 172.16.104.21  port  9732
-	remote_addr.sin_port = htons(9732);
+	remote_addr.sin_port = htons(9733);
 	
 	if ((client_sockfd = socket(PF_INET, SOCK_STREAM, 0))< 0)
 	{
