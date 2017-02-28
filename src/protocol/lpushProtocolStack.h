@@ -114,9 +114,9 @@ public:
 	//virtual int sendHandshake(LPushHandshakeMessage lphm);
   
 
-	virtual int sendHandshake(bool issuccess);
+	virtual int sendHandshake(unsigned char issuccess);
 	
-	virtual int sendCreateConnection(LPushCreateMessage lpcm);
+	virtual int sendCreateConnection(unsigned char issuccess);
 
 	virtual int sendHreatbeat(LPushChunk *message);
 

@@ -30,7 +30,6 @@ LPushMongodbClient::LPushMongodbClient(const char* _uristr):uristr(_uristr)
     cursor = NULL;
     cursor = NULL;
     doc    = NULL;
-    uristr = NULL;
 }
 
 LPushMongodbClient::~LPushMongodbClient()
@@ -120,6 +119,44 @@ std::vector< std::string > LPushMongodbClient::queryToListJson(std::string db, s
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     std::vector< std::string > result= queryFromCollectionToJson(&cmd,cll);
      mongoc_collection_destroy (cll);
+    return result;
+}
+
+std::vector< std::string > 
+LPushMongodbClient::queryToListJsonLimit
+(std::string db, std::string collectionName,std::map< std::string, std::string > params, int page, int pageSize)
+{
+    std::vector< std::string > result;
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    char *str;
+   cursor = mongoc_collection_find(cll,
+				    MONGOC_QUERY_NONE,(page-1)*pageSize,pageSize,0,&cmd,NULL,
+				    NULL); /* read prefs, NULL for default */
+
+   while (mongoc_cursor_next (cursor, &doc)) {
+      str = bson_as_json (doc, NULL);
+      lp_info("mongos result %s",str);
+      result.push_back(std::string(str));
+      bson_free (str);
+    }
+
+   if (mongoc_cursor_error (cursor, &error)) {
+      fprintf (stderr, "Cursor Failure: %s\n", error.message);
+      result.clear();
+     }
+    mongoc_collection_destroy (cll);
+    return result;
+}
+
+int64_t LPushMongodbClient::count(std::string db, std::string collectionName, std::map< std::string, std::string > params)
+{
+    int64_t result=0;
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    result = mongoc_collection_count(cll,MONGOC_QUERY_NONE,&cmd,0,0,NULL,&error);
+    //fprintf (stderr, "Count Failure: %s\n", error.message);
+    mongoc_collection_destroy (cll);
     return result;
 }
 
@@ -225,13 +262,20 @@ std::map< std::string, std::string > LPushMongodbClient::jsonToMap(std::string j
 	     std::string rea = uint8To2Char(ret->bytes[i]);
 	     value.append(rea.c_str());
 	  }
-	  std::cout << value <<std::endl;
+	  //std::cout << value <<std::endl;
+	  lp_trace("Mongo OID %s",value.c_str());
 	  map.insert(std::make_pair(std::string(key),value));
 	}else if(type == BSON_TYPE_INT32)
 	{
 	    const char * key  =bson_iter_key(&itr);
 	    int32_t val = bson_iter_int32(&itr);
 	    std::string value = IntToString(val);
+	    map.insert(std::make_pair(std::string(key),value));
+	}else if(type ==BSON_TYPE_INT64)
+	{
+	    const char * key  =bson_iter_key(&itr);
+	    int64_t val = bson_iter_int64(&itr);
+	    std::string value = LongToString(val);
 	    map.insert(std::make_pair(std::string(key),value));
 	}
     }

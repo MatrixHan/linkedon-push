@@ -65,17 +65,17 @@ int LPushConn::do_cycle()
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
 	lp_warn("conn handshake error");
-	lpushProtocol->sendHandshake(0);
+	lpushProtocol->sendHandshake(0x00);
 	return ret;
     }
     lphandshakeMsg = &lpsm;
     if((ret = checkUserMessage(lpsm)) != ERROR_SUCCESS)
     {
 	lp_warn("lpush user identity match error %d",ret);
-	lpushProtocol->sendHandshake(0);
+	lpushProtocol->sendHandshake(0x02);
 	return ret;
     }
-    if((ret = lpushProtocol->sendHandshake(1))!=ERROR_SUCCESS)
+    if((ret = lpushProtocol->sendHandshake(0x01))!=ERROR_SUCCESS)
     {
 	lp_warn("lpush send handshake error");
 	return ret;
@@ -161,12 +161,13 @@ int LPushConn::createConnection()
     {
 	ret = ERROR_USER_IS_EXIST;
 	lp_warn("already user conn! %d",ret);
+	lpushProtocol->sendCreateConnection(0x02);
 	return ret;
     }
     LPushSource * source = LPushSource::create(stfd);
     
     client = LPushSource::create(stfd,source,lphandshakeMsg,this);
-    if((ret=lpushProtocol->sendCreateConnection(lpcm))!=ERROR_SUCCESS)
+    if((ret=lpushProtocol->sendCreateConnection(0x01))!=ERROR_SUCCESS)
     {
 	lp_warn("conn sendCreateConnection error %d",ret);
 	return ret;
@@ -216,11 +217,14 @@ int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
 
 int LPushConn::selectMongoHistoryWork()
 {
-    static std::string prefix = "TASK_";
+    static std::string prefix = "TASK_PULL_";
     std::string collectionName = prefix + lphandshakeMsg->appId;
     map<string,string> params;
-    params.insert(make_pair("userId",lphandshakeMsg->userId));
-    params.insert(make_pair("appKey",lphandshakeMsg->appId));
+    params.insert(make_pair("UserId",lphandshakeMsg->userId));
+    params.insert(make_pair("AppKey",lphandshakeMsg->appId));
+    int64_t num =  mongodb_client->count(conf->mongodbConfig->db,
+							   collectionName,params);
+    if(num<1000){
     vector<string> result = mongodb_client->queryToListJson(conf->mongodbConfig->db,
 							   collectionName,params);
     if(result.size()>0)
@@ -236,6 +240,31 @@ int LPushConn::selectMongoHistoryWork()
 						     collectionName,entity["_id"]);
 	}
     }
+      
+    }else
+    {
+       while(num>0)
+       {
+	 
+	vector<string> result = mongodb_client->queryToListJsonLimit(conf->mongodbConfig->db,
+							   collectionName,params,1,1000);
+	if(result.size()>0)
+	{
+	  vector<string>::iterator itr = result.begin();
+	  for(;itr!=result.end();++itr)
+	  {
+	      string json = *itr;
+	      map<string,string> entity = mongodb_client->jsonToMap(json);
+	      LPushWorkerMessage lpwm(entity);
+	      client->push(lpwm.copy());
+	      mongodb_client->delFromCollectionToJson(conf->mongodbConfig->db,
+						     collectionName,entity["_id"]);
+	  }
+	  num-=result.size();
+	}
+      }
+    }
+    
 }
 
 
@@ -350,6 +379,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     int type = 0;
     int time = getCurrentTime();
     std::string json = message->toJsonString();
+    lp_trace("%d %s",json.size(),json.c_str());
     LPushHeader lh("LPUSH",time,LPUSH_CALLBACK_TYPE_PUSH,json.size()+5);
     LPushChunk lc;
     int jsonLen = json.size();
