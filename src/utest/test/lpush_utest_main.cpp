@@ -33,10 +33,46 @@ void *send_heart(void *)
 		//cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
-		sleep(10);		
+		sleep(30);		
 	}
 	pthread_exit(NULL);	
 }
+
+
+int print_message(unsigned char *pbuf)
+{
+	unsigned int msg_len = 0;
+	unsigned char buff[1024];
+	unsigned int k = 0;	
+	char datatype = pbuf[9];																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																
+	printf("datatype = %0x\n", datatype);
+	if (datatype == 0x07 || datatype == 0x08)
+	{
+		char flags[6] = {'\0'};
+		memcpy(flags, pbuf, 5);
+		cout << "flags: " << flags << endl;
+		
+		memcpy(&k, &(pbuf[5]), 4);
+		k = ntohl(k);
+		cout << "time: " << k << endl;
+		memcpy(&k, &(pbuf[10]), 4);
+		k = ntohl(k);
+		cout << "datalen: " << k << endl;
+		char msgtype = pbuf[14];
+		printf("msgtype = %0x\n", msgtype);
+							
+		memcpy(&msg_len, &(pbuf[15]), 4);
+		msg_len = ntohl(msg_len);
+		cout << "msg_len: " << msg_len << endl;
+					
+		memset(buff, 0x0, sizeof(buff));
+		memcpy(buff, &(pbuf[19]), k-5);
+		printf("recv message: %s", buff);				
+	}
+	
+	return k;
+}
+
 
 void *thread_recv(void *)
 {
