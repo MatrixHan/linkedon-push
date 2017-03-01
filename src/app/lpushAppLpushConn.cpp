@@ -235,20 +235,20 @@ int LPushConn::selectMongoHistoryWork()
       return 0;
     }
     bool isup =  mongodb_client->skipParamsIsExist(conf->mongodbConfig->db,
-							   collectionName,params,100);
+							   collectionName,params,10);
     if(!isup){
-    selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,100);
+    selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,10);
     }else
     {
       
        while(isup)
        {
 	 
-	selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,100);
+	selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,10);
 	isup = mongodb_client->skipParamsIsExist(conf->mongodbConfig->db,
-							   collectionName,params,100);
+							   collectionName,params,10);
        }
-	selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,100);
+	selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,10);
     }
     int64_t endt = st_utime();
     int internalt = endt-begint;
