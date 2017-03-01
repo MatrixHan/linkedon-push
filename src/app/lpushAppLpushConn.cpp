@@ -104,6 +104,7 @@ int LPushConn::do_cycle()
 	if(internal > LP_HREAT_TIMEOUT_US )
 	{
 	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
+	   lp_warn("conn HREATBEAT_TIMEOUT error %d",ret);
 	   break;
 	}
 	st_usleep(300*1000);
