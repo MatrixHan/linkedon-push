@@ -71,7 +71,7 @@ int LPushRecvThread::cycle()
             return ret;
         }
         lp_verbose("thread loop recv message. ret=%d", ret);
-	 st_usleep(2 * 1000);
+	 st_usleep(350 * 1000);
     }
     return ret;
 }

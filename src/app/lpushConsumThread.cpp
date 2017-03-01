@@ -32,7 +32,7 @@ int LPushConsumThread::cycle()
 	}
 	if(!client->can_loop())
 	{
-	    st_usleep(2*1000);
+	    st_usleep(350*1000);
 	    continue;
 	}
       if((ret = client->playing())!=ERROR_SUCCESS)
