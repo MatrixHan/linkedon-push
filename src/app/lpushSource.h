@@ -103,7 +103,7 @@ private:
   LPushSource *source;
   LPushConn * conn;
 public:
-  LPushClient(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn);
+  LPushClient(st_netfd_t _cstfd,LPushHandshakeMessage *message,LPushConn *_conn);
   virtual ~LPushClient();
   
 public:
@@ -131,7 +131,7 @@ public:
   static int create(st_netfd_t stfd,LPushSource **source1);
   static LPushSource * instance(st_netfd_t stfd);
   
-  static LPushClient * create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn);
+  static LPushClient * create(st_netfd_t _cstfd,LPushHandshakeMessage *message,LPushConn *_conn);
   static LPushClient * instance(std::string userId,std::string appId,std::string screteKey);
   
   static void destroy(std::string key);

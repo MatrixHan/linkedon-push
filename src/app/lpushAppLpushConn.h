@@ -21,6 +21,7 @@ namespace lpush
   private:
     long long before_data_time;
     long long hreat_data_time;
+    long long now_data_time;
     bool dispose;
     std::string  clientKey;
     std::string  hostname;
@@ -57,6 +58,8 @@ namespace lpush
       virtual int userInsertMongodb(LPushHandshakeMessage *msg);
       
       virtual int selectMongoHistoryWork();
+      
+      virtual int selectMongoHistoryLimit(std::string db,std::string collectionName,std::map<std::string,std::string> params,int page,int pageSize);
   public:
       virtual int readMessage(LPushChunk **message);
       

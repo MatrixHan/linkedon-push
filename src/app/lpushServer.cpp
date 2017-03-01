@@ -394,7 +394,7 @@ int LPushServer::do_cycle()
 	}
 	
         for (int i = 0; i < temp_max; i++) {
-            st_usleep(1 * 1000);
+            st_usleep(100);
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
@@ -549,6 +549,11 @@ void LPushServer::on_signal(int signo)
       if (signo == SIGHUP) {
         signal_reload = true;
         return;
+    }
+    
+    if(signo == SIGPIPE)
+    {
+       lp_warn("server recv PIPE!");
     }
     
     if (signo == SIGINT || signo == SIGUSR2) {

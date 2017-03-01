@@ -305,10 +305,11 @@ void LPushFastQueue::clear()
     queue.clear();
 }
 
-LPushClient::LPushClient(st_netfd_t _cstfd, LPushSource* lpsource, LPushHandshakeMessage* message,LPushConn *_conn)
+LPushClient::LPushClient(st_netfd_t _cstfd, LPushHandshakeMessage* message,LPushConn *_conn)
 {
     cstfd = _cstfd;
-    source = lpsource;
+    source = NULL;
+    LPushSource::create(_cstfd,&source);
     conn = _conn;
     appId = message->appId;
     screteKey = message->screteKey;
@@ -319,7 +320,7 @@ LPushClient::LPushClient(st_netfd_t _cstfd, LPushSource* lpsource, LPushHandshak
 
 LPushClient::~LPushClient()
 {
-
+    LPushSource::destroy(cstfd);
 }
 
 int LPushClient::playing()
@@ -402,9 +403,9 @@ LPushSource* LPushSource::instance(st_netfd_t stfd)
       return res;
 }
 
-LPushClient* LPushSource::create(st_netfd_t _cstfd,LPushSource *lpsource,LPushHandshakeMessage *message,LPushConn *_conn)
+LPushClient* LPushSource::create(st_netfd_t _cstfd,LPushHandshakeMessage *message,LPushConn *_conn)
 {
-    LPushClient *lps = new LPushClient(_cstfd,lpsource,message,_conn);
+    LPushClient *lps = new LPushClient(_cstfd,message,_conn);
     std::string key = message->userId + message->appId +message->screteKey;
     clients.insert(std::make_pair(key,lps));
     return lps;
@@ -458,7 +459,7 @@ void LPushSource::destroy(std::string key)
     std::map<std::string,LPushClient*>::iterator itr = clients.find(key);
     if(itr!=clients.end())
       {
-	clients.erase(itr);
+	itr = clients.erase(itr);
       }
     
 }
@@ -466,10 +467,10 @@ void LPushSource::destroy(std::string key)
 void LPushSource::destroyClientAll()
 {
      std::map<std::string,LPushClient*>::iterator itr= clients.begin();
-    for(;itr!=clients.end();++itr)
+    for(;itr!=clients.end();)
     {
 	LPushClient *lps = itr->second;
-	clients.erase(itr);
+	clients.erase(itr++);
 	SafeDelete(lps);
     }
     clients.clear();
@@ -481,7 +482,7 @@ void LPushSource::destroy(st_netfd_t stfd)
     if(itr!=sources.end())
       {
 	LPushSource *lps = itr->second;
-	sources.erase(itr);
+	itr = sources.erase(itr);
 	SafeDelete(lps);
       }
     
@@ -490,10 +491,10 @@ void LPushSource::destroy(st_netfd_t stfd)
 int LPushSource::destroyAll()
 {
     std::map<st_netfd_t,LPushSource*>::iterator itr= sources.begin();
-    for(;itr!=sources.end();++itr)
+    for(;itr!=sources.end();)
     {
 	LPushSource *lps = itr->second;
-	sources.erase(itr);
+	sources.erase(itr++);
 	SafeDelete(lps);
     }
     sources.clear();

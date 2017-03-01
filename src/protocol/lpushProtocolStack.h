@@ -170,7 +170,12 @@ typedef struct LPushHeader
   {
     
   }
-
+  long long getTime()
+  {
+    return  timestamp;
+  }
+  
+  
 }LPushHeader;
 
 struct LPushChunk
@@ -200,7 +205,6 @@ struct LPushChunk
     memcpy(data,chunk,hd.datalenght);
      }
   }
-  
   LPushChunk* copy();
 };
 

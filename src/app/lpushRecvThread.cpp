@@ -49,13 +49,14 @@ int LPushRecvThread::cycle()
     int ret = ERROR_SUCCESS;
     while(!trd->interrupted())
     {
-      if(!stack->is_active())
-      {
-	 ret = ERROR_NOT_ACTIVE;
-      }
+      
       LPushChunk *lpc=NULL;
       ret = stack->readMessage(&lpc);
-      
+      if(!stack->is_active())
+      {
+	 
+          ret = ERROR_NOT_ACTIVE;
+      }
 	if (ret == ERROR_SUCCESS) {
             ret = handler(lpc);
 	    SafeDelete(lpc);
@@ -70,7 +71,7 @@ int LPushRecvThread::cycle()
             return ret;
         }
         lp_verbose("thread loop recv message. ret=%d", ret);
-	st_usleep(2*1000);
+	 st_usleep(2 * 1000);
     }
     return ret;
 }

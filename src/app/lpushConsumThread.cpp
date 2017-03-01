@@ -9,6 +9,7 @@ namespace lpush
 LPushConsumThread::LPushConsumThread(LPushClient* cli, int timeout):
 client(cli)
 {
+    _timeout = timeout;
     trd = new LPushReusableThread("Consum",this,timeout);
     can_run = false;
 }
