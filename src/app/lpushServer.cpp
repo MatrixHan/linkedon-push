@@ -385,16 +385,11 @@ int LPushServer::do_cycle()
         int heartbeat_max_resolution = (int)(9.9 / 1000);
         
         // dynamic fetch the max.
-        int temp_max = 1;
+        int temp_max =9 ;
         temp_max = Max(temp_max, heartbeat_max_resolution);
         
-	if((ret = hreatRedis())!=ERROR_SUCCESS)
-	{
-	    lp_warn("redis conn hreat error");
-	}
-	
         for (int i = 0; i < temp_max; i++) {
-            st_usleep(1*1000);
+            st_usleep(1000 * 1000);
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
@@ -408,6 +403,12 @@ int LPushServer::do_cycle()
             if ((i % 1) == 0) {
                 lp_info("update current time cache.");
             }
+            
+	    if((ret = hreatRedis())!=ERROR_SUCCESS)
+	    {
+		lp_warn("redis conn hreat error");
+	    }
+	
             if((ret = LPushSource::cycle_all(taskKey))!=ERROR_SUCCESS)
 	    {
 	       lp_info("source cycle all ret %d",ret);
