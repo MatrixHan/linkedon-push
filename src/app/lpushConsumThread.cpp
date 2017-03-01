@@ -27,6 +27,7 @@ int LPushConsumThread::cycle()
 	if(!client)
 	{
 	   ret = ERROR_OBJECT_NOT_EXIST;
+	   lp_warn("client not exist error %d",ret);
 	   break;
 	}
 	if(!client->can_loop())

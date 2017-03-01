@@ -28,7 +28,7 @@ namespace lpush{
 
 LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
 {
-    before_data_time =hreat_data_time= 0;
+    before_data_time =hreat_data_time = now_data_time= 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
     lphandshakeMsg = NULL;
@@ -89,7 +89,7 @@ int LPushConn::do_cycle()
       lp_warn("conn createConnection error");
        return ret;
     }
-    hreat_data_time= st_utime()+(10*1000L);
+//     hreat_data_time= st_utime()+(10*1000L);
     trd =new LPushRecvThread(client,this,350);
     
     trd2 = new LPushConsumThread(client,350);
@@ -281,18 +281,18 @@ int LPushConn::selectMongoHistoryLimit(string db, string collectionName, map< st
 int LPushConn::hreatbeat(LPushChunk *message)
 {
       int ret = ERROR_SUCCESS;
-      int64_t now = st_utime();
-      long long internal = now - hreat_data_time;
-      if(internal < LP_HREAT_TIMEOUT_US_MIN )
-      {
-	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
-	   return ret;
-      }	
+//       int64_t now = st_utime();
+//       long long internal = now - hreat_data_time;
+//       if(internal < LP_HREAT_TIMEOUT_US_MIN )
+//       {
+// 	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
+// 	   return ret;
+//       }	
       redis_client->zadd(redisApp->appKey,hreat_data_time/1000L,redisApp->key);
       redis_client->zadd(redisPlatform->platformKey,hreat_data_time/1000L,redisPlatform->key);
       redis_client->expire(clientKey,60);
-      hreat_data_time = st_utime();
-      lp_trace("recv hreatbeat %d",before_data_time);
+//       hreat_data_time = st_utime();
+//       lp_trace("recv hreatbeat %d",before_data_time);
       return ret;
 }
 
@@ -318,7 +318,7 @@ int LPushConn::recvPushCallback(LPushChunk* message)
       if(msgId.empty()||taskId.empty())
       {
 	 ret = ERROR_OBJECT_NOT_EXIST;
-	 lp_warn("recv result list message match error");
+	 lp_warn("recv result list message match error %d",ret);
 	 return ret;
       }
       std::string  resultList = conf->resultList+ msgId; 
@@ -333,13 +333,13 @@ int LPushConn::readMessage(LPushChunk **message)
     LPushChunk lp;
     if(!lpushProtocol)
     {
+       lp_warn("lpushProtocol not exist error %d",ret);
        ret = ERROR_OBJECT_NOT_EXIST;
-        lp_warn("lpushProtocol not exist error");
        return ret;
     }
     if((ret = lpushProtocol->readMessage(skt,lp))!=ERROR_SUCCESS)
     {
-      lp_warn("readMessage error");
+      lp_warn("readMessage error %d",ret);
       return ret;
     }
     *message = lp.copy();
@@ -406,6 +406,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     lc.setData(lh,(unsigned char*)buf);
     if(!lpushProtocol)
     {
+       lp_warn("lpushProtocol not exist error %d",ret);
       ret = ERROR_OBJECT_NOT_EXIST;
        SafeDelete(buf);
       return ret;
@@ -413,6 +414,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {
        SafeDelete(buf);
+       lp_warn("lpushProtocol sendPacket error %d",ret);
        return ret;
     }
     SafeDelete(buf);
