@@ -394,7 +394,7 @@ int LPushServer::do_cycle()
 	}
 	
         for (int i = 0; i < temp_max; i++) {
-            st_usleep(100);
+            st_usleep(1*1000);
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
