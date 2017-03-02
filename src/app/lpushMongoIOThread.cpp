@@ -55,10 +55,6 @@ int LPushMongoIOThread::cycle()
             ret = selectMongoHistoryWork(mie);
 	    SafeDelete(mie);
         }
-        if(ret == ERROR_OBJECT_NOT_EXIST)
-	{
-	   continue;
-	}
        if (ret != ERROR_SUCCESS) {
            
 	    SafeDelete(mie);
@@ -129,7 +125,6 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
     LPushClient *client = LPushSource::instance(mie->userId,mie->appKey,mie->secreteKey);
     if(!client)
     {
-	ret = ERROR_OBJECT_NOT_EXIST;
 	lp_warn("this user not online %d",ret);
 	return ret;
     }
