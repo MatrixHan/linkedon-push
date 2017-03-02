@@ -63,7 +63,7 @@ int LPushMongoIOThread::cycle()
 	    
             return ret;
         }
-      st_usleep(3 * 1000);
+      st_usleep(35 * 1000);
     }
     return ret;
 }
