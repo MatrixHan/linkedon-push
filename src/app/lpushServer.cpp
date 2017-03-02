@@ -9,6 +9,8 @@
 #include <lpushRedis.h>
 #include <lpushUtils.h>
 
+#include <lpushMongoIOThread.h>
+
 namespace lpush 
 {
   
@@ -180,6 +182,7 @@ LPushServer::LPushServer()
     signal_gracefully_quit = false;
     startTime = beforeTime = 0L;
     signalManager = NULL;
+    mongoIOThread = NULL;
 }
 
 LPushServer::~LPushServer()
@@ -195,6 +198,8 @@ int LPushServer::initializer()
     
     assert(!signalManager);
     signalManager = new LPushSignalManager(this);
+    assert(!mongoIOThread);
+    mongoIOThread = new LPushMongoIOThread();
     int port = conf->port;
     char buf[5];
     sprintf(buf,"%d",port);
@@ -243,6 +248,7 @@ void LPushServer::destroy()
     }
     
     SafeDelete(signalManager);
+    SafeDelete(mongoIOThread);
 }
 
 void LPushServer::dispose()
@@ -339,7 +345,7 @@ int LPushServer::accept_client(st_netfd_t client_stfd)
     
     LPushConnection *conn ;
     
-    conn = new LPushConn(this, client_stfd);
+    conn = new LPushConn(this,mongoIOThread,client_stfd);
     
     assert(conn);
     
@@ -443,6 +449,10 @@ int LPushServer::signal_init()
 int LPushServer::signal_register()
 {
     return signalManager->start();
+}
+int LPushServer::mongo_thread_init()
+{
+   return mongoIOThread->start();
 }
 
 

@@ -22,6 +22,9 @@
 #define ERROR_USER_IS_EXIST				213
 #define ERROR_CREATE_SOURCE				214
 
+#define ERROR_QUEUE_PUSH					215
+#define ERROR_QUEUE_POP					216
+
 #define ERROR_SOCKET_CREATE                 		1000
 #define ERROR_SOCKET_SETREUSE               		1001
 #define ERROR_SOCKET_BIND                   		1002

@@ -52,7 +52,7 @@ public:
     virtual int on_tcp_client(st_netfd_t stfd);
 };
   
-  
+class LPushMongoIOThread;
 class LPushConnection;
 class LPushServer
 {
@@ -60,7 +60,8 @@ private:
     int pid_fd;   
     vector<LPushConnection *> conns;   
     vector<LPushStreamListener *>  listeners;   
-    LPushSignalManager *signalManager;        
+    LPushSignalManager *signalManager;
+    LPushMongoIOThread *mongoIOThread;
     bool signal_reload ;
     bool signal_gracefully_quit;
     long long startTime;
@@ -75,6 +76,7 @@ public:
   virtual int initializer_st();  
   virtual int signal_init(); 
   virtual int signal_register(); 
+  virtual int mongo_thread_init();
   virtual int listen(); 
   virtual int cycle();
   virtual int do_cycle(); 

@@ -11,6 +11,7 @@
 #include <lpushJson.h>
 #include <lpushRedis.h>
 #include <lpushMongoClient.h>
+#include <lpushMongoIOThread.h>
 namespace lpush{
   
 #define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(60*1000*1000LL)
@@ -26,8 +27,9 @@ namespace lpush{
 #define LP_HREAT_TIMEOUT_US_MIN (int64_t)(10*1000LL)
   
 
-LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
+LPushConn::LPushConn(LPushServer* _server, LPushMongoIOThread *_lpmongoTrd,st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
 {
+    lpmongoTrd = _lpmongoTrd;
     before_data_time =hreat_data_time = now_data_time= 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
@@ -176,8 +178,10 @@ int LPushConn::createConnection()
 	lp_warn("conn sendCreateConnection error %d",ret);
 	return ret;
     }
-    
-    ret = selectMongoHistoryWork();
+    static std::string prefix = "TASK_PULL_";
+    std::string collectionName = prefix + lphandshakeMsg->appId;
+    lpmongoTrd->push(conf->mongodbConfig->db,collectionName,
+		     lphandshakeMsg->appId,lphandshakeMsg->userId,lphandshakeMsg->screteKey);
     return ret;
 }
 
@@ -220,63 +224,7 @@ int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
     return 0;
 }
 
-int LPushConn::selectMongoHistoryWork()
-{
-    int64_t begint = st_utime();
-    static std::string prefix = "TASK_PULL_";
-    std::string collectionName = prefix + lphandshakeMsg->appId;
-    map<string,string> params;
-    params.insert(make_pair("UserId",lphandshakeMsg->userId));
-    params.insert(make_pair("AppKey",lphandshakeMsg->appId));
-    bool isExist = mongodb_client->selectOneIsExist(conf->mongodbConfig->db,
-							   collectionName,params);
-    if(!isExist)
-    {
-      return 0;
-    }
-    bool isup =  mongodb_client->skipParamsIsExist(conf->mongodbConfig->db,
-							   collectionName,params,10);
-    if(!isup){
-    selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,10);
-    }else
-    {
-      
-       while(isup)
-       {
-	 
-	selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,10);
-	isup = mongodb_client->skipParamsIsExist(conf->mongodbConfig->db,
-							   collectionName,params,10);
-       }
-	selectMongoHistoryLimit(conf->mongodbConfig->db,collectionName,params,1,10);
-    }
-    int64_t endt = st_utime();
-    int internalt = endt-begint;
-    if(internalt>1000*1000L)
-    lp_warn("current function run time %lld",internalt/1000L);
-    return 0;
-}
 
-int LPushConn::selectMongoHistoryLimit(string db, string collectionName, map< string, string > params, int page, int pageSize)
-{
-    vector<string> result = mongodb_client->queryToListJsonLimit(db,
-							   collectionName,params,page,pageSize);
-	if(result.size()>0)
-	{
-	  vector<string>::iterator itr = result.begin();
-	  for(;itr!=result.end();++itr)
-	  {
-	      string json = *itr;
-	      map<string,string> entity = mongodb_client->jsonToMap(json);
-	      LPushWorkerMessage lpwm(entity);
-	      client->push(lpwm.copy());
-	      mongodb_client->delFromCollectionToJson(db,
-						     collectionName,entity["_id"]);
-	  }
-	  
-	}
-	return 0;
-}
 
 
 int LPushConn::hreatbeat(LPushChunk *message)

@@ -16,6 +16,7 @@ namespace lpush
   class LPushConsumThread;
   class LPushAPPKey;
   class LPushPlatform;
+  class LPushMongoIOThread;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -25,6 +26,8 @@ namespace lpush
     bool dispose;
     std::string  clientKey;
     std::string  hostname;
+  private:
+    LPushMongoIOThread *lpmongoTrd;
   private:
     LPushProtocol *lpushProtocol;
     LPushStSocket *skt;
@@ -37,7 +40,7 @@ namespace lpush
     LPushRecvThread *trd;
     LPushConsumThread *trd2;
   public:
-      LPushConn(LPushServer* _server, st_netfd_t client_stfd);
+      LPushConn(LPushServer* _server,LPushMongoIOThread *_lpmongoTrd, st_netfd_t client_stfd);
       virtual ~LPushConn();
       
   public:
@@ -56,10 +59,7 @@ namespace lpush
       virtual int recvPushCallback(LPushChunk *message);
       
       virtual int userInsertMongodb(LPushHandshakeMessage *msg);
-      
-      virtual int selectMongoHistoryWork();
-      
-      virtual int selectMongoHistoryLimit(std::string db,std::string collectionName,std::map<std::string,std::string> params,int page,int pageSize);
+ 
   public:
       virtual int readMessage(LPushChunk **message);
       
