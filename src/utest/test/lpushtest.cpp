@@ -84,7 +84,6 @@ int LpushTest::send_handshake_message()
 		cout << "client handshake fail..." << endl;
 		return RET_ERROR;
 	}
-	cout << "client handshake success..." << endl;	
 	//send create connection msg
 	init_message();
 	datatype = 0x04;
@@ -94,9 +93,9 @@ int LpushTest::send_handshake_message()
 	buf[14] = 'c';
 	
 	len = send(client_sockfd, buf, 15, 0);
-	if (len > 0)
+	if (len < 0)
 	{
-		cout << "client  send connect msg success..." << endl;
+		cout << "client  send connect msg failed..." << endl;
 	}
 	init_message();
 	len = recv(client_sockfd, buf, 15, 0);
