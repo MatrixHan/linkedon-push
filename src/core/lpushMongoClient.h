@@ -32,12 +32,15 @@ public:
   bson_t excute(std::map<std::string,std::string> params);
   void destory_bson(bson_t *b);
   void destory_collection(mongoc_collection_t *cll);
+  virtual bool selectOneIsExist(std::string db,std::string collectionName,std::map<std::string,std::string> params);
+  virtual bool skipParamsIsExist(std::string db,std::string collectionName,std::map<std::string,std::string> params,int skipnum);
   virtual std::vector<std::string> queryFromCollectionToJson(bson_t *_query,mongoc_collection_t *cll);
   virtual std::vector<std::string> queryToListJson(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual std::vector<std::string> queryToListJsonLimit(std::string db,std::string collectionName,std::map<std::string,std::string> params,int page,int pageSize);
   virtual int64_t count(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual int insertFromCollectionToJson(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual int delFromCollectionToJson(std::string db,std::string collectionName,std::string oid);
+  virtual int delFromQuery(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual int updateFromCollectionToJson(std::string db,std::string collectionName,std::string oid,std::map<std::string,std::string> uparams);
   virtual bson_oid_t getOidByJsonStr(std::string json);
   virtual std::map<std::string,std::string> jsonToMap(std::string json);

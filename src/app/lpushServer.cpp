@@ -9,6 +9,8 @@
 #include <lpushRedis.h>
 #include <lpushUtils.h>
 
+#include <lpushMongoIOThread.h>
+
 namespace lpush 
 {
   
@@ -180,6 +182,7 @@ LPushServer::LPushServer()
     signal_gracefully_quit = false;
     startTime = beforeTime = 0L;
     signalManager = NULL;
+    mongoIOThread = NULL;
 }
 
 LPushServer::~LPushServer()
@@ -195,6 +198,8 @@ int LPushServer::initializer()
     
     assert(!signalManager);
     signalManager = new LPushSignalManager(this);
+    assert(!mongoIOThread);
+    mongoIOThread = new LPushMongoIOThread();
     int port = conf->port;
     char buf[5];
     sprintf(buf,"%d",port);
@@ -243,6 +248,7 @@ void LPushServer::destroy()
     }
     
     SafeDelete(signalManager);
+    SafeDelete(mongoIOThread);
 }
 
 void LPushServer::dispose()
@@ -339,7 +345,7 @@ int LPushServer::accept_client(st_netfd_t client_stfd)
     
     LPushConnection *conn ;
     
-    conn = new LPushConn(this, client_stfd);
+    conn = new LPushConn(this,mongoIOThread,client_stfd);
     
     assert(conn);
     
@@ -385,16 +391,11 @@ int LPushServer::do_cycle()
         int heartbeat_max_resolution = (int)(9.9 / 1000);
         
         // dynamic fetch the max.
-        int temp_max = 1;
+        int temp_max =9 ;
         temp_max = Max(temp_max, heartbeat_max_resolution);
         
-	if((ret = hreatRedis())!=ERROR_SUCCESS)
-	{
-	    lp_warn("redis conn hreat error");
-	}
-	
         for (int i = 0; i < temp_max; i++) {
-            st_usleep(1 * 1000);
+            st_usleep(1000 * 1000);
             
             // gracefully quit for SIGINT or SIGTERM.
             if (signal_gracefully_quit) {
@@ -408,6 +409,12 @@ int LPushServer::do_cycle()
             if ((i % 1) == 0) {
                 lp_info("update current time cache.");
             }
+            
+	    if((ret = hreatRedis())!=ERROR_SUCCESS)
+	    {
+		lp_warn("redis conn hreat error");
+	    }
+	
             if((ret = LPushSource::cycle_all(taskKey))!=ERROR_SUCCESS)
 	    {
 	       lp_info("source cycle all ret %d",ret);
@@ -425,7 +432,7 @@ int LPushServer::hreatRedis()
 {
     int ret = ERROR_SUCCESS;
     long long nowtime = getCurrentTime();
-    if(nowtime-beforeTime>5){
+    if(nowtime-beforeTime>2){
     std::string status = LPushSystemStatus::statusToJson(conns.size());
     redis_client->hset(conf->serverList,serverKey,status);
     beforeTime = getCurrentTime();
@@ -442,6 +449,10 @@ int LPushServer::signal_init()
 int LPushServer::signal_register()
 {
     return signalManager->start();
+}
+int LPushServer::mongo_thread_init()
+{
+   return mongoIOThread->start();
 }
 
 
@@ -549,6 +560,11 @@ void LPushServer::on_signal(int signo)
       if (signo == SIGHUP) {
         signal_reload = true;
         return;
+    }
+    
+    if(signo == SIGPIPE)
+    {
+       lp_warn("server recv PIPE!");
     }
     
     if (signo == SIGINT || signo == SIGUSR2) {

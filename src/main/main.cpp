@@ -106,6 +106,11 @@ int run()
     {
        return ret;
     }
+     lp_info("lpush server mongo_thread_init !\n");
+    if ((ret = server->mongo_thread_init()) != ERROR_SUCCESS)
+    {
+       return ret;
+    }
     lp_info("lpush server listen !\n");
     if ((ret = server->listen()) != ERROR_SUCCESS)
     {

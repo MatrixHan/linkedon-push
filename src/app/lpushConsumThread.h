@@ -14,6 +14,7 @@ private:
   LPushReusableThread *trd;
   LPushClient         *client;
   bool			can_run;
+  int 			_timeout;
 public:  
     LPushConsumThread(LPushClient*cli,int timeout);
     virtual ~LPushConsumThread();

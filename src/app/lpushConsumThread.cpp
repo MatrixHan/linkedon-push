@@ -9,6 +9,7 @@ namespace lpush
 LPushConsumThread::LPushConsumThread(LPushClient* cli, int timeout):
 client(cli)
 {
+    _timeout = timeout;
     trd = new LPushReusableThread("Consum",this,timeout);
     can_run = false;
 }
@@ -26,11 +27,12 @@ int LPushConsumThread::cycle()
 	if(!client)
 	{
 	   ret = ERROR_OBJECT_NOT_EXIST;
+	   lp_warn("client not exist error %d",ret);
 	   break;
 	}
 	if(!client->can_loop())
 	{
-	    st_usleep(2*1000);
+	    st_usleep(350*1000);
 	    continue;
 	}
       if((ret = client->playing())!=ERROR_SUCCESS)

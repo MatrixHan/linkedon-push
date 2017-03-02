@@ -11,6 +11,7 @@
 #include <lpushJson.h>
 #include <lpushRedis.h>
 #include <lpushMongoClient.h>
+#include <lpushMongoIOThread.h>
 namespace lpush{
   
 #define LP_PAUSED_SEND_TIMEOUT_US (int64_t)(60*1000*1000LL)
@@ -21,14 +22,15 @@ namespace lpush{
 // if timeout, close the connection.
 #define LPT_PAUSED_RECV_TIMEOUT_US (int64_t)(10*1000*1000LL)
   
-#define LP_HREAT_TIMEOUT_US (int64_t)(60*1000*1000LL)
+#define LP_HREAT_TIMEOUT_US (int64_t)(60L)
   
 #define LP_HREAT_TIMEOUT_US_MIN (int64_t)(10*1000LL)
   
 
-LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
+LPushConn::LPushConn(LPushServer* _server, LPushMongoIOThread *_lpmongoTrd,st_netfd_t client_stfd): LPushConnection(_server, client_stfd)
 {
-    before_data_time =hreat_data_time= 0;
+    lpmongoTrd = _lpmongoTrd;
+    before_data_time =hreat_data_time = now_data_time= 0;
     dispose = false;
     skt = new LPushStSocket(client_stfd);
     lphandshakeMsg = NULL;
@@ -43,15 +45,14 @@ LPushConn::LPushConn(LPushServer* _server, st_netfd_t client_stfd): LPushConnect
 
 LPushConn::~LPushConn()
 {
-    SafeDelete(lpushProtocol);
-    SafeDelete(skt);
+
     SafeDelete(trd);
     SafeDelete(trd2);
+    SafeDelete(lpushProtocol);
+    SafeDelete(skt);
     SafeDelete(lphandshakeMsg);
     SafeDelete(redisApp);
     SafeDelete(redisPlatform);
-    if(stfd)
-    LPushSource::destroy(stfd);
     if(client){
     std::string key = client->userId+client->appId+client->screteKey;
     LPushSource::destroy(key);
@@ -64,7 +65,6 @@ LPushConn::~LPushConn()
 int LPushConn::do_cycle()
 {
     int ret = ERROR_SUCCESS;
-    before_data_time =hreat_data_time= st_utime();
     skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
     skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
    LPushHandshakeMessage lpsm;
@@ -91,23 +91,25 @@ int LPushConn::do_cycle()
       lp_warn("conn createConnection error");
        return ret;
     }
+//     hreat_data_time= st_utime()+(10*1000L);
     trd =new LPushRecvThread(client,this,350);
-    
-    trd->start();
     
     trd2 = new LPushConsumThread(client,350);
     
+     trd->start();
+     
     trd2->start();
+     before_data_time = now_data_time = getCurrentTime();
     while(!dispose)
     {
- 	long long now = st_utime();
-	long long internal = now - before_data_time;
+	long long internal = now_data_time - before_data_time;
 	if(internal > LP_HREAT_TIMEOUT_US )
 	{
 	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
+	   lp_warn("conn HREATBEAT_TIMEOUT error %d",ret);
 	   break;
 	}
-	st_usleep(350*1000);
+	st_usleep(300*1000);
     }
     return ret;
 }
@@ -169,19 +171,17 @@ int LPushConn::createConnection()
 	lpushProtocol->sendCreateConnection(0x02);
 	return ret;
     }
-    LPushSource * source =NULL;
-    if((ret=LPushSource::create(stfd,&source))!=ERROR_SUCCESS)
-    {
-	ret = ERROR_CREATE_SOURCE;
-	return ret;
-    }
-    client = LPushSource::create(stfd,source,lphandshakeMsg,this);
+
+    client = LPushSource::create(stfd,lphandshakeMsg,this);
     if((ret=lpushProtocol->sendCreateConnection(0x01))!=ERROR_SUCCESS)
     {
 	lp_warn("conn sendCreateConnection error %d",ret);
 	return ret;
     }
-    selectMongoHistoryWork();
+    static std::string prefix = "TASK_PULL_";
+    std::string collectionName = prefix + lphandshakeMsg->appId;
+    lpmongoTrd->push(conf->mongodbConfig->db,collectionName,
+		     lphandshakeMsg->appId,lphandshakeMsg->userId,lphandshakeMsg->screteKey);
     return ret;
 }
 
@@ -224,75 +224,24 @@ int LPushConn::userInsertMongodb(LPushHandshakeMessage *msg)
     return 0;
 }
 
-int LPushConn::selectMongoHistoryWork()
-{
-    static std::string prefix = "TASK_PULL_";
-    std::string collectionName = prefix + lphandshakeMsg->appId;
-    map<string,string> params;
-    params.insert(make_pair("UserId",lphandshakeMsg->userId));
-    params.insert(make_pair("AppKey",lphandshakeMsg->appId));
-    int64_t num =  mongodb_client->count(conf->mongodbConfig->db,
-							   collectionName,params);
-    if(num<1000){
-    vector<string> result = mongodb_client->queryToListJson(conf->mongodbConfig->db,
-							   collectionName,params);
-    if(result.size()>0)
-    {
-       vector<string>::iterator itr = result.begin();
-        for(;itr!=result.end();++itr)
-        {
-	      string json = *itr;
-	      map<string,string> entity = mongodb_client->jsonToMap(json);
-	      LPushWorkerMessage lpwm(entity);
-	      client->push(lpwm.copy());
-	      mongodb_client->delFromCollectionToJson(conf->mongodbConfig->db,
-						     collectionName,entity["_id"]);
-	}
-    }
-      
-    }else
-    {
-       while(num>0)
-       {
-	 
-	vector<string> result = mongodb_client->queryToListJsonLimit(conf->mongodbConfig->db,
-							   collectionName,params,1,1000);
-	if(result.size()>0)
-	{
-	  vector<string>::iterator itr = result.begin();
-	  for(;itr!=result.end();++itr)
-	  {
-	      string json = *itr;
-	      map<string,string> entity = mongodb_client->jsonToMap(json);
-	      LPushWorkerMessage lpwm(entity);
-	      client->push(lpwm.copy());
-	      mongodb_client->delFromCollectionToJson(conf->mongodbConfig->db,
-						     collectionName,entity["_id"]);
-	  }
-	  num-=result.size();
-	}
-      }
-    }
-    
-}
 
 
 
 int LPushConn::hreatbeat(LPushChunk *message)
 {
       int ret = ERROR_SUCCESS;
-      before_data_time = st_utime();
-      long long internal = before_data_time - hreat_data_time;
-      if(internal < LP_HREAT_TIMEOUT_US_MIN || internal > LP_HREAT_TIMEOUT_US)
-      {
-	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
-	   return ret;
-      }	
-      hreat_data_time  = before_data_time;
-      lp_trace("recv hreatbeat %d",before_data_time);
+//       int64_t now = st_utime();
+//       long long internal = now - hreat_data_time;
+//       if(internal < LP_HREAT_TIMEOUT_US_MIN )
+//       {
+// 	   ret = ERROR_CONN_HREATBEAT_TIMEOUT;
+// 	   return ret;
+//       }	
       redis_client->zadd(redisApp->appKey,hreat_data_time/1000L,redisApp->key);
       redis_client->zadd(redisPlatform->platformKey,hreat_data_time/1000L,redisPlatform->key);
       redis_client->expire(clientKey,60);
+//       hreat_data_time = st_utime();
+//       lp_trace("recv hreatbeat %d",before_data_time);
       return ret;
 }
 
@@ -318,7 +267,7 @@ int LPushConn::recvPushCallback(LPushChunk* message)
       if(msgId.empty()||taskId.empty())
       {
 	 ret = ERROR_OBJECT_NOT_EXIST;
-	 lp_warn("recv result list message match error");
+	 lp_warn("recv result list message match error %d",ret);
 	 return ret;
       }
       std::string  resultList = conf->resultList+ msgId; 
@@ -333,13 +282,13 @@ int LPushConn::readMessage(LPushChunk **message)
     LPushChunk lp;
     if(!lpushProtocol)
     {
+       lp_warn("lpushProtocol not exist error %d",ret);
        ret = ERROR_OBJECT_NOT_EXIST;
-        lp_warn("lpushProtocol not exist error");
        return ret;
     }
     if((ret = lpushProtocol->readMessage(skt,lp))!=ERROR_SUCCESS)
     {
-      lp_warn("readMessage error");
+      lp_warn("readMessage error %d",ret);
       return ret;
     }
     *message = lp.copy();
@@ -379,6 +328,8 @@ int LPushConn::forwardServer(LPushChunk *message)
       default:
 	break;
     }
+    before_data_time = now_data_time;
+    now_data_time = message->header.getTime();
     return ret;
 }
 //consum thread use
@@ -404,6 +355,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     lc.setData(lh,(unsigned char*)buf);
     if(!lpushProtocol)
     {
+       lp_warn("lpushProtocol not exist error %d",ret);
       ret = ERROR_OBJECT_NOT_EXIST;
        SafeDelete(buf);
       return ret;
@@ -411,6 +363,7 @@ int LPushConn::sendForward(LPushWorkerMessage* message)
     if((ret = lpushProtocol->sendPacket(&lc))!=ERROR_SUCCESS)
     {
        SafeDelete(buf);
+       lp_warn("lpushProtocol sendPacket error %d",ret);
        return ret;
     }
     SafeDelete(buf);
