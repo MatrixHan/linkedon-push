@@ -55,6 +55,10 @@ int LPushMongoIOThread::cycle()
             ret = selectMongoHistoryWork(mie);
 	    SafeDelete(mie);
         }
+        if(ret == ERROR_OBJECT_NOT_EXIST)
+	{
+	   continue;
+	}
        if (ret != ERROR_SUCCESS) {
            
 	    SafeDelete(mie);
