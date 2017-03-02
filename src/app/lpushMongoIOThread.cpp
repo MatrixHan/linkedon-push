@@ -101,6 +101,7 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
 	}
 	isup = mongodb_client->skipParamsIsExist(mie->db,
 							   mie->collectionName,params,10*index);
+	index++;
        }
 	if((ret = selectMongoHistoryLimit(mie,params,1*index,10*index))!=ERROR_SUCCESS)
 	{
