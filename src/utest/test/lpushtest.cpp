@@ -32,7 +32,7 @@ int LpushTest::connection()
 	memset(&remote_addr, 0x0, sizeof(remote_addr));
 	remote_addr.sin_family = AF_INET;
 	remote_addr.sin_addr.s_addr = inet_addr(conn_ip.c_str()); //106.3.138.173 | 172.16.104.21  port  9732
-	remote_addr.sin_port = htons(9733);
+	remote_addr.sin_port = htons(9732);
 	
 	if ((client_sockfd = socket(PF_INET, SOCK_STREAM, 0))< 0)
 	{
@@ -84,7 +84,6 @@ int LpushTest::send_handshake_message()
 		cout << "client handshake fail..." << endl;
 		return RET_ERROR;
 	}
-	cout << "client handshake success..." << endl;	
 	//send create connection msg
 	init_message();
 	datatype = 0x04;
@@ -94,9 +93,9 @@ int LpushTest::send_handshake_message()
 	buf[14] = 'c';
 	
 	len = send(client_sockfd, buf, 15, 0);
-	if (len > 0)
+	if (len < 0)
 	{
-		cout << "client  send connect msg success..." << endl;
+		cout << "client  send connect msg failed..." << endl;
 	}
 	init_message();
 	len = recv(client_sockfd, buf, 15, 0);

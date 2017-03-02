@@ -27,10 +27,16 @@ void *send_heart(void *)
 		test.set_packet_header(datatype, test.buf);
 		int len = send(test.client_sockfd, test.buf, 15, 0);
 		if (len > 0)
-			cout << "thread id:[" << pthread_self() << "] send heartbeat success..." << len << endl;
-		else
-			cout << "thread id:[" << pthread_self() << "] send heartbeat failed..." << len << endl;
-		//cout << "**************************************send heartbeat end***********************************" << endl;
+			//cout << "thread id:[" << pthread_self() << "] send heartbeat success..." << len << endl;
+			;
+		else  {
+			if (errno == EAGAIN) {
+				
+			} else {	
+				perror("heart_send: ");
+			}	
+		}	
+	    //cout << "**************************************send heartbeat end***********************************" << endl;
 		pthread_mutex_unlock(&mut);
 		
 		sleep(30);		
@@ -87,7 +93,7 @@ void *thread_recv(void *)
 			cout << "recv_len: " << recv_len << endl;
 			int tmp_len = recv_len;
 			unsigned int msg_len = 0;
-			unsigned char buff[1024];
+			unsigned char buff[10240];
 			unsigned int k = 0;
 			while (recv_len > 0) {
 				cout << "userId: " << test.userId << endl;				
@@ -161,7 +167,12 @@ void *thread_recv(void *)
 				}
 	 			else
 	// 			{
-					break;
+					if (errno == EINTR ) 
+						usleep(30*1000);
+					else {
+						perror("answer_send: ");
+						break;
+					}	
 	// 				cout << "send recv failed ..." << endl;
 	// 			}
 				recv_len = recv_len - k- 14;
@@ -172,13 +183,17 @@ void *thread_recv(void *)
 			}	
 				
 		}
-//  	else
-//  	{				
-//  		perror("recv");
-//  	}
+  	else
+  	{	
+		if (errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN) {
+ 
+		} else {
+			perror("data_recv: ");
+		}	
+  	}
 
-		pthread_mutex_unlock(&mut);
-		usleep(50*1000);
+	pthread_mutex_unlock(&mut);
+	usleep(500*1000);
 	}	
 	pthread_exit(NULL);	
 }
