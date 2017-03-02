@@ -219,6 +219,20 @@ int LPushMongodbClient::delFromCollectionToJson(std::string db, std::string coll
     mongoc_collection_destroy (cll);
     return 0;
 }
+int LPushMongodbClient::delFromQuery(std::string db, std::string collectionName, std::map< std::string, std::string > params)
+{
+    bson_t cmd = LPushMongodbClient::excute(params);
+    mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
+    if(!mongoc_collection_delete(cll, MONGOC_DELETE_NONE, &cmd, NULL, &error))
+    {
+	lp_error("%s",error.message);
+	mongoc_collection_destroy (cll);
+	return ERROR_MONGODB_DELETE;
+    }
+    mongoc_collection_destroy (cll);
+    return 0;
+}
+
 
 int LPushMongodbClient::updateFromCollectionToJson(std::string db, std::string collectionName,std::string oid,std::map<std::string,std::string> uparams)
 {

@@ -40,6 +40,7 @@ public:
   virtual int64_t count(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual int insertFromCollectionToJson(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual int delFromCollectionToJson(std::string db,std::string collectionName,std::string oid);
+  virtual int delFromQuery(std::string db,std::string collectionName,std::map<std::string,std::string> params);
   virtual int updateFromCollectionToJson(std::string db,std::string collectionName,std::string oid,std::map<std::string,std::string> uparams);
   virtual bson_oid_t getOidByJsonStr(std::string json);
   virtual std::map<std::string,std::string> jsonToMap(std::string json);

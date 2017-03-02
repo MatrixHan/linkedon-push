@@ -91,21 +91,26 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
     }
     }else
     {
-      
+      int index = 1;
        while(isup)
        {
 	 
-	if((ret = selectMongoHistoryLimit(mie,params,1,10))!=ERROR_SUCCESS)
+	if((ret = selectMongoHistoryLimit(mie,params,1*index,10*index))!=ERROR_SUCCESS)
 	{
 	      return ret;
 	}
 	isup = mongodb_client->skipParamsIsExist(mie->db,
-							   mie->collectionName,params,10);
+							   mie->collectionName,params,10*index);
        }
-	if((ret = selectMongoHistoryLimit(mie,params,1,10))!=ERROR_SUCCESS)
+	if((ret = selectMongoHistoryLimit(mie,params,1*index,10*index))!=ERROR_SUCCESS)
 	{
 	      return ret;
 	}
+    }
+    if((ret = mongodb_client->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
+    {
+	lp_warn("mongodb del from query error %d",ret);
+	return ret;
     }
     int64_t endt = st_utime();
     int internalt = endt-begint;
@@ -134,8 +139,6 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
 	      map<string,string> entity = mongodb_client->jsonToMap(json);
 	      LPushWorkerMessage lpwm(entity);
 	      client->push(lpwm.copy());
-	      mongodb_client->delFromCollectionToJson(mie->db,
-						     mie->collectionName,entity["_id"]);
 	  }
 	  
 	}
