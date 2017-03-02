@@ -91,4 +91,19 @@ void LPushUtestMongo::test4()
     delete mclient;
 }
 
+void LPushUtestMongo::test5()
+{
+    
+    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
+    mclient->initMongodbClient();
+    
+    map<string,string> params;
+    params.insert(make_pair("appKey","48947381"));
+    long long begin  = st_utime();
+    bool result = mclient->selectOneIsExist(conf->mongodbConfig->db,"MEMBER_48947381",params);
+    long long end  = st_utime();
+    cout << result << endl;
+    cout << (end-begin)/1000 << endl;
+    delete mclient;
+}
 
