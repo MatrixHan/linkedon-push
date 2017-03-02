@@ -426,7 +426,7 @@ int LPushServer::hreatRedis()
 {
     int ret = ERROR_SUCCESS;
     long long nowtime = getCurrentTime();
-    if(nowtime-beforeTime>5){
+    if(nowtime-beforeTime>2){
     std::string status = LPushSystemStatus::statusToJson(conns.size());
     redis_client->hset(conf->serverList,serverKey,status);
     beforeTime = getCurrentTime();
