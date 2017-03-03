@@ -98,15 +98,16 @@ void LPushUtestMongo::test5()
     mclient->initMongodbClient();
     
     map<string,string> params;
-    params.insert(make_pair("UserId","10064"));
+    params.insert(make_pair("UserId","13992"));
     long long begin  = st_utime();
-    bool result = mclient->selectOneIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params);
-    bool result1 = mclient->skipParamsIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params,10);
-    vector<string> result3 = mclient->queryToListJsonLimit(conf->mongodbConfig->db,
-							   "TASK_PULL_48947381",params,1,10);
+     bool result = mclient->selectOneIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params);
+//    bool result1 = mclient->skipParamsIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params,10);
+//      vector<string> result3 = mclient->queryToListJsonLimit(conf->mongodbConfig->db,
+//      						   "TASK_PULL_48947381",params,1,50000);
     long long end  = st_utime();
-    cout << result<<"::" <<result1<< endl;
-    cout << (end-begin)/1000 << endl;
+//     cout << result<<"::" <<result1<< endl;
+    cout << (end-begin)/1000 <<endl;
+    
     delete mclient;
 }
 

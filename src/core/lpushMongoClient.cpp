@@ -7,6 +7,8 @@
 namespace lpush 
 {
  
+#define free_mongo_cursor(p) if(p) {mongoc_cursor_destroy(p); p=0x0;}
+  
   LPushMongodbClient *mongodb_client = NULL;
   
 bool mongoClientInit()
@@ -27,7 +29,6 @@ bool mongoClientClose()
   
 LPushMongodbClient::LPushMongodbClient(const char* _uristr):uristr(_uristr)
 {
-    cursor = NULL;
     cursor = NULL;
     doc    = NULL;
 }
@@ -95,11 +96,13 @@ bool LPushMongodbClient::selectOneIsExist(std::string db, std::string collection
     bson_t cmd = LPushMongodbClient::excute(params);
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     cursor = mongoc_collection_find(cll,
-				    MONGOC_QUERY_NONE,0,1,0,&cmd,NULL,
+				    MONGOC_QUERY_NONE,0,1,1,&cmd,NULL,
 				    NULL); /* read prefs, NULL for default */
     while (mongoc_cursor_next (cursor, &doc)) {
+      free_mongo_cursor(cursor);
       return true;
     }
+    free_mongo_cursor(cursor);
     return false;
 }
 
@@ -109,11 +112,13 @@ bool LPushMongodbClient::skipParamsIsExist(std::string db, std::string collectio
     bson_t cmd = LPushMongodbClient::excute(params);
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     cursor = mongoc_collection_find(cll,
-				    MONGOC_QUERY_NONE,skipnum,1,0,&cmd,NULL,
+				    MONGOC_QUERY_NONE,skipnum,1,1,&cmd,NULL,
 				    NULL); /* read prefs, NULL for default */
     while (mongoc_cursor_next (cursor, &doc)) {
+      free_mongo_cursor(cursor);
       return true;
     }
+      free_mongo_cursor(cursor);
     return false;
 }
 
@@ -129,7 +134,7 @@ std::vector<std::string> LPushMongodbClient::queryFromCollectionToJson(bson_t *_
 
    while (mongoc_cursor_next (cursor, &doc)) {
       str = bson_as_json (doc, NULL);
-      lp_info("mongos result %s",str);
+      //lp_info("mongos result %s",str);
       result.push_back(std::string(str));
       bson_free (str);
    }
@@ -138,6 +143,7 @@ std::vector<std::string> LPushMongodbClient::queryFromCollectionToJson(bson_t *_
       fprintf (stderr, "Cursor Failure: %s\n", error.message);
       result.clear();
    }
+   free_mongo_cursor(cursor);
    return result;
 }
 std::vector< std::string > LPushMongodbClient::queryToListJson(std::string db, std::string collectionName, std::map< std::string, std::string > params)
@@ -158,12 +164,12 @@ LPushMongodbClient::queryToListJsonLimit
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     char *str;
    cursor = mongoc_collection_find(cll,
-				    MONGOC_QUERY_EXHAUST,(page-1)*pageSize,pageSize,0,&cmd,NULL,
+				    MONGOC_QUERY_NONE,(page-1)*pageSize,pageSize,0,&cmd,NULL,
 				    NULL); /* read prefs, NULL for default */
 
    while (mongoc_cursor_next (cursor, &doc)) {
       str = bson_as_json (doc, NULL);
-      lp_info("mongos result %s",str);
+      //lp_info("mongos result %s",str);
       result.push_back(std::string(str));
       bson_free (str);
     }
@@ -173,6 +179,7 @@ LPushMongodbClient::queryToListJsonLimit
       result.clear();
      }
     mongoc_collection_destroy (cll);
+    free_mongo_cursor(cursor);
     return result;
 }
 
@@ -328,8 +335,7 @@ std::map< std::string, std::string > LPushMongodbClient::jsonToMap(std::string j
 
 void LPushMongodbClient::close()
 {	
-      if(cursor)
-      mongoc_cursor_destroy (cursor);
+      free_mongo_cursor(cursor);
     
       if(client)
       mongoc_client_destroy (client);

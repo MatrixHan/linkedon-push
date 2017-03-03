@@ -27,6 +27,8 @@
 
 #define ERROR_MONGODB_RESET				217
 
+#define ERROR_PTHREAD_CREATE				218
+
 #define ERROR_SOCKET_CREATE                 		1000
 #define ERROR_SOCKET_SETREUSE               		1001
 #define ERROR_SOCKET_BIND                   		1002
