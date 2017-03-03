@@ -23,7 +23,7 @@ int test1()
 {
   LPushUtestMongo lpum;
   //lpum.test1();
-  lpum.test4();
+  lpum.test5();
   return 0;
 }
 

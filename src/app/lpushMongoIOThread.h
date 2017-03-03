@@ -29,12 +29,13 @@ struct MongoIOEntity
      return c;
   }
 };
-  
+class   LPushMongodbClient;
 class LPushMongoIOThread:public  ILPushReusableThreadHandler
 {
 private:
   std::vector<MongoIOEntity*> queue;
     LPushReusableThread *trd;
+    LPushMongodbClient *mclient;
 public:
     LPushMongoIOThread();
     virtual ~LPushMongoIOThread();
