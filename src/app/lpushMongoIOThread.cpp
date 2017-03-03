@@ -121,15 +121,15 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
        while(isup)
        {
 	 
-	if((ret = selectMongoHistoryLimit(mie,params,1*index,50000*index))!=ERROR_SUCCESS)
+	if((ret = selectMongoHistoryLimit(mie,params,1,50000))!=ERROR_SUCCESS)
 	{
 	      return ret;
 	}
 	isup = mclient->skipParamsIsExist(mie->db,
-							   mie->collectionName,params,50000*index);
+							   mie->collectionName,params,50000);
 	index++;
        }
-	if((ret = selectMongoHistoryLimit(mie,params,1*index,50000*index))!=ERROR_SUCCESS)
+	if((ret = selectMongoHistoryLimit(mie,params,1,50000))!=ERROR_SUCCESS)
 	{
 	      return ret;
 	}
@@ -167,7 +167,7 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
 	      map<string,string> entity = mclient->jsonToMap(json);
 	      LPushWorkerMessage lpwm(entity);
 	      rclient->lPushForList(serverTaskdbName,lpwm.toAllString());
-	      mclient->delFromCollectionToJson(mie->db,mie->collectionName,entity["_oid"]);
+	      mclient->delFromCollectionToJson(mie->db,mie->collectionName,entity["_id"]);
 	  }
 	  et = st_utime();
 	  printf("current for function run time %lld",(et-bt)/1000L);
