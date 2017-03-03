@@ -158,7 +158,7 @@ LPushMongodbClient::queryToListJsonLimit
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     char *str;
    cursor = mongoc_collection_find(cll,
-				    MONGOC_QUERY_NONE,(page-1)*pageSize,pageSize,0,&cmd,NULL,
+				    MONGOC_QUERY_EXHAUST,(page-1)*pageSize,pageSize,0,&cmd,NULL,
 				    NULL); /* read prefs, NULL for default */
 
    while (mongoc_cursor_next (cursor, &doc)) {

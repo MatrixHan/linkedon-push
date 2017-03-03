@@ -178,8 +178,14 @@ int LPushConn::createConnection()
 	lp_warn("conn sendCreateConnection error %d",ret);
 	return ret;
     }
+    
+    
     static std::string prefix = "TASK_PULL_";
     std::string collectionName = prefix + lphandshakeMsg->appId;
+//     map<string,string> params ;
+//     params["UserId"] = lphandshakeMsg->userId;
+//     bool isexistData = mongodb_client->selectOneIsExist(conf->mongodbConfig->db,collectionName,params);
+//     if(isexistData)
     lpmongoTrd->push(conf->mongodbConfig->db,collectionName,
 		     lphandshakeMsg->appId,lphandshakeMsg->userId,lphandshakeMsg->screteKey);
     return ret;

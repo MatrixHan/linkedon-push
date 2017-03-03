@@ -3,19 +3,22 @@
 #include <lpushMongoClient.h>
 #include <lpushSystemErrorDef.h>
 #include <lpushSource.h>
-
+#include <lpushJson.h>
 using namespace std;
 namespace lpush 
 {
   
 LPushMongoIOThread::LPushMongoIOThread()
 {
-      trd = new LPushReusableThread("mongoIOThread",this,350);
+    trd = new LPushReusableThread("mongoIOThread",this,350);
+    mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
+    mclient->initMongodbClient();
 }
 
 LPushMongoIOThread::~LPushMongoIOThread()
 {
       SafeDelete(trd);
+      SafeDelete(mclient);
       if(getLength()>0)
      {
        std::vector<MongoIOEntity*>::iterator itr = queue.begin();
@@ -55,6 +58,10 @@ int LPushMongoIOThread::cycle()
             ret = selectMongoHistoryWork(mie);
 	    SafeDelete(mie);
         }
+        if(ret == ERROR_MONGODB_RESET)
+	{
+	    continue;
+	}
        if (ret != ERROR_SUCCESS) {
            
 	    SafeDelete(mie);
@@ -63,7 +70,7 @@ int LPushMongoIOThread::cycle()
 	    
             return ret;
         }
-      st_usleep(350 * 1000);
+      st_usleep(15 * 1000);
     }
     return ret;
 }
@@ -73,19 +80,19 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
   
     int ret = ERROR_SUCCESS;
     int64_t begint = st_utime();
+    int64_t bt ,et;
     map<string,string> params;
     params.insert(make_pair("UserId",mie->userId));
-    params.insert(make_pair("AppKey",mie->appKey));
-    bool isExist = mongodb_client->selectOneIsExist(mie->db,
+    bool isExist = mclient->selectOneIsExist(mie->db,
 							   mie->collectionName,params);
     if(!isExist)
     {
-      return 0;
+      return ERROR_MONGODB_RESET;
     }
-    bool isup =  mongodb_client->skipParamsIsExist(mie->db,
-							   mie->collectionName,params,10);
+    bool isup =  mclient->skipParamsIsExist(mie->db,
+							   mie->collectionName,params,50000);
     if(!isup){
-    if((ret = selectMongoHistoryLimit(mie,params,1,10))!=ERROR_SUCCESS)
+    if((ret = selectMongoHistoryLimit(mie,params,1,50000))!=ERROR_SUCCESS)
     {
 	return ret;
     }
@@ -95,32 +102,37 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
        while(isup)
        {
 	 
-	if((ret = selectMongoHistoryLimit(mie,params,1*index,10*index))!=ERROR_SUCCESS)
+	if((ret = selectMongoHistoryLimit(mie,params,1*index,50000*index))!=ERROR_SUCCESS)
 	{
 	      return ret;
 	}
-	isup = mongodb_client->skipParamsIsExist(mie->db,
-							   mie->collectionName,params,10*index);
+	isup = mclient->skipParamsIsExist(mie->db,
+							   mie->collectionName,params,50000*index);
 	index++;
        }
-	if((ret = selectMongoHistoryLimit(mie,params,1*index,10*index))!=ERROR_SUCCESS)
+	if((ret = selectMongoHistoryLimit(mie,params,1*index,50000*index))!=ERROR_SUCCESS)
 	{
 	      return ret;
 	}
     }
-    if((ret = mongodb_client->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
-    {
-	lp_warn("mongodb del from query error %d",ret);
-	return ret;
-    }
+//     bt = st_utime();
+//     if((ret = mclient->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
+//     {
+// 	lp_warn("mongodb del from query error %d",ret);
+// 	return ret;
+//     }
+//     et = st_utime();
+//     lp_warn("current delFromQuery function run time %lld",(et-bt)/1000L);
     int64_t endt = st_utime();
     int internalt = endt-begint;
-    lp_warn("current function run time %lld",internalt/1000L);
+    lp_warn("current selectMongoHistoryWork function run time %lld",internalt/1000L);
     return 0;
 }
 
 int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string, string > params, int page, int pageSize)
 {
+  
+    int64_t bt ,et;
     int ret = ERROR_SUCCESS;
     LPushClient *client = LPushSource::instance(mie->userId,mie->appKey,mie->secreteKey);
     if(!client)
@@ -128,19 +140,25 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
 	lp_warn("this user not online %d",ret);
 	return ret;
     }
-    vector<string> result = mongodb_client->queryToListJsonLimit(mie->db,
+    bt = st_utime();
+    vector<string> result = mclient->queryToListJsonLimit(mie->db,
 							   mie->collectionName,params,page,pageSize);
+    et = st_utime();
+    lp_warn("current queryToListJsonLimit function run time %lld",(et-bt)/1000L);
 	if(result.size()>0)
 	{
+	   bt = st_utime();
 	  vector<string>::iterator itr = result.begin();
 	  for(;itr!=result.end();++itr)
 	  {
 	      string json = *itr;
-	      map<string,string> entity = mongodb_client->jsonToMap(json);
+	      map<string,string> entity = mclient->jsonToMap(json);
 	      LPushWorkerMessage lpwm(entity);
 	      client->push(lpwm.copy());
+	      mclient->delFromCollectionToJson(mie->db,mie->collectionName,entity["_oid"]);
 	  }
-	  
+	  et = st_utime();
+	  lp_warn("current for function run time %lld",(et-bt)/1000L);
 	}
 	return ret;
 }
