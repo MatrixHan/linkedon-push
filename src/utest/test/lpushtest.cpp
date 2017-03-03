@@ -186,3 +186,34 @@ string LpushTest::getmd5str(std::string src)
     return std::string(mdString);
 }
 
+char * LpushTest::err_tstamp(void)
+{
+  static char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+  static char str[32];
+  static time_t lastt = 0;
+  struct tm *tmp;
+  time_t currt = st_time();
+
+  if (currt == lastt)
+    return str;
+
+  tmp = localtime(&currt);
+  sprintf(str, "[%02d/%s/%d:%02d:%02d:%02d] ", tmp->tm_mday,
+          months[tmp->tm_mon], 1900 + tmp->tm_year, tmp->tm_hour,
+          tmp->tm_min, tmp->tm_sec);
+  lastt = currt;
+
+  return str;
+}
+
+
+int LpushTest::set_socket_nonblock(int sockfd)
+{
+	int block_flag = fcntl(sockfd, F_GETFL, 0);
+	if (block_flag < 0) {
+		
+	}
+	
+}
+

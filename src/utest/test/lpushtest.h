@@ -67,6 +67,8 @@ namespace lpush {
 		int send_handshake_message();
 		int recv_message();
 		int init_message();
+		int set_socket_nonblock(int socket);
+		char *err_tstamp(void);
 		string getmd5str(string src);
 	};
 
