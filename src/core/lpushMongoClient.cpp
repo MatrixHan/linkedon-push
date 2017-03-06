@@ -8,26 +8,29 @@ namespace lpush
 {
  
 #define free_mongo_cursor(p) if(p) {mongoc_cursor_destroy(p); p=0x0;}
-  
-  LPushMongodbClient *mongodb_client = NULL;
-  
-bool mongoClientInit()
+   
+LPushMongodbClient * mongodb_client =NULL;
+
+bool MongodbClientInit()
 {
-  if(!mongodb_client){
-    mongodb_client = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mongodb_client->initMongodbClient();
-  }
+    if(!mongodb_client)
+    {
+       mongodb_client = new LPushMongodbClient();
+       mongodb_client->initMongodbClient(conf->mongodbConfig->url.c_str());
+    }
 }
 
-bool mongoClientClose()
+bool CloseMongodbClient()
 {
-  if(mongodb_client)
-    mongodb_client->close();
+    if(mongodb_client)
+    {
+       mongodb_client->close();
+       SafeDelete(mongodb_client);
+    }
 }
 
   
-  
-LPushMongodbClient::LPushMongodbClient(const char* _uristr):uristr(_uristr)
+LPushMongodbClient::LPushMongodbClient()
 {
     cursor = NULL;
     doc    = NULL;
@@ -35,18 +38,27 @@ LPushMongodbClient::LPushMongodbClient(const char* _uristr):uristr(_uristr)
 
 LPushMongodbClient::~LPushMongodbClient()
 {
-    close();
+
 }
 
-bool LPushMongodbClient::initMongodbClient()
+bool LPushMongodbClient::initMongodbClient(mongoc_client_pool_t *pool)
 {
-     mongoc_init ();
-     client = mongoc_client_new (uristr);
+      _pool = pool;
+     client = mongoc_client_pool_pop (_pool);
       if (!client) {
       fprintf (stderr, "Failed to parse URI.\n");
       return false;
     }
-    mongoc_client_set_error_api (client, 2);
+    return true;
+}
+bool LPushMongodbClient::initMongodbClient(const char* url)
+{
+      
+      client = mongoc_client_new(url);
+     if (!client) {
+      fprintf (stderr, "Failed to parse URI.\n");
+      return false;
+    }
     return true;
 }
 
@@ -100,9 +112,11 @@ bool LPushMongodbClient::selectOneIsExist(std::string db, std::string collection
 				    NULL); /* read prefs, NULL for default */
     while (mongoc_cursor_next (cursor, &doc)) {
       free_mongo_cursor(cursor);
+       bson_destroy (&cmd);
       return true;
     }
     free_mongo_cursor(cursor);
+     bson_destroy (&cmd);
     return false;
 }
 
@@ -116,9 +130,11 @@ bool LPushMongodbClient::skipParamsIsExist(std::string db, std::string collectio
 				    NULL); /* read prefs, NULL for default */
     while (mongoc_cursor_next (cursor, &doc)) {
       free_mongo_cursor(cursor);
+       bson_destroy (&cmd);
       return true;
     }
       free_mongo_cursor(cursor);
+       bson_destroy (&cmd);
     return false;
 }
 
@@ -152,6 +168,7 @@ std::vector< std::string > LPushMongodbClient::queryToListJson(std::string db, s
     mongoc_collection_t * cll = LPushMongodbClient::excute(db.c_str(),collectionName.c_str());
     std::vector< std::string > result= queryFromCollectionToJson(&cmd,cll);
      mongoc_collection_destroy (cll);
+      bson_destroy (&cmd);
     return result;
 }
 
@@ -180,6 +197,7 @@ LPushMongodbClient::queryToListJsonLimit
      }
     mongoc_collection_destroy (cll);
     free_mongo_cursor(cursor);
+     bson_destroy (&cmd);
     return result;
 }
 
@@ -191,6 +209,7 @@ int64_t LPushMongodbClient::count(std::string db, std::string collectionName, st
     result = mongoc_collection_count(cll,MONGOC_QUERY_NONE,&cmd,0,0,NULL,&error);
     //fprintf (stderr, "Count Failure: %s\n", error.message);
     mongoc_collection_destroy (cll);
+     bson_destroy (&cmd);
     return result;
 }
 
@@ -202,9 +221,11 @@ int LPushMongodbClient::insertFromCollectionToJson(std::string db, std::string c
     if (!mongoc_collection_insert (cll, MONGOC_INSERT_NONE, &cmd, NULL, &error)) {
 	lp_error("%s ",error.message);
 	mongoc_collection_destroy (cll);
+	 bson_destroy (&cmd);
 	return ERROR_MONGODB_INSERT;
       }  
       mongoc_collection_destroy (cll);
+       bson_destroy (&cmd);
       return 0;
 }
 
@@ -234,9 +255,11 @@ int LPushMongodbClient::delFromQuery(std::string db, std::string collectionName,
     {
 	lp_error("%s",error.message);
 	mongoc_collection_destroy (cll);
+	 bson_destroy (&cmd);
 	return ERROR_MONGODB_DELETE;
     }
     mongoc_collection_destroy (cll);
+     bson_destroy (&cmd);
     return 0;
 }
 
@@ -327,20 +350,26 @@ std::map< std::string, std::string > LPushMongodbClient::jsonToMap(std::string j
 	    map.insert(std::make_pair(std::string(key),value));
 	}
     }
-    
+     bson_destroy (data);
     return map;
 }
 
 
 
-void LPushMongodbClient::close()
+void LPushMongodbClient::closePool()
 {	
       free_mongo_cursor(cursor);
-    
-      if(client)
-      mongoc_client_destroy (client);
+      mongoc_client_pool_push (_pool, client);
+}
 
-      mongoc_cleanup ();
+void LPushMongodbClient::close()
+{
+      free_mongo_cursor(cursor);
+      if(client)
+      {
+	mongoc_client_destroy(client);
+	client = 0x0;
+      }
 }
 
   

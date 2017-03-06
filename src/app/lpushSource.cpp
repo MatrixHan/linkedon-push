@@ -370,6 +370,17 @@ int LPushClient::push(LPushWorkerMessage* msg)
 }
 
 
+pthread_mutex_t mutexSource;
+bool initSourceMutex()
+{
+    pthread_mutex_init(&mutexSource,NULL);
+}
+
+bool closeSourceMutex()
+{
+    pthread_mutex_destroy(&mutexSource);
+}
+
 
 std::map<st_netfd_t,LPushSource*> LPushSource::sources;
 std::map<std::string,LPushClient*> LPushSource::clients;
@@ -417,7 +428,8 @@ LPushClient* LPushSource::instance(std::string userId, std::string appId, std::s
    std::map<std::string,LPushClient*>::iterator itr = clients.find(key);
    if(itr!=clients.end())
    {
-     return (LPushClient*)itr->second;
+     LPushClient * cli = (LPushClient*)itr->second;
+     return cli;
   }
   return NULL;
 }
@@ -455,7 +467,6 @@ int LPushSource::cycle_all(std::string queueName)
 
 void LPushSource::destroy(std::string key)
 {
-    
     std::map<std::string,LPushClient*>::iterator itr = clients.find(key);
     if(itr!=clients.end())
       {
@@ -504,12 +515,15 @@ int LPushSource::destroyAll()
 
 int LPushSource::push(LPushWorkerMessage* msg)
 {
-    return queue->push(msg);
+    queue->push(msg);
+    return 0;
 }
 
 int LPushSource::pop(LPushWorkerMessage** msg)
 {
-    return queue->pop(msg);
+
+    queue->pop(msg);
+    return 0;
 }
 
   

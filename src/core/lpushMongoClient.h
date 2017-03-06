@@ -4,13 +4,13 @@
 #include <bcon.h>
 namespace lpush 
 {
-class   LPushMongodbClient;
-  
-extern LPushMongodbClient *mongodb_client;
+class LPushMongodbClient;
 
-extern bool mongoClientInit();
+extern LPushMongodbClient * mongodb_client;
 
-extern bool mongoClientClose();
+extern bool MongodbClientInit();
+
+extern bool CloseMongodbClient();
   
 class LPushMongodbClient
 {
@@ -19,15 +19,16 @@ private:
     mongoc_cursor_t *		cursor;
     bson_error_t 		error;
     const bson_t *		doc;
-    const char *		uristr ;
+    mongoc_client_pool_t *	_pool;
 public:
   /**
    *uristr example "mongodb://127.0.0.1/?appname=client-example";
    */
-  LPushMongodbClient(const char * _uristr);
+  LPushMongodbClient();
   virtual ~LPushMongodbClient();
 public:
-  virtual bool initMongodbClient();
+  virtual bool initMongodbClient(mongoc_client_pool_t *pool);
+  virtual bool initMongodbClient(const char *url);
   mongoc_collection_t* excute(const char* db,const char * collectionName);
   bson_t excute(std::map<std::string,std::string> params);
   void destory_bson(bson_t *b);
@@ -44,6 +45,7 @@ public:
   virtual int updateFromCollectionToJson(std::string db,std::string collectionName,std::string oid,std::map<std::string,std::string> uparams);
   virtual bson_oid_t getOidByJsonStr(std::string json);
   virtual std::map<std::string,std::string> jsonToMap(std::string json);
+  virtual void closePool();
   virtual void close();
 };
   

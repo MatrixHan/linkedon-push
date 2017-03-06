@@ -38,6 +38,7 @@ LPushConn::LPushConn(LPushServer* _server, LPushMongoIOThread *_lpmongoTrd,st_ne
     redisApp = NULL;
     redisPlatform = NULL;
     lpushProtocol = new LPushProtocol(skt);
+    mie = NULL;
     trd = NULL;
     trd2 = NULL;
     
@@ -45,7 +46,8 @@ LPushConn::LPushConn(LPushServer* _server, LPushMongoIOThread *_lpmongoTrd,st_ne
 
 LPushConn::~LPushConn()
 {
-
+    if(mie)
+    lpmongoTrd->findPop(mie);
     SafeDelete(trd);
     SafeDelete(trd2);
     SafeDelete(lpushProtocol);
@@ -67,7 +69,7 @@ int LPushConn::do_cycle()
     int ret = ERROR_SUCCESS;
     skt->set_recv_timeout(LP_PAUSED_RECV_TIMEOUT_US);
     skt->set_send_timeout(LP_PAUSED_SEND_TIMEOUT_US);
-   LPushHandshakeMessage lpsm;
+    LPushHandshakeMessage lpsm;
     if((ret = handshake(lpsm)) != ERROR_SUCCESS)
     {
 	lp_warn("conn handshake error");
@@ -182,12 +184,15 @@ int LPushConn::createConnection()
     
     static std::string prefix = "TASK_PULL_";
     std::string collectionName = prefix + lphandshakeMsg->appId;
-//     map<string,string> params ;
-//     params["UserId"] = lphandshakeMsg->userId;
-//     bool isexistData = mongodb_client->selectOneIsExist(conf->mongodbConfig->db,collectionName,params);
-//     if(isexistData)
-    lpmongoTrd->push(conf->mongodbConfig->db,collectionName,
+//      map<string,string> params ;
+//      params["UserId"] = lphandshakeMsg->userId;
+//      bool isexistData = mongodb_client->selectOneIsExist(conf->mongodbConfig->db,collectionName,params);
+//      if(isexistData){
+    mie = new MongoIOEntity();
+    mie->setDate(conf->mongodbConfig->db,collectionName,
 		     lphandshakeMsg->appId,lphandshakeMsg->userId,lphandshakeMsg->screteKey);
+    lpmongoTrd->push(mie);
+//     }
     return ret;
 }
 

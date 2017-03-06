@@ -17,6 +17,7 @@ namespace lpush
   class LPushAPPKey;
   class LPushPlatform;
   class LPushMongoIOThread;
+  class MongoIOEntity;
   class LPushConn : virtual public LPushConnection
   {
   private:
@@ -36,6 +37,7 @@ namespace lpush
   private:
     LPushAPPKey		  *redisApp;
     LPushPlatform	  *redisPlatform;
+    MongoIOEntity 		*mie; 
   private:
     LPushRecvThread *trd;
     LPushConsumThread *trd2;

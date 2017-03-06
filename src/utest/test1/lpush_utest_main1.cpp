@@ -4,6 +4,7 @@
 #include <lpushLogger.h>
 #include <lpush_utest_pushwork.h>
 #include <lpush_utest_mongo.h>
+#include <lpushMongoPool.h>
 
 using namespace std;
 using namespace lpush;
@@ -31,7 +32,9 @@ int main(void)
 {
     initConfig("");
     InitLog(DEFAULT_LOG_FILE_NAME);
+    initialzerMongoPool();
     test1();
+    destroyMongoPool();
     CloseLog();
     return 0;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <lpushCommon.h>
-#include <lpushPThread.h>
+#include <lpushThread.h>
 
 namespace lpush 
 {
@@ -31,14 +31,14 @@ struct MongoIOEntity
 };
 class LPushMongodbClient;
 class LPushRedisClient;
-class LPushMongoIOThread:public  ILPushPThreadHandle
+class LPushMongoIOThread:public  ILPushReusableThreadHandler
 {
 private:
   std::vector<MongoIOEntity*> queue;
-    LPushPThread *trd;
+    LPushReusableThread *trd;
     LPushMongodbClient *mclient;
-    LPushRedisClient	*rclient;
-    pthread_mutex_t     mutex;
+    //LPushRedisClient	*rclient;
+    //pthread_mutex_t     mutex;
     std::string 	serverTaskdbName;
 public:
     LPushMongoIOThread();
@@ -58,8 +58,9 @@ public:
    
     virtual void stop();
 public:
-  virtual void push(std::string _db,std::string _collectionName
-		    ,std::string _appKey,std::string _userId,std::string _secreteKey);
+  virtual void push(MongoIOEntity *mie);
+    
+  virtual int findPop(MongoIOEntity *mie);
 private:
   virtual int pop(MongoIOEntity **src);
   

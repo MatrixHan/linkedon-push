@@ -5,6 +5,7 @@
 #include <lpushSource.h>
 #include <lpushJson.h>
 #include <lpushRedis.h>
+#include <lpushMongoPool.h>
 
 #define printf(p,...)
 using namespace std;
@@ -13,27 +14,28 @@ namespace lpush
   
 LPushMongoIOThread::LPushMongoIOThread()
 {
-    trd = new LPushPThread(this,"mongoIOThread",350);
-    mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mclient->initMongodbClient();
-    rclient = new LPushRedisClient(conf->redisConfig->host.c_str(),conf->redisConfig->port);
-    rclient->initRedis();
-    rclient->auth(conf->redisConfig->pass);
-    rclient->selectDb(conf->redisConfig->db);
+    trd = new LPushReusableThread("mongoIOThread",this,350);
+    mclient = new LPushMongodbClient();
+    mclient->initMongodbClient(conf->mongodbConfig->url.c_str());
+    //rclient = new LPushRedisClient(conf->redisConfig->host.c_str(),conf->redisConfig->port);
+    //rclient->initRedis();
+    //rclient->auth(conf->redisConfig->pass);
+    //rclient->selectDb(conf->redisConfig->db);
     int port = conf->port;
     char buf[5];
     sprintf(buf,"%d",port);
     string pfs = conf->localhost+":"+std::string(buf);
     serverTaskdbName = conf->task_prefix+pfs;
-    pthread_mutex_init(&mutex,NULL);
+    //pthread_mutex_init(&mutex,NULL);
 }
 
 LPushMongoIOThread::~LPushMongoIOThread()
 {
       SafeDelete(trd);
+      mclient->closePool();
       SafeDelete(mclient);
-      rclient->closeRedis();
-      SafeDelete(rclient);
+      //rclient->closeRedis();
+      //SafeDelete(rclient);
       if(getLength()>0)
      {
        std::vector<MongoIOEntity*>::iterator itr = queue.begin();
@@ -60,11 +62,11 @@ int LPushMongoIOThread::cycle()
     {
       if(!can_loop())
       {
-	 usleep(350 * 1000);
+	 st_usleep(1000 * 1000L);
 	 continue;
       }
       ret = do_cycle();
-      printf("mongodb work queue size %d",getLength());
+      //printf("mongodb work queue size %d",getLength());
        if (ret != ERROR_SUCCESS) {
            
             // we use no timeout to recv, should never got any error.
@@ -72,7 +74,7 @@ int LPushMongoIOThread::cycle()
 	    
             return ret;
         }
-     // usleep(10 * 1000);
+      st_usleep(20 * 1000L);
     }
     return ret;
 }
@@ -81,16 +83,15 @@ int LPushMongoIOThread::do_cycle()
 {
        int ret = ERROR_SUCCESS;
        MongoIOEntity * mie = NULL;
-      int  callindex = 1;
-      while(callindex%10!=0)
-      {		
-	  callindex++;
 	  if(!can_loop())
-	    break;
+	    return ret;
 	  ret = pop(&mie);
 	  ret = selectMongoHistoryWork(mie);
 	  SafeDelete(mie);
-      }
+	  if(ret == ERROR_OBJECT_NOT_EXIST)
+	  {
+	     ret = ERROR_SUCCESS;
+	  }
      return ret;
 }
 
@@ -134,14 +135,14 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
 	      return ret;
 	}
     }
-//     bt = st_utime();
-//     if((ret = mclient->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
-//     {
-// 	printf("mongodb del from query error %d",ret);
-// 	return ret;
-//     }
-//     et = st_utime();
-//     printf("current delFromQuery function run time %lld",(et-bt)/1000L);
+     bt = st_utime();
+     if((ret = mclient->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
+     {
+ 	lp_warn("mongodb del from query error %d",ret);
+ 	return ret;
+     }
+     et = st_utime();
+     lp_warn("current delFromQuery function run time %lld",(et-bt)/1000L);
 
     return 0;
 }
@@ -152,11 +153,20 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
     int64_t bt ,et;
     int ret = ERROR_SUCCESS;
    
+    LPushClient * client = LPushSource::instance(mie->userId,mie->appKey,mie->secreteKey);
+    
+    if(!client)
+    {
+      ret = ERROR_OBJECT_NOT_EXIST;
+      return ret;
+    }
+    
     bt = st_utime();
     vector<string> result = mclient->queryToListJsonLimit(mie->db,
 							   mie->collectionName,params,page,pageSize);
     et = st_utime();
-    printf("current queryToListJsonLimit function run time %lld",(et-bt)/1000L);
+    lp_warn("current queryToListJsonLimit function run time %lld",(et-bt)/1000L);
+    //std::cout << "current queryToListJsonLimit function run time "<< (et-bt)/1000L <<std::endl;
 	if(result.size()>0)
 	{
 	   bt = st_utime();
@@ -166,11 +176,12 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
 	      string json = *itr;
 	      map<string,string> entity = mclient->jsonToMap(json);
 	      LPushWorkerMessage lpwm(entity);
-	      rclient->lPushForList(serverTaskdbName,lpwm.toAllString());
-	      mclient->delFromCollectionToJson(mie->db,mie->collectionName,entity["_id"]);
+	      //rclient->lPushForList(serverTaskdbName,lpwm.toAllString());
+	      client->push(lpwm.copy());
 	  }
 	  et = st_utime();
-	  printf("current for function run time %lld",(et-bt)/1000L);
+	  lp_warn("current for function run time %lld",(et-bt)/1000L);
+	 //std::cout << "current for function run time "<< (et-bt)/1000L <<std::endl;
 	}
 	return ret;
 }
@@ -185,13 +196,11 @@ void LPushMongoIOThread::stop()
    trd->stop();
 }
 
-void LPushMongoIOThread::push(string _db, string _collectionName, string _appKey, string _userId, string _secreteKey)
+void LPushMongoIOThread::push(MongoIOEntity *mie)
 {
-      MongoIOEntity *mie = new MongoIOEntity();
-      mie->setDate(_db,_collectionName,_appKey,_userId,_secreteKey);
-      pthread_mutex_lock(&mutex);
+     // pthread_mutex_lock(&mutex);
       queue.push_back(mie);
-      pthread_mutex_unlock(&mutex);
+      //pthread_mutex_unlock(&mutex);
 }
 
 
@@ -201,22 +210,38 @@ int LPushMongoIOThread::pop(MongoIOEntity **src)
        if(!(getLength()>0)){
 	    printf("mongodb queue size is 0");
 	}
-	pthread_mutex_lock(&mutex);
+	//pthread_mutex_lock(&mutex);
 	MongoIOEntity *mie = NULL;
 	std::vector<MongoIOEntity*>::iterator itr = queue.begin();
 	mie = *itr;
 	*src = mie->copy();
 	itr=queue.erase(itr);
 	SafeDelete(mie);
-	pthread_mutex_unlock(&mutex);
+	//pthread_mutex_unlock(&mutex);
+	return 0;
+}
+int LPushMongoIOThread::findPop(MongoIOEntity *mie)
+{
+	//pthread_mutex_lock(&mutex);
+	
+	std::vector<MongoIOEntity*>::iterator itr = std::find(queue.begin(),queue.end(),mie);
+	if(itr == queue.end())
+	{
+	  //lp_warn("not found it mie");
+	  return -2;
+	}
+	queue.erase(itr);
+	SafeDelete(mie);
+	//pthread_mutex_unlock(&mutex);
 	return 0;
 }
 
+
 int LPushMongoIOThread::getLength()
 {	
-    pthread_mutex_lock(&mutex);
+   // pthread_mutex_lock(&mutex);
     int size = queue.size();
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
     return  size;
 }
 

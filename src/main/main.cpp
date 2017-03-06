@@ -6,6 +6,8 @@
 #include <lpushSystemErrorDef.h>
 #include <lpushRedis.h>
 #include <lpushMongoClient.h>
+#include <lpushMongoPool.h>
+#include <lpushSource.h>
 using namespace std;
 using namespace lpush;
 
@@ -30,7 +32,9 @@ int main(int argc, char *argv[])
 	   return 0;
 	}	
 	RedisInitializer();
-	mongoClientInit();
+	initSourceMutex();
+	initialzerMongoPool();
+	MongodbClientInit();
 	if ((ret = server->initializer()) != ERROR_SUCCESS)
 	{
 	  return ret;
@@ -40,7 +44,9 @@ int main(int argc, char *argv[])
 	run();
 	CloseLog();
 	RedisClose();
-	mongoClientClose();
+	destroyMongoPool();
+	CloseMongodbClient();
+	closeSourceMutex();
 	return 0;
 }
 static void parse_arguments(int argc, char *argv[])
