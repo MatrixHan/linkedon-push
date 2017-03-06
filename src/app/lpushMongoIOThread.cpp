@@ -100,7 +100,7 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
 {
   
     int ret = ERROR_SUCCESS;
-    int64_t bt ,et;
+    //int64_t bt ,et;
     map<string,string> params;
     params.insert(make_pair("UserId",mie->userId));
     bool isExist = mclient->selectOneIsExist(mie->db,
@@ -135,14 +135,14 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
 	      return ret;
 	}
     }
-     bt = st_utime();
+     //bt = st_utime();
      if((ret = mclient->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
      {
- 	lp_warn("mongodb del from query error %d",ret);
+ 	lp_info("mongodb del from query error %d",ret);
  	return ret;
      }
-     et = st_utime();
-     lp_warn("current delFromQuery function run time %lld",(et-bt)/1000L);
+     //et = st_utime();
+     //lp_info("current delFromQuery function run time %lld",(et-bt)/1000L);
 
     return 0;
 }
@@ -150,7 +150,7 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
 int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string, string > params, int page, int pageSize)
 {
   
-    int64_t bt ,et;
+    //int64_t bt ,et;
     int ret = ERROR_SUCCESS;
    
     LPushClient * client = LPushSource::instance(mie->userId,mie->appKey,mie->secreteKey);
@@ -161,15 +161,15 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
       return ret;
     }
     
-    bt = st_utime();
+    //bt = st_utime();
     vector<string> result = mclient->queryToListJsonLimit(mie->db,
 							   mie->collectionName,params,page,pageSize);
-    et = st_utime();
-    lp_warn("current queryToListJsonLimit function run time %lld",(et-bt)/1000L);
+    //et = st_utime();
+    //lp_info("current queryToListJsonLimit function run time %lld",(et-bt)/1000L);
     //std::cout << "current queryToListJsonLimit function run time "<< (et-bt)/1000L <<std::endl;
 	if(result.size()>0)
 	{
-	   bt = st_utime();
+	   //bt = st_utime();
 	  vector<string>::iterator itr = result.begin();
 	  for(;itr!=result.end();++itr)
 	  {
@@ -179,8 +179,8 @@ int LPushMongoIOThread::selectMongoHistoryLimit(MongoIOEntity *mie, map< string,
 	      //rclient->lPushForList(serverTaskdbName,lpwm.toAllString());
 	      client->push(lpwm.copy());
 	  }
-	  et = st_utime();
-	  lp_warn("current for function run time %lld",(et-bt)/1000L);
+	  //et = st_utime();
+	  //lp_info("current for function run time %lld",(et-bt)/1000L);
 	 //std::cout << "current for function run time "<< (et-bt)/1000L <<std::endl;
 	}
 	return ret;
@@ -227,7 +227,7 @@ int LPushMongoIOThread::findPop(MongoIOEntity *mie)
 	std::vector<MongoIOEntity*>::iterator itr = std::find(queue.begin(),queue.end(),mie);
 	if(itr == queue.end())
 	{
-	  //lp_warn("not found it mie");
+	  //lp_info("not found it mie");
 	  return -2;
 	}
 	queue.erase(itr);
