@@ -29,13 +29,17 @@ struct MongoIOEntity
      return c;
   }
 };
-class   LPushMongodbClient;
+class LPushMongodbClient;
+class LPushRedisClient;
 class LPushMongoIOThread:public  ILPushReusableThreadHandler
 {
 private:
   std::vector<MongoIOEntity*> queue;
     LPushReusableThread *trd;
     LPushMongodbClient *mclient;
+    //LPushRedisClient	*rclient;
+    //pthread_mutex_t     mutex;
+    std::string 	serverTaskdbName;
 public:
     LPushMongoIOThread();
     virtual ~LPushMongoIOThread();
@@ -43,6 +47,8 @@ public:
   virtual bool can_loop();
   
   virtual int cycle();
+  
+  virtual int do_cycle();
   
   virtual int selectMongoHistoryWork(MongoIOEntity *mie);
       
@@ -52,8 +58,9 @@ public:
    
     virtual void stop();
 public:
-  virtual void push(std::string _db,std::string _collectionName
-		    ,std::string _appKey,std::string _userId,std::string _secreteKey);
+  virtual void push(MongoIOEntity *mie);
+    
+  virtual int findPop(MongoIOEntity *mie);
 private:
   virtual int pop(MongoIOEntity **src);
   

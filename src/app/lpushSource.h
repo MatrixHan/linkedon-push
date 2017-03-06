@@ -2,6 +2,7 @@
 
 #include <lpushCommon.h>
 #include <st.h>
+#include <pthread.h>
 namespace lpush 
 {
   
@@ -117,6 +118,12 @@ public:
 };
   
 
+
+extern pthread_mutex_t mutexSource;
+
+extern bool initSourceMutex();
+
+extern bool closeSourceMutex();
 
 class LPushSource
 {

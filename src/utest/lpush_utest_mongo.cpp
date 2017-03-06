@@ -3,6 +3,7 @@
 #include <lpushMongoClient.h>
 #include <lpushProtocolStack.h>
 #include <lpushJson.h>
+#include <lpushMongoPool.h>
 using namespace std;
 using namespace lpush;
 
@@ -20,8 +21,8 @@ void LPushUtestMongo::test1()
     memset(buf,0,20);
     sprintf(buf,"%d",time);
     lpmap.insert(make_pair("time",string(buf)));
-    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mclient->initMongodbClient();
+    LPushMongodbClient *mclient = new LPushMongodbClient();
+    mclient->initMongodbClient(lpMongoPool->getPool());
     map<string,string> params;
     params.insert(make_pair("userId","10000"));
     params.insert(make_pair("appKey","LOFFICIEL"));
@@ -45,8 +46,8 @@ void LPushUtestMongo::test1()
 
 void LPushUtestMongo::test2()
 {
-    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mclient->initMongodbClient();
+    LPushMongodbClient *mclient = new LPushMongodbClient();
+    mclient->initMongodbClient(lpMongoPool->getPool());
     map<string,string> params;
     params.insert(make_pair("UserId","10001"));
     params.insert(make_pair("AppKey","48947381"));
@@ -62,8 +63,8 @@ void LPushUtestMongo::test2()
 void LPushUtestMongo::test3()
 {
     
-    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mclient->initMongodbClient();
+    LPushMongodbClient *mclient = new LPushMongodbClient();
+    mclient->initMongodbClient(lpMongoPool->getPool());
     
     map<string,string> params;
     params.insert(make_pair("appKey","48947381"));
@@ -78,8 +79,8 @@ void LPushUtestMongo::test3()
 void LPushUtestMongo::test4()
 {
     
-    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mclient->initMongodbClient();
+    LPushMongodbClient *mclient = new LPushMongodbClient();
+    mclient->initMongodbClient(lpMongoPool->getPool());
     
     map<string,string> params;
     params.insert(make_pair("appKey","48947381"));
@@ -94,19 +95,20 @@ void LPushUtestMongo::test4()
 void LPushUtestMongo::test5()
 {
     
-    LPushMongodbClient *mclient = new LPushMongodbClient(conf->mongodbConfig->url.c_str());
-    mclient->initMongodbClient();
+    LPushMongodbClient *mclient = new LPushMongodbClient();
+    mclient->initMongodbClient(lpMongoPool->getPool());
     
     map<string,string> params;
-    params.insert(make_pair("UserId","10064"));
+    params.insert(make_pair("UserId","13992"));
     long long begin  = st_utime();
-    bool result = mclient->selectOneIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params);
-    bool result1 = mclient->skipParamsIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params,10);
-    vector<string> result3 = mclient->queryToListJsonLimit(conf->mongodbConfig->db,
-							   "TASK_PULL_48947381",params,1,10);
+     bool result = mclient->selectOneIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params);
+//    bool result1 = mclient->skipParamsIsExist(conf->mongodbConfig->db,"TASK_PULL_48947381",params,10);
+//      vector<string> result3 = mclient->queryToListJsonLimit(conf->mongodbConfig->db,
+//      						   "TASK_PULL_48947381",params,1,50000);
     long long end  = st_utime();
-    cout << result<<"::" <<result1<< endl;
-    cout << (end-begin)/1000 << endl;
+//     cout << result<<"::" <<result1<< endl;
+    cout << (end-begin)/1000 <<endl;
+    
     delete mclient;
 }
 
