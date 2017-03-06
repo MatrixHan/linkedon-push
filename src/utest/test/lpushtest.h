@@ -69,6 +69,11 @@ namespace lpush {
 		int init_message();
 		int set_socket_nonblock(int socket);
 		char *err_tstamp(void);
+		void err_doit(int errnoflag, const char *fmt, va_list ap);
+		void err_sys_report(const char *fmt, ...);
+		void err_report(const char *fmt, ...);
+		int socket_nonblock_send(int fd, unsigned char* buffer,  unsigned int length, unsigned long timeout);
+		long long socket_nonblock_recv(int fd, unsigned char* buffer, unsigned int length, unsigned long timeout);
 		string getmd5str(string src);
 	};
 

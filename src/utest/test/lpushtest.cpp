@@ -36,16 +36,16 @@ int LpushTest::connection()
 	
 	if ((client_sockfd = socket(PF_INET, SOCK_STREAM, 0))< 0)
 	{
-		perror("socket");
+		err_sys_report("socket");
 		return RET_ERROR;
 	}
 	int i;
 	if ( connect(client_sockfd, (struct sockaddr *)&remote_addr, sizeof(remote_addr)) < 0)
 	{
-		perror("connect");
+		err_sys_report("ERROR: connect");
 		return RET_ERROR;
 	}
-	printf("connect to server success!\n");		
+	err_report("connect to server success!");		
 	return RET_SUCCESS;
 }
 
@@ -71,7 +71,7 @@ int LpushTest::send_handshake_message()
 	len = send(client_sockfd, buf, datalen+14, 0);
 	if (len < 0)
 	{
-		cout << "send shake message fail..." << endl;
+		err_sys_report("ERROR: send shake message fail...");
 		return RET_ERROR;
 	}
 	
@@ -81,7 +81,7 @@ int LpushTest::send_handshake_message()
 	datatype = buf[9];
 	if (len < 0)
 	{
-		cout << "client handshake fail..." << endl;
+		err_sys_report("ERROR: client handshake fail...");
 		return RET_ERROR;
 	}
 	//send create connection msg
@@ -95,14 +95,18 @@ int LpushTest::send_handshake_message()
 	len = send(client_sockfd, buf, 15, 0);
 	if (len < 0)
 	{
-		cout << "client  send connect msg failed..." << endl;
+		err_sys_report("ERROR: client  send connect msg failed...");
+		return RET_ERROR;
 	}
 	init_message();
 	len = recv(client_sockfd, buf, 15, 0);
 	
 	if (len > 0 &&buf[9] == 0x04 && buf[14] == 0x01)
 	{
-		cout << "client  create connection success..." << endl;
+		err_report("client  create connection success...");
+	} else {
+		err_sys_report("ERROR: client  create connection fail...");
+		return RET_ERROR;
 	}
 		
 	return RET_SUCCESS;
@@ -207,13 +211,175 @@ char * LpushTest::err_tstamp(void)
   return str;
 }
 
+void LpushTest::err_doit(int errnoflag, const char *fmt, va_list ap)
+{
+	int errno_save;
+	char sbuf[4096];
+
+	errno_save = errno;         /* value caller might want printed   */
+	strcpy(sbuf, err_tstamp());  /* prepend a message with time stamp */
+	vsprintf(sbuf + strlen(sbuf), fmt, ap);
+	if (errnoflag)
+		sprintf(sbuf + strlen(sbuf), ": %s", strerror(errno_save));
+	errno = errno_save;
+	//fprintf(stderr, "%s", sbuf);
+	cout << sbuf << endl;
+}
+
+void LpushTest::err_sys_report(const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);	
+}
+
+void LpushTest::err_report(const char *fmt, ...)
+{
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(0, fmt, ap);
+  va_end(ap);
+}
 
 int LpushTest::set_socket_nonblock(int sockfd)
 {
 	int block_flag = fcntl(sockfd, F_GETFL, 0);
 	if (block_flag < 0) {
-		
+		err_sys_report("get socket fd flag error");
+		return -1;
+	}
+	if (fcntl(sockfd, F_SETFL, block_flag | O_NONBLOCK) < 0) {
+		err_sys_report("set socket fd non block error");
+		return -1;
+	} 
+	
+	return 0;
+}
+
+/** 
+  *@return  
+  * 0 success， 
+  *-1 failure,errno==EPIPE, 对端进程fd被关掉 
+  *-2 failure,网络断开或者对端超时未再发送数据 
+  *-3 failure,other errno 
+**/  
+
+int LpushTest::socket_nonblock_send(int fd, unsigned char* buffer,  unsigned int length, unsigned long timeout)
+{
+	if (length == 0 || buffer == NULL) {
+		err_report("buffer point is NULL or length is zero");
+		return 0;
+	}	
+	unsigned int bytes_left;
+	bytes_left = length;
+	long long written_bytes;
+	unsigned char *ptr;
+	ptr = buffer;
+	fd_set writefds;
+	struct timeval tv;
+	int ret = 0;
+	while (bytes_left > 0) {
+		written_bytes = send(fd, ptr, bytes_left, MSG_NOSIGNAL);
+		if (written_bytes < 0) {
+			if (errno == EINTR) { //信号中断，没有写入数据
+				written_bytes = 0;
+			} else if (errno == EWOULDBLOCK || errno == EAGAIN) { //即EＡＧＡＩＮ, SOCKET内核缓冲区满或者网络断开
+				FD_ZERO(&writefds);
+				FD_SET(fd, &writefds);
+				tv.tv_sec = timeout/1000000;
+				tv.tv_usec = timeout%1000000;
+				ret = select(fd+1, NULL, &writefds, NULL, &tv); //阻塞，　ｅｒｒ: 0 timeout
+				if (ret == 0) {
+					err_sys_report("send select error");
+					return -2;
+				} else if (ret < 0 && errno != EINTR) {
+					err_sys_report("send select error");
+					return -2;
+				}
+				written_bytes = 0; //未超时，判定为ｓｏｃｋｅｔ缓冲区满导致的网络阻塞				
+			} else if (errno == EPIPE) { //对端ｆｄ被关掉
+				err_sys_report("write socket error %d: ", errno);
+				return -1;
+			} else { //其他错误
+				err_sys_report("write socke error %d: ", errno);
+				return -1;
+			}
+		}
+		bytes_left -= written_bytes;
+		ptr += written_bytes;
 	}
 	
+	return 0;
+}
+
+/** 
+  *@return  
+    the number of bytes read success, 
+    -1 failure, 对端进程fd被关掉或者对端超时未再发送数据 
+    -2 failure,网络断开或者对端超时未再发送数据 
+    -3 failure,other errno 
+**/  
+
+long long LpushTest::socket_nonblock_recv(int fd, unsigned char* buffer, unsigned int length, unsigned long timeout)
+{
+	unsigned int bytes_left;  
+	long long read_bytes;  
+	unsigned char* ptr;  
+	ptr = buffer;  
+	bytes_left = length;  
+	fd_set readfds;  
+	int ret = 0;  
+	struct timeval tv;  
+	
+	while (bytes_left > 0) {
+		read_bytes = recv(fd, ptr, bytes_left, 0);
+		if (read_bytes < 0) {
+			if (errno == EINTR) { //信号中断
+				read_bytes = 0;
+			} else if (errno == EAGAIN) { //EAGAIN 没有可读写数据,缓冲区无数据
+				if (length > bytes_left) { //说明上一循环把缓冲区数据读完，继续读返回-1，应返回已读取的长度  
+					return (length - bytes_left);
+				} else {  //length == bytes_left,说明第一次调用该函数就无数据可读，可能是对端无数据发来，可能是对端网线断了 
+					FD_ZERO(&readfds);
+					FD_SET(fd, &readfds);
+					tv.tv_sec = timeout/1000000;
+					tv.tv_usec = timeout%1000000;
+					ret = select(fd+1, &readfds, NULL, NULL, &tv); //阻塞,err:0 timeout err:-1
+					if (ret == 0 && errno != EAGAIN) { //超时，判定为网线断开 
+						err_sys_report("recv select error");
+						return -2;
+					} else if (ret < 0 && errno != EINTR) {
+						err_sys_report("recv select error");
+						return -2;
+					}
+					//未超时，有数据到来
+					continue;
+				}
+			} else {
+				err_sys_report("read socket buf error");
+				return -3;
+			}
+		} else if (read_bytes == 0) { //缓冲区数据读完，对端fd 关闭或对端没有发数据了，超时10s后判定为连接已断
+			FD_ZERO(&readfds);
+			FD_SET(fd, &readfds);
+			tv.tv_sec = timeout/1000000;
+			tv.tv_usec = timeout/1000000;
+			ret = select(fd+1, &readfds, NULL, NULL, &tv); //阻塞, err: 0
+			if (ret == 0 && errno != EAGAIN) {
+				err_sys_report("recv select error");
+				return  -1;
+			} else if (ret < 0 && errno != EINTR) {
+				err_sys_report("recv select error");
+				return -1;
+			}
+			continue;
+		}
+		bytes_left -= read_bytes;
+		ptr += read_bytes;
+	}
+	
+	return (length - bytes_left);
 }
 
