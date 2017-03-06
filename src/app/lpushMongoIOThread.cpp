@@ -136,11 +136,11 @@ int LPushMongoIOThread::selectMongoHistoryWork(MongoIOEntity *mie)
 	}
     }
      //bt = st_utime();
-     if((ret = mclient->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
-     {
- 	lp_info("mongodb del from query error %d",ret);
- 	return ret;
-     }
+//      if((ret = mclient->delFromQuery(mie->db,mie->collectionName,params))!=ERROR_SUCCESS)
+//      {
+//  	lp_info("mongodb del from query error %d",ret);
+//  	return ret;
+//      }
      //et = st_utime();
      //lp_info("current delFromQuery function run time %lld",(et-bt)/1000L);
 
