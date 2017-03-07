@@ -9,6 +9,7 @@
  ubuntu or centos6 up
  cmake gcc g++
 
+ OS use mongodb and redis
 
 # Build
 
