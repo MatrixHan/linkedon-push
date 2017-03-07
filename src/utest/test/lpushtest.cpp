@@ -292,10 +292,10 @@ int LpushTest::socket_nonblock_send(int fd, unsigned char* buffer,  unsigned int
 				tv.tv_usec = timeout%1000000;
 				ret = select(fd+1, NULL, &writefds, NULL, &tv); //阻塞，　ｅｒｒ: 0 timeout
 				if (ret == 0) {
-					err_sys_report("send select error");
+					//err_sys_report("send select error");
 					return -2;
 				} else if (ret < 0 && errno != EINTR) {
-					err_sys_report("send select error");
+					//err_sys_report("send select error");
 					return -2;
 				}
 				written_bytes = 0; //未超时，判定为ｓｏｃｋｅｔ缓冲区满导致的网络阻塞				
@@ -347,11 +347,11 @@ long long LpushTest::socket_nonblock_recv(int fd, unsigned char* buffer, unsigne
 					tv.tv_sec = timeout/1000000;
 					tv.tv_usec = timeout%1000000;
 					ret = select(fd+1, &readfds, NULL, NULL, &tv); //阻塞,err:0 timeout err:-1
-					if (ret == 0 && errno != EAGAIN) { //超时，判定为网线断开 
-						err_sys_report("recv select error");
+					if (ret == 0 || errno == EAGAIN) { //超时，判定为网线断开 
+						//err_sys_report("recv select error");
 						return -2;
 					} else if (ret < 0 && errno != EINTR) {
-						err_sys_report("recv select error");
+						//err_sys_report("recv select error");
 						return -2;
 					}
 					//未超时，有数据到来
@@ -367,11 +367,11 @@ long long LpushTest::socket_nonblock_recv(int fd, unsigned char* buffer, unsigne
 			tv.tv_sec = timeout/1000000;
 			tv.tv_usec = timeout/1000000;
 			ret = select(fd+1, &readfds, NULL, NULL, &tv); //阻塞, err: 0
-			if (ret == 0 && errno != EAGAIN) {
-				err_sys_report("recv select error");
+			if (ret == 0 || errno == EAGAIN) {
+				//err_report("recv select error");
 				return  -1;
 			} else if (ret < 0 && errno != EINTR) {
-				err_sys_report("recv select error");
+				//err_sys_report("recv select error");
 				return -1;
 			}
 			continue;

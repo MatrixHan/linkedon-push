@@ -34,7 +34,7 @@ void *send_heart(void *)
 			test.err_sys_report("ERROR: heat send fail...\n");
 			//break;
 		}
-		//test.err_sys_report("send heartbeat success...");
+		test.err_report("send heartbeat success...");
 		pthread_mutex_unlock(&mut);
 		sleep(30);
 	}
@@ -99,7 +99,7 @@ void *thread_recv(void *)
 		}
 		
 		pthread_mutex_unlock(&mut);
-		usleep(500*1000);
+		sleep(1);
 	}
 	pthread_mutex_unlock(&mut);
 	pthread_exit(NULL);		
@@ -433,7 +433,7 @@ int main(int argc, char **argv)
 		test.conn_ip = argv[2];
 	test.err_sys_report("userId: %s", test.userId.c_str());
 	test.err_sys_report("connection ip: %s", test.conn_ip.c_str());
-	start_daemon();
+	//start_daemon();
 	process_signal();	
 	//test1();
 	start();
