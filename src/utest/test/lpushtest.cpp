@@ -361,7 +361,7 @@ long long LpushTest::socket_nonblock_recv(int fd, unsigned char* buffer, unsigne
 				err_sys_report("read socket buf error");
 				return -3;
 			}
-		} else if (read_bytes == 0) { //缓冲区数据读完，对端fd 关闭或对端没有发数据了，超时10s后判定为连接已断
+		} else if (read_bytes == 0) { //缓冲区数据读完，对端fd 关闭或对端没有发数据了，超时1s后判定为连接已断
 			FD_ZERO(&readfds);
 			FD_SET(fd, &readfds);
 			tv.tv_sec = timeout/1000000;

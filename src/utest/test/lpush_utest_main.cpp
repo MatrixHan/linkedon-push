@@ -9,7 +9,7 @@ using namespace lpush;
 #include <pthread.h>
 
 static int print_message(unsigned char *pbuf);
-
+static void start_daemon(void);
 
 
 
@@ -18,7 +18,7 @@ pthread_mutex_t mut;
 
 LpushTest test;
 
-#define TIME_OUT 30*1000*1000LL
+#define TIME_OUT 1*1000*1000LL
 
 void *send_heart(void *)
 {
@@ -401,6 +401,30 @@ int start()
 	return 0;
 }
 
+static void start_daemon(void)
+{
+  pid_t pid;
+
+  /* Start forking */
+  if ((pid = fork()) < 0)
+    test.err_sys_report("ERROR: fork");
+  if (pid > 0)
+    exit(0);                  /* parent */
+
+  /* First child process */
+  setsid();                   /* become session leader */
+
+  if ((pid = fork()) < 0)
+     test.err_sys_report("ERROR: fork");
+  if (pid > 0)                /* first child */
+    exit(0);
+
+  umask(022);
+
+  if (chdir("/") < 0)
+    test.err_report("ERROR: can't change directory to root directory: chdir");
+}
+
 int main(int argc, char **argv)
 {
 	if (argc > 1)
@@ -409,6 +433,7 @@ int main(int argc, char **argv)
 		test.conn_ip = argv[2];
 	test.err_sys_report("userId: %s", test.userId.c_str());
 	test.err_sys_report("connection ip: %s", test.conn_ip.c_str());
+	start_daemon();
 	process_signal();	
 	//test1();
 	start();
