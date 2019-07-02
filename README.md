@@ -4,7 +4,7 @@
 
  TODO pusher server
  
-# EVN
+# ENV
 
  ubuntu or centos6 up
  cmake gcc g++
